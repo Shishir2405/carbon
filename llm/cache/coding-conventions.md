@@ -69,12 +69,10 @@ The project uses a custom form library with validators:
 import { validator } from "@carbon/form";
 import { z } from "zod";
 
-export const customerValidator = validator(
-  z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-  })
-);
+export const customerValidator = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
 ```
 
 ## Route Patterns

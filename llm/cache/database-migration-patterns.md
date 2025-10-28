@@ -2,6 +2,13 @@
 
 This document analyzes common patterns found in the Carbon database migrations.
 
+To create a database migration use `npm run db:migrate:new <name>`.
+
+- Migrations are stored in `/packages/database/supabase/migrations/`
+- Named with timestamps and descriptive names
+- Applied automatically via Supabase CLI
+
+
 ## 1. Table Creation Patterns
 
 ### Basic Table Structure

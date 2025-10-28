@@ -12,7 +12,7 @@
     ·
     <a href="https://carbon.ms">Website</a>
     ·
-    <a href="https://github.com/crbnos/carbon/issues">Issues</a>
+    <a href="https://docs.carbon.ms">Documentation</a>
   </p>
 </p>
 <p align="center">

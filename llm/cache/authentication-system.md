@@ -149,7 +149,7 @@ Located at `/packages/auth/`, the auth package provides:
    - `public.userPermission` table with the user's ID
 3. **Identity Group**: A separate trigger creates an identity group for the user
 
-<<<<<<< HEAD
+
 
 ### Self-Signup Flow
 

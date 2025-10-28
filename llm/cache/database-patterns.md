@@ -30,13 +30,6 @@ import { getCarbonServiceRole } from "@carbon/auth";
 const client = getCarbonServiceRole();
 ```
 
-### API Key Client
-
-```typescript
-import { getCarbonAPIKeyClient } from "@carbon/auth";
-
-const client = getCarbonAPIKeyClient(apiKey);
-```
 
 ## Query Patterns
 
@@ -128,7 +121,7 @@ const { data, error } = await client.rpc("create_sales_order", {
 
 ```typescript
 const subscription = client
-  .channel("sales_orders")
+  .channel("salesOrder")
   .on(
     "postgres_changes",
     {
@@ -146,19 +139,14 @@ const subscription = client
 ## Error Handling
 
 ```typescript
-try {
-  const { data, error } = await client.from("table").select().single();
+const { data, error } = await client.from("table").select().single();
 
-  if (error) {
-    console.error("Database error:", error);
-    throw new Error("Failed to fetch data");
-  }
-
-  return data;
-} catch (err) {
-  // Handle error appropriately
-  throw err;
+if (error) {
+  console.error("Database error:", error);
+  throw new Error("Failed to fetch data");
 }
+
+return data;
 ```
 
 ## Migration Management
@@ -167,14 +155,4 @@ try {
 - Named with timestamps and descriptive names
 - Applied automatically via Supabase CLI
 
-## Common Tables
 
-Based on the codebase, common tables include:
-
-- `customer` - Customer information
-- `supplier` - Supplier information
-- `item` - Products/parts/materials
-- `salesOrder` - Sales orders
-- `purchaseOrder` - Purchase orders
-- `employee` - Employee records
-- `company` - Company/tenant information
