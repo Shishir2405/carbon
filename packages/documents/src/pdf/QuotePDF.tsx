@@ -261,6 +261,7 @@ const QuotePDF = ({
                   "flex flex-col gap-2 py-3 px-[6px] border-b border-gray-300 mb-2"
                 )}
                 key={line.id}
+                wrap={false}
               >
                 <View style={tw("flex flex-row justify-between")}>
                   <View style={tw("w-1/3")}>

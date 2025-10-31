@@ -200,6 +200,7 @@ const PurchaseOrderPDF = ({
                 "flex flex-col w-full gap-4 py-3 px-[6px] border-b border-gray-300"
               )}
               key={line.id}
+              wrap={false}
             >
               <View style={tw("flex flex-row justify-between")}>
                 <View style={tw("w-[35%]")}>

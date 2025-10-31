@@ -324,6 +324,7 @@ const JobTravelerPDF = ({
                     "flex flex-col border-b border-gray-300 py-4 px-[6px] page-break-inside-avoid"
                   )}
                   key={operation.id}
+                  wrap={false}
                 >
                   <View style={tw("flex flex-row justify-between items-start")}>
                     <Text style={tw("w-1/12 text-left")}>

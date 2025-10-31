@@ -93,6 +93,7 @@ const KanbanLabelPDF = ({
                 style={{
                   flexDirection: "row",
                 }}
+                wrap={false}
               >
                 {Array.from({ length: columns }).map((_, colIndex) => {
                   const itemIndex =

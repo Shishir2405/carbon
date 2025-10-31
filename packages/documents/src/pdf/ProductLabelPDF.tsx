@@ -112,6 +112,7 @@ const ProductLabelPDF = ({ items, labelSize }: ProductLabelProps) => {
                       height: labelHeightPt,
                       transform: rotated ? "rotate(90deg)" : undefined,
                     }}
+                    wrap={false}
                   >
                     <View style={tw("flex flex-row justify-between")}>
                       <View

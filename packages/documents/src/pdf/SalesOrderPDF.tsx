@@ -197,6 +197,7 @@ const SalesOrderPDF = ({
                   "flex flex-row justify-between py-3 px-[6px] border-b border-gray-300"
                 )}
                 key={line.id}
+                wrap={false}
               >
                 <View style={tw("w-5/12")}>
                   <Text style={tw("font-bold mb-1")}>

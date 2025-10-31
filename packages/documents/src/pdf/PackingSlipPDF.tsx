@@ -193,6 +193,7 @@ const PackingSlipPDF = ({
                     "flex flex-row justify-between py-3 px-[6px] border-b border-gray-300 page-break-inside-avoid"
                   )}
                   key={line.id}
+                  wrap={false}
                 >
                   <View style={tw(`w-${hasTrackedEntities ? "7/12" : "9/12"}`)}>
                     <Text style={tw("font-bold mb-1")}>
