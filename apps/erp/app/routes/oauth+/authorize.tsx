@@ -3,7 +3,7 @@ import { validator } from "@carbon/form";
 import { Button } from "@carbon/react";
 import { Form, json, redirect, useLoaderData } from "@remix-run/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 
 export const config = { runtime: "nodejs" };
 

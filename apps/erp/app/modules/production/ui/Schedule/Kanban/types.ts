@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { deadlineTypes, jobOperationStatus } from "../../../production.models";
 import type { ProductionEvent } from "../../../types";
 

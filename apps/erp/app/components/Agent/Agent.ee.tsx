@@ -1,4 +1,4 @@
-import { useCarbon } from "@carbon/auth";
+import { SUPABASE_URL, useCarbon } from "@carbon/auth";
 import type { ShortcutDefinition } from "@carbon/react";
 import {
   Badge,
@@ -18,12 +18,9 @@ import {
   ShortcutKey,
   toast,
   useDisclosure,
-  useMount,
   useShortcutKeys,
 } from "@carbon/react";
-import type { LanguageModelV1Prompt } from "ai";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import {
   LuCheck,
   LuChevronDown,
@@ -39,71 +36,89 @@ import { useUser } from "~/hooks/useUser";
 import { camelCaseToWords } from "~/utils/string";
 import SYSTEM_PROMPT from "./system.ee.txt?raw";
 
-const providerMetadata = {
-  anthropic: {
-    cacheControl: {
-      type: "ephemeral",
-    },
-  },
-};
-
 const shortcut: ShortcutDefinition = {
   key: "I",
   modifiers: ["mod"],
 };
 
-const getInitialPrompt = (): LanguageModelV1Prompt => [
-  {
-    role: "system",
-    content: SYSTEM_PROMPT,
-    providerMetadata,
-  },
-  {
-    role: "system",
-    content: `The current date is ${new Date().toDateString()}`,
-    providerMetadata,
-  },
-];
+type Message = {
+  id: string;
+  role: "system" | "user" | "assistant";
+  content: string;
+};
+
+type Step = {
+  type: string;
+  toolCalls?: Array<{
+    toolCallId: string;
+    toolName: string;
+    args: any;
+  }>;
+  toolResults?: Array<{
+    toolCallId: string;
+    toolName: string;
+    args: any;
+    result: any;
+  }>;
+  text?: string;
+};
 
 function ChatInput({
-  status,
+  input,
+  setInput,
+  onSubmit,
+  isLoading,
   textareaRef,
   isInitial,
-  onSend,
   onStop,
   onClear,
   className,
 }: {
-  status: "ready" | "submitted" | "streaming" | "error";
+  input: string;
+  setInput: (value: string) => void;
+  onSubmit: (message: string) => void;
+  isLoading: boolean;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   isInitial: boolean;
   onClear: () => void;
-  onSend: (message: string) => void;
   onStop: () => void;
   className?: string;
 }) {
   return (
-    <div className={cn("p-2", className)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (input.trim() && !isLoading) {
+          onSubmit(input);
+          setInput("");
+        }
+      }}
+      className={cn("p-2", className)}
+    >
       <div className="bg-card rounded-xl md:rounded-lg text-base min-h-20 md:min-h-[60px] border">
         <div className="flex flex-col items-center justify-center w-full">
           <div className="relative w-full">
             <textarea
               ref={textareaRef}
               autoFocus
-              disabled={status !== "ready"}
+              disabled={isLoading}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && status === "ready") {
-                  onSend(e.currentTarget.value);
-                  e.currentTarget.value = "";
+                if (e.key === "Enter" && !e.shiftKey && !isLoading) {
                   e.preventDefault();
+                  if (input.trim()) {
+                    onSubmit(input);
+                    setInput("");
+                  }
                 }
               }}
               className="w-full py-4 bg-transparent border-none resize-none outline-none text-foreground p-4 md:p-3"
               placeholder={
-                status !== "ready" ? "Thinking..." : "What can I help you with?"
+                isLoading ? "Thinking..." : "What can I help you with?"
               }
             />
-            {status !== "ready" && (
+            {isLoading && (
               <IconButton
                 aria-label="Stop"
                 icon={<LuCircleStop />}
@@ -145,7 +160,7 @@ function ChatInput({
           </HStack>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 
@@ -159,51 +174,29 @@ export function Agent() {
 
   const rootRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const idRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const [tools, setTools] = useState<any[]>([]);
-  const [status, setStatus] = useState<
-    "ready" | "submitted" | "streaming" | "error"
-  >("ready");
-  const [isRateLimited, setIsRateLimited] = useState(false);
-
-  const messagesRef = useRef<LanguageModelV1Prompt>(getInitialPrompt());
-  const [messages, setMessages] = useState<LanguageModelV1Prompt>(
-    getInitialPrompt()
-  );
-
-  const { carbon } = useCarbon();
+  const { accessToken } = useCarbon();
   const {
     id: userId,
     company: { id: companyId },
   } = useUser();
 
-  useMount(() => {
-    const initializeTools = async () => {
-      if (!carbon) return;
-      const tools = await carbon.functions.invoke("mcp", {
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "tools/list",
-          id: ++idRef.current,
-        }),
-        headers: {
-          "x-company-id": companyId,
-          "x-user-id": userId,
-        },
-      });
-
-      if (!tools?.data?.result) {
-        // toast.error("Failed to fetch tools");
-        return;
-      }
-
-      setTools("tools" in tools?.data?.result ? tools.data.result.tools : []);
-    };
-
-    initializeTools();
-  });
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "system-1",
+      role: "system",
+      content: SYSTEM_PROMPT,
+    },
+    {
+      id: "system-2",
+      role: "system",
+      content: `The current date is ${new Date().toDateString()}`,
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [steps, setSteps] = useState<Step[]>([]);
 
   useEffect(() => {
     if (rootRef.current) {
@@ -213,19 +206,11 @@ export function Agent() {
         behavior: "smooth",
       });
     }
-  }, [messages]);
-
-  const stop = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
-    setStatus("ready");
-  };
+  }, [messages, steps]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && status !== "ready") {
+      if (e.key === "Escape" && isLoading) {
         stop();
         textareaRef.current?.focus();
       }
@@ -234,210 +219,111 @@ export function Agent() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [status]);
+  }, [isLoading]);
 
-  function clearConversation() {
-    const initialPrompt = getInitialPrompt();
-    messagesRef.current = initialPrompt;
-    setMessages(initialPrompt);
+  function stop() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
   }
 
-  const addToolResult = async (toolCall: any, content: any) => {
-    const newMessage: LanguageModelV1Prompt = [
-      {
-        role: "tool",
-        content: [
-          {
-            type: "tool-result",
-            toolName: toolCall.toolName,
-            toolCallId: toolCall.toolCallId,
-            result: content,
-          },
-        ],
-      },
-    ];
+  async function sendMessage(userMessage: string) {
+    if (!accessToken || isLoading) return;
 
-    messagesRef.current = [...messagesRef.current, ...newMessage];
-    flushSync(() => {
-      setMessages(messagesRef.current);
-    });
+    const userMsg: Message = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content: userMessage,
+    };
 
-    return triggerRequest();
-  };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
+    setIsLoading(true);
+    setSteps([]);
 
-  const addToolCalls = async (toolCalls: any) => {
-    const newMessage: LanguageModelV1Prompt = [
-      {
-        role: "assistant",
-        content: toolCalls.map((item: any) => ({
-          type: "tool-call",
-          toolName: item.toolName,
-          args: JSON.parse(item.args),
-          toolCallId: item.toolCallId,
-        })),
-      },
-    ];
-
-    messagesRef.current = [...messagesRef.current, ...newMessage];
-    flushSync(() => {
-      setMessages(messagesRef.current);
-    });
-  };
-
-  const triggerRequest = async () => {
-    if (!carbon) return;
+    abortControllerRef.current = new AbortController();
 
     try {
-      setStatus("submitted");
-      const abortController = new AbortController();
-      abortControllerRef.current = abortController;
-
-      const response = await carbon.functions.invoke("chat", {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/chat`, {
+        method: "POST",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
           "x-company-id": companyId,
           "x-user-id": userId,
         },
         body: JSON.stringify({
-          prompt: messagesRef.current,
-          mode: {
-            type: "regular",
-            tools: tools.map((tool) => ({
-              type: "function",
-              name: tool.name,
-              description: tool.description,
-              parameters: {
-                ...tool.inputSchema,
-              },
-            })),
-          },
-          inputFormat: "messages",
-          temperature: 1,
+          messages: newMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
         }),
+        signal: abortControllerRef.current.signal,
       });
 
-      if (response?.error) {
-        throw new Error(response.error);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Response error:", errorText);
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        );
       }
 
-      const result = response.data;
-      setStatus("streaming");
+      const result = await response.json();
+      console.log("Agent response:", result);
 
-      if (result.text) {
-        const newMessage: LanguageModelV1Prompt = [
-          {
-            role: "assistant",
-            content: [
-              {
-                type: "text",
-                text: result.text,
-              },
-            ],
-          },
-        ];
-
-        messagesRef.current = [...messagesRef.current, ...newMessage];
-        setMessages(messagesRef.current);
+      if (result.error) {
+        throw new Error(result.error);
       }
 
-      setIsRateLimited(false);
+      // Add assistant response
+      const assistantMsg: Message = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: result.text || "",
+      };
 
-      // Handle different finish reasons from the AI SDK
-      switch (result.finishReason) {
-        case "tool-calls":
-          // Handle tool calls
-          for await (const toolCall of result.toolCalls) {
-            await addToolCalls(result.toolCalls);
-
-            const toolResponse = await carbon.functions.invoke("mcp", {
-              body: JSON.stringify({
-                jsonrpc: "2.0",
-                method: "tools/call",
-                id: ++idRef.current,
-                params: {
-                  name: toolCall.toolName,
-                  arguments: JSON.parse(toolCall.args),
-                },
-              }),
-              headers: {
-                "x-company-id": companyId,
-                "x-user-id": userId,
-              },
-            });
-
-            const response = toolResponse?.data;
-
-            if ("content" in response?.result) {
-              await addToolResult(toolCall, response.result.content);
-            }
-          }
-          break;
-
-        case "end-turn":
-        case "end_turn":
-          // End turn means the assistant has completed its response
-          // No additional action needed, just set status to ready
-          break;
-
-        case "stop":
-          // Normal completion
-          break;
-
-        case "length":
-          // Maximum token length reached
-          console.warn("Maximum token length reached");
-          break;
-
-        case "error":
-          // Error occurred during generation
-          console.error("Error during generation");
-          break;
-
-        default:
-          // Unknown finish reason
-          console.warn(`Unknown finish reason: ${result.finishReason}`);
+      setMessages([...newMessages, assistantMsg]);
+      setSteps(result.steps || []);
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        console.log("Request aborted");
+      } else {
+        console.error("Agent error:", error);
+        toast.error(
+          error.message || "Failed to send message. Please try again."
+        );
       }
-
-      setStatus("ready");
-      textareaRef.current?.focus();
-    } catch (error) {
-      console.error(error);
-      setStatus("error");
-      toast.error("Anthropic API is overloaded. Please try again later.");
     } finally {
+      setIsLoading(false);
       abortControllerRef.current = null;
     }
-  };
+  }
 
-  async function send(message: string) {
-    const newMessage: LanguageModelV1Prompt = [
+  function clearConversation() {
+    setMessages([
       {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: message,
-            providerMetadata:
-              messagesRef.current.length === 1 ? providerMetadata : {},
-          },
-        ],
+        id: "system-1",
+        role: "system",
+        content: SYSTEM_PROMPT,
       },
-    ];
-
-    messagesRef.current = [...messagesRef.current, ...newMessage];
-
-    flushSync(() => {
-      setMessages(messagesRef.current);
-      setStatus("submitted");
-    });
-
-    await triggerRequest();
+      {
+        id: "system-2",
+        role: "system",
+        content: `The current date is ${new Date().toDateString()}`,
+      },
+    ]);
+    setInput("");
+    setSteps([]);
   }
 
   const isInitialState = messages.length === 2;
 
   return (
     <Popover
-      onOpenChange={(open) => {
+      onOpenChange={(open: boolean) => {
         if (!open) {
           agentModal.onClose();
         } else {
@@ -456,67 +342,66 @@ export function Agent() {
       >
         {isInitialState && (
           <ChatInput
-            status={status}
+            input={input}
+            setInput={setInput}
+            onSubmit={sendMessage}
+            isLoading={isLoading}
             textareaRef={textareaRef}
-            isInitial={messages.length === 2}
+            isInitial={true}
             onClear={clearConversation}
-            onSend={send}
             onStop={stop}
           />
         )}
 
         <div ref={rootRef} className="flex-1 overflow-y-auto p-4">
           <div className="flex flex-col gap-y-4">
-            {messages.map((item, index) => (
-              <Fragment key={index}>
-                {item.role === "user" && item.content[0].type === "text" && (
-                  <div className="flex items-center gap-x-2 bg-card p-3 rounded-lg bg-card border ">
+            {messages.map((message: Message, index: number) => (
+              <Fragment key={message.id}>
+                {message.role === "user" && (
+                  <div className="flex items-center gap-x-2 p-3 rounded-lg bg-card border">
                     <div className="h-8 w-8 rounded-full flex items-center justify-center">
                       <EmployeeAvatar employeeId={userId} withName={false} />
                     </div>
                     <div className="whitespace-pre-wrap flex-1">
-                      {item.content[0].text}
+                      {message.content}
                     </div>
                   </div>
                 )}
 
-                {item.role === "assistant" &&
-                  item.content[0].type === "tool-call" && (
-                    <ToolExecution
-                      toolCall={item.content[0]}
-                      result={
-                        messages[index + 1]?.role === "tool"
-                          ? messages[index + 1].content[0]
-                          : undefined
-                      }
-                    />
-                  )}
+                {message.role === "assistant" && message.content && (
+                  <div className="whitespace-pre-wrap text-foreground px-1">
+                    {message.content}
+                  </div>
+                )}
 
-                {item.role === "assistant" &&
-                  item.content[0].type === "text" && (
-                    <div className="whitespace-pre-wrap text-foreground px-1">
-                      {item.content[0].text}
-                    </div>
-                  )}
-
-                {item.role === "system" && index > 1 && (
+                {message.role === "system" && index > 1 && (
                   <div className="whitespace-pre-wrap p-3 rounded-lg border italic opacity-80">
-                    {item.content}
+                    {message.content}
                   </div>
                 )}
               </Fragment>
             ))}
 
-            {status !== "ready" && (
+            {/* Show tool executions from steps */}
+            {steps.map((step: Step, stepIndex: number) => (
+              <Fragment key={`step-${stepIndex}`}>
+                {step.toolResults?.map((toolResult: any) => (
+                  <ToolExecution
+                    key={toolResult.toolCallId}
+                    toolResult={toolResult}
+                  />
+                ))}
+              </Fragment>
+            ))}
+
+            {isLoading && (
               <div className="w-full max-w-[480px] my-3  flex items-center mx-auto">
                 <div className="w-[18px] h-[18px] mr-3 relative">
                   <div className="absolute w-full h-full rounded-full border-2 border-transparent border-t-muted-foreground border-b-muted animate-[thinking-spin-outer_1.5s_cubic-bezier(0.6,0.2,0.4,0.8)_infinite]">
                     <div className="absolute inset-[2px] rounded-full border-2 border-transparent border-l-muted border-r-muted-foreground animate-[thinking-spin-inner_0.8s_cubic-bezier(0.3,0.7,0.7,0.3)_infinite]"></div>
                   </div>
                 </div>
-                <div className="text-muted-foreground">
-                  {isRateLimited ? "Rate limited, retrying..." : "Thinking"}
-                </div>
+                <div className="text-muted-foreground">Thinking</div>
               </div>
             )}
           </div>
@@ -524,11 +409,13 @@ export function Agent() {
 
         {!isInitialState && (
           <ChatInput
-            status={status}
+            input={input}
+            setInput={setInput}
+            onSubmit={sendMessage}
+            isLoading={isLoading}
             textareaRef={textareaRef}
-            isInitial={messages.length === 2}
+            isInitial={false}
             onClear={clearConversation}
-            onSend={send}
             onStop={stop}
           />
         )}
@@ -537,7 +424,16 @@ export function Agent() {
   );
 }
 
-function ToolExecution({ toolCall, result }: { toolCall: any; result?: any }) {
+function ToolExecution({
+  toolResult,
+}: {
+  toolResult: {
+    toolCallId: string;
+    toolName: string;
+    args: any;
+    result: any;
+  };
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -552,9 +448,9 @@ function ToolExecution({ toolCall, result }: { toolCall: any; result?: any }) {
         <div className="flex items-center gap-1">
           <Badge variant="secondary" className="font-mono ml-1">
             <LuWrench className="mr-1" />
-            {camelCaseToWords(toolCall.toolName)}
+            {camelCaseToWords(toolResult.toolName)}
           </Badge>
-          {result && <LuCheck className="text-emerald-500" />}
+          <LuCheck className="text-emerald-500" />
         </div>
         <LuChevronRight
           className={cn(
@@ -570,10 +466,10 @@ function ToolExecution({ toolCall, result }: { toolCall: any; result?: any }) {
             className="language-json"
             parentClassName="max-h-[300px] md:max-h-[200px] overflow-y-auto"
           >
-            {JSON.stringify(toolCall.args, null, 2)}
+            {JSON.stringify(toolResult.args, null, 2)}
           </CodeBlock>
 
-          {result && (
+          {toolResult.result && (
             <>
               <div className="mt-3 mb-2 text-sm text-muted-foreground">
                 Result:
@@ -582,13 +478,9 @@ function ToolExecution({ toolCall, result }: { toolCall: any; result?: any }) {
                 className="language-json"
                 parentClassName="max-h-[300px] md:max-h-[200px] overflow-y-auto"
               >
-                {JSON.stringify(
-                  result?.result?.[0]?.text
-                    ? JSON.parse(result.result[0].text)
-                    : result,
-                  null,
-                  2
-                )}
+                {typeof toolResult.result === "string"
+                  ? toolResult.result
+                  : JSON.stringify(toolResult.result, null, 2)}
               </CodeBlock>
             </>
           )}

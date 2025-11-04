@@ -14,7 +14,7 @@ import {
 import { ValidatedForm } from "@carbon/form";
 import { useLocation, useNavigate } from "@remix-run/react";
 import { useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   CustomFormFields,
   Number,

@@ -18,7 +18,7 @@ import {
 } from "@internationalized/date";
 import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   DateTimePicker,
   Employee,

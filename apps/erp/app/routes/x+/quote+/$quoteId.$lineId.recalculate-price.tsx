@@ -1,7 +1,7 @@
 import { assertIsPost } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { json, type ActionFunctionArgs } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { upsertQuoteLinePrices } from "~/modules/sales";
 
 const numberArrayValidator = z.array(z.number());

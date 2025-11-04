@@ -20,7 +20,7 @@ import { flash } from "@carbon/auth/session.server";
 import { Submit, ValidatedForm, validator } from "@carbon/form";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect } from "react";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { Users } from "~/components/Form";
 import { getCompanySettings } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";

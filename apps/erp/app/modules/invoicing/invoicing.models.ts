@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { methodItemType, methodType } from "../shared";
 

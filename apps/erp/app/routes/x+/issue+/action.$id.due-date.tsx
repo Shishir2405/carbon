@@ -1,7 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { validator } from "@carbon/form";
 import { json, type ActionFunctionArgs } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 
 const updateDueDateSchema = zfd.formData({

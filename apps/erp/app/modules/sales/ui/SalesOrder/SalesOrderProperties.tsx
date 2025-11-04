@@ -14,7 +14,7 @@ import { useLocale } from "@react-aria/i18n";
 import { useFetcher, useParams } from "@remix-run/react";
 import { useCallback, useEffect, useMemo } from "react";
 import { LuCopy, LuInfo, LuLink, LuRefreshCcw } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { Assignee, useOptimisticAssignment } from "~/components";
 import {

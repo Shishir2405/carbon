@@ -1,6 +1,6 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { z } from "zod";
+import { z } from 'zod/v3';
 // to avoid a circular dependency
 const methodType = ["Buy", "Make", "Pick"] as const;
 const itemReplenishmentSystems = ["Buy", "Make", "Buy and Make"] as const;

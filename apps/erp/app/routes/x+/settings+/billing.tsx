@@ -28,7 +28,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { useState } from "react";
-import z from "zod";
+import { z } from 'zod/v3';
 import { usePermissions, useUser } from "~/hooks";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";

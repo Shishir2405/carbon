@@ -18,7 +18,7 @@ import {
 import { useFetcher, useParams } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
 import { LuCopy, LuKeySquare, LuLink } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import {
   Assignee,
   EmployeeAvatar,

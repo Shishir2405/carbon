@@ -30,7 +30,7 @@ import {
   LuStar,
   LuTruck,
 } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { Hyperlink, MethodIcon } from "~/components";
 import { Confirm } from "~/components/Modals";
 import { LevelLine } from "~/components/TreeView";

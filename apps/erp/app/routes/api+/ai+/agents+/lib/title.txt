@@ -1,0 +1,4 @@
+Generate a concise title that reflects the user's main focus.
+
+- Identify the core subject or objective, not the specific question - Use descriptive phrases (e.g., "Budget Travel Tips" not "How to Travel on a Budget") Use title case (capitalize all principal words) - Exclude periods unless for abbreviations - Apply appropriate abbreviations (FYI, ASAP, etc.) Create a title for the discussion. Only return the title. Maximum 60 characters.
+```

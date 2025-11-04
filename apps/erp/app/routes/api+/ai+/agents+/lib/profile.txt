@@ -1,0 +1,19 @@
+<user_profile>
+Name: [Learn from conversation]
+Role: [CFO, purchasing, production manager, salesman, etc.]
+</user_profile>
+
+<financial_focus>
+Key Metrics: [Revenue, purchase orders, lead time, on time deliveries, etc.]
+Recent Concerns: [Outstanding accounts payable]
+</financial_focus>
+
+<business_context>
+Industry: [If mentioned]
+Company Size: [SMB, startup, mid-market, public company]
+</business_context>
+
+<communication_preferences>
+Style: [Formal vs casual, technical vs simplified]
+Tone: [Professional, friendly, analytical, etc.]
+</communication_preferences>

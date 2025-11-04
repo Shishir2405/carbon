@@ -22,7 +22,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { Link, useFetchers, useParams } from "@remix-run/react";
 import { useRef, useState } from "react";
 import { LuCirclePlus, LuEllipsisVertical, LuTrash } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Empty, ItemThumbnail } from "~/components";
 import { usePermissions, useRealtime, useRouteData } from "~/hooks";
 import type { MethodItemType } from "~/modules/shared";

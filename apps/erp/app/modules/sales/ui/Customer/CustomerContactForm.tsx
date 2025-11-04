@@ -11,7 +11,7 @@ import {
   VStack,
 } from "@carbon/react";
 import { useFetcher } from "@remix-run/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   CustomerLocation,
   CustomFormFields,

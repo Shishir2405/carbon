@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
-import type { ZodSchema } from "zod";
+import type { ZodSchema } from 'zod/v3';
 import {
   attributeBooleanValidator,
   attributeNumericValidator,

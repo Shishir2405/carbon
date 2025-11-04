@@ -11,7 +11,7 @@ import {
 import { useFetcher, useParams } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
 import { LuCopy, LuKeySquare, LuLink } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { Process } from "~/components/Form";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { action } from "~/routes/x+/items+/update";

@@ -21,7 +21,7 @@ import { cloneElement, forwardRef } from "react";
 
 import type { Company } from "@carbon/auth";
 import { LuChevronsUpDown } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 
 import { useMode } from "@carbon/remix";
 import { useRouteData } from "~/hooks";

@@ -2,7 +2,7 @@ import { getCarbonServiceRole } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
-import z from "zod";
+import { z } from 'zod/v3';
 import { getJobDocuments } from "~/modules/production/production.service";
 import { getCompanyIntegration } from "~/modules/settings/settings.server";
 

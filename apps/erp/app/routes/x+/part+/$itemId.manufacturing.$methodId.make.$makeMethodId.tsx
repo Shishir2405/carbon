@@ -14,7 +14,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { useRouteData } from "@carbon/remix";
 import { Suspense } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { CadModel } from "~/components";
 import { usePermissions } from "~/hooks/usePermissions";
 import type {

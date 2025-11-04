@@ -15,7 +15,7 @@ import { useFetcher } from "@remix-run/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { flushSync } from "react-dom";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   Currency,
   CustomFormFields,

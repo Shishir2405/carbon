@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@carbon/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { CustomFormFields, Hidden, Number, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
 import { itemUnitSalePriceValidator } from "../../items.models";

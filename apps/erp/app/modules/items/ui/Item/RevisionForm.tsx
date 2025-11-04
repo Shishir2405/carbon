@@ -14,7 +14,7 @@ import {
 } from "@carbon/react";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import { useEffect } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Input, Submit } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";

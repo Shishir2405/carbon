@@ -4,7 +4,7 @@ import { parseDate } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
 import { useFetcher, useParams } from "@remix-run/react";
 import { useState } from "react";
-import type { ZodSchema } from "zod";
+import type { ZodSchema } from 'zod/v3';
 import {
   Boolean as BooleanInput,
   DatePicker,

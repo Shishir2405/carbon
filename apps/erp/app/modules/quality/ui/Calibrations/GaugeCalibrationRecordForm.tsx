@@ -48,7 +48,7 @@ import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { LuDraftingCompass, LuHash, LuShapes, LuShield } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Documents } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import {

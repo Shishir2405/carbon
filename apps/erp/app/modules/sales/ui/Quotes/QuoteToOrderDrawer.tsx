@@ -43,7 +43,7 @@ import {
   LuTruck,
   LuUpload,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { CustomerAvatar } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePaymentTerm } from "~/components/Form/PaymentTerm";

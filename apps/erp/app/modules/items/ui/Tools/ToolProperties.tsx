@@ -20,7 +20,7 @@ import { Await, useFetcher, useParams } from "@remix-run/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useCallback, useEffect } from "react";
 import { LuCopy, LuKeySquare, LuLink } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { MethodBadge, MethodIcon, TrackingTypeIcon } from "~/components";
 import { Enumerable } from "~/components/Enumerable";

@@ -1,6 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { json, type ActionFunctionArgs } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { getDefaultShelfForJob } from "~/modules/inventory";
 import {
   productionOrderValidator,

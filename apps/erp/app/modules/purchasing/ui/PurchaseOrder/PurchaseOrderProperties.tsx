@@ -22,7 +22,7 @@ import {
   LuLink,
   LuRefreshCcw,
 } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { Assignee, Hyperlink, useOptimisticAssignment } from "~/components";
 import {

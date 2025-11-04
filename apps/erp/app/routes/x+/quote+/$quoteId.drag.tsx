@@ -9,7 +9,7 @@ import type { ActionFunctionArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { generateObject } from "ai";
 import { nanoid } from "nanoid";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { upsertPart } from "~/modules/items";
 import {
   getQuote,

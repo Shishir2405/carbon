@@ -27,7 +27,7 @@ import { useParams } from "@remix-run/react";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuTrash } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   ArrayNumeric,
   ConversionFactor,

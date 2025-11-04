@@ -9,7 +9,7 @@ import { render } from "@react-email/components";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { task, wait } from "@trigger.dev/sdk";
 import { generateObject } from "ai";
-import z from "zod";
+import { z } from 'zod/v3';
 
 export const onboardTask = task({
   id: "onboard",

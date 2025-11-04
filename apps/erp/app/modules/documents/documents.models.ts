@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { methodItemType } from "~/modules/shared";
 
 export const documentSourceTypes = [

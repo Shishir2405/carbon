@@ -15,7 +15,7 @@ import {
 
 import { useFetcher, useParams } from "@remix-run/react";
 import { useCallback } from "react";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { EmployeeAvatar } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { Tags } from "~/components/Form";

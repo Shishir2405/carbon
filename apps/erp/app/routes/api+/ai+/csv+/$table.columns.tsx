@@ -4,8 +4,8 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { generateObject } from "ai";
-import type { ZodSchema } from "zod";
-import { z } from "zod";
+import type { ZodSchema } from 'zod/v3';
+import { z } from 'zod/v3';
 import { importSchemas } from "~/modules/shared";
 
 const inputSchema = z.object({
@@ -35,7 +35,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   try {
-    const { object } = await generateObject<Record<string, string>>({
+    const { object } = await generateObject({
       model: openai("gpt-4o"),
       schema,
       prompt: `

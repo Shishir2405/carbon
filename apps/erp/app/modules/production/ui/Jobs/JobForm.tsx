@@ -19,7 +19,7 @@ import {
 } from "@carbon/react";
 import { useState } from "react";
 import { LuDiamond, LuLayers } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import {
   CustomFormFields,

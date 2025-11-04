@@ -13,7 +13,7 @@ import {
 } from "@carbon/react";
 import { useFetcher, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import {
   CustomFormFields,

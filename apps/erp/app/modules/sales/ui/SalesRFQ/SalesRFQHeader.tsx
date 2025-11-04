@@ -43,7 +43,7 @@ import {
   LuTriangleAlert,
 } from "react-icons/lu";
 import { RiProgress4Line } from "react-icons/ri";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";

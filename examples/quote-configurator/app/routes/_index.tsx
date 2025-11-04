@@ -4,7 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import type { ActionFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { useEffect } from "react";
-import z from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { CONFIGURED_ITEM_ID } from "~/config";
 import { carbon } from "~/lib/carbon.server";

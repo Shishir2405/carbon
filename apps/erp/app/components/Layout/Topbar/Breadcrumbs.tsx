@@ -26,7 +26,7 @@ import { Form, Link, useMatches } from "@remix-run/react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import { IoMdAdd } from "react-icons/io";
 import { LuChevronsUpDown } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import {
   BreadcrumbItem,
   BreadcrumbLink,

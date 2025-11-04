@@ -14,7 +14,7 @@ import React, {
   useState,
 } from "react";
 import * as R from "remeda";
-import type { z } from "zod";
+import { z } from 'zod/v3';
 import { useIsSubmitting, useIsValid } from "./hooks";
 import type { MultiValueMap } from "./internal/MultiValueMap";
 import { useMultiValueMap } from "./internal/MultiValueMap";

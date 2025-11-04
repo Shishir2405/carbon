@@ -25,7 +25,7 @@ import { Form, useNavigation, useParams } from "@remix-run/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { LuImage } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { useUser } from "~/hooks";
 import { useCurrencyFormatter } from "~/hooks/useCurrencyFormatter";
 import { getPrivateUrl, path } from "~/utils/path";

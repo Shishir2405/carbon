@@ -29,7 +29,7 @@ import type {
 import { json, redirect } from "@vercel/remix";
 import crypto from "node:crypto";
 import { LuCircleAlert } from "react-icons/lu";
-import { z } from "zod";
+import { z } from 'zod/v3';
 
 import type { FormActionData, Result } from "~/types";
 import { path } from "~/utils/path";

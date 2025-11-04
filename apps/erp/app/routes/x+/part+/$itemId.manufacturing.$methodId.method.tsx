@@ -8,7 +8,7 @@ import type { PostgrestResponse } from "@supabase/supabase-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Suspense } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import CadModel from "~/components/CadModel";
 import { usePermissions, useRouteData } from "~/hooks";
 import type {

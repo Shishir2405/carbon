@@ -15,7 +15,7 @@ import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { ValidatedForm } from "@carbon/form";
 import { Tags } from "~/components/Form";
 import { useTags } from "~/hooks/useTags";

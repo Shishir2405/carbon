@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { z } from 'zod/v3';
 
 export const onboardingUserValidator = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),

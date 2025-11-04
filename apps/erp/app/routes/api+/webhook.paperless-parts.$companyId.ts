@@ -4,7 +4,7 @@ import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import crypto from "crypto";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { getIntegration } from "~/modules/settings/settings.service";
 
 export const config = {

@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Redis } from "@upstash/redis";
 import { config } from "dotenv";
 import { Stripe } from "stripe";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { localCompanies, productionCompanies } from "./data/stripe-customers";
 config();
 

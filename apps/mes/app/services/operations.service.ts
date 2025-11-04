@@ -2,7 +2,7 @@ import type { Database } from "@carbon/database";
 import type { TrackedActivityAttributes } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
-import type { z } from "zod";
+import { z } from 'zod/v3';
 import { sanitize } from "~/utils/supabase";
 import type {
   documentTypes,

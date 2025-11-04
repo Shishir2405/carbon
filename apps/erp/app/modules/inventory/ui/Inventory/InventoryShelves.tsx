@@ -33,7 +33,7 @@ import { Outlet } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
 import { LuEllipsisVertical, LuQrCode } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Enumerable } from "~/components/Enumerable";
 import { Input, Location, Select, Shelf } from "~/components/Form";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";

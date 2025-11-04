@@ -1,7 +1,7 @@
 import { useCarbon } from "@carbon/auth";
 import { useParams } from "@remix-run/react";
 import { useCallback, useEffect, useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { useUser } from "~/hooks";
 import type { receiptStatusType } from "~/modules/inventory";
 import type { receiptValidator } from "~/modules/inventory/inventory.models";

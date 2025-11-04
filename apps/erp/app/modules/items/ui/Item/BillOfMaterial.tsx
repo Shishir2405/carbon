@@ -52,7 +52,7 @@ import {
   LuSquareFunction,
   LuX,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { MethodIcon, MethodItemTypeIcon, TrackingTypeIcon } from "~/components";
 import type { Configuration } from "~/components/Configurator/types";
 import {

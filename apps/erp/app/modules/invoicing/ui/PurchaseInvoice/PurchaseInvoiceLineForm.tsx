@@ -20,7 +20,7 @@ import { ValidatedForm } from "@carbon/form";
 import { getItemReadableId } from "@carbon/utils";
 import { useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   ConversionFactor,
   CustomFormFields,

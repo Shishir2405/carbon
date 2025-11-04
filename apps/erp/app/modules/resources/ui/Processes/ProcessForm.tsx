@@ -28,7 +28,7 @@ import {
   LuPencil,
   LuTrash,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { SupplierAvatar } from "~/components";
 import {
   Boolean,

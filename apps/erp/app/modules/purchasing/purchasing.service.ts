@@ -5,7 +5,7 @@ import {
   type PostgrestSingleResponse,
   type SupabaseClient,
 } from "@supabase/supabase-js";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { getEmployeeJob } from "~/modules/people";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";

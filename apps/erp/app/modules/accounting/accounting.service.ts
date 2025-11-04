@@ -1,7 +1,7 @@
 import type { Database, Json } from "@carbon/database";
 import { getDateNYearsAgo } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
@@ -130,9 +130,9 @@ export async function getAccountsList(
   client: SupabaseClient<Database>,
   companyId: string,
   args?: {
-    type?: string | null;
-    incomeBalance?: string | null;
-    classes?: string[];
+    type?: Database["public"]["Enums"]["glAccountType"] | null;
+    incomeBalance?: Database["public"]["Enums"]["glIncomeBalance"] | null;
+    classes?: Database["public"]["Enums"]["glAccountClass"][];
   }
 ) {
   let query = client

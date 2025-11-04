@@ -7,8 +7,8 @@ import {
   Select,
   ValidatedForm,
 } from "@carbon/form";
-import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { z } from 'zod/v3';
 import { useCustomFieldsSchema } from "~/hooks/useCustomFieldsSchema";
 import { DataType } from "~/modules/shared";
 import { Enumerable } from "../Enumerable";

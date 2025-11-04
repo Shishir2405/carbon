@@ -12,7 +12,7 @@ import {
 } from "@carbon/react";
 import { useNavigate } from "@remix-run/react";
 import { useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Select, Submit } from "~/components/Form";
 import type { CompanyPermission } from "~/modules/users";
 import { employeeValidator } from "~/modules/users";

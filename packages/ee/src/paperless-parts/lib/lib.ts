@@ -10,7 +10,7 @@ import {
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { generateObject } from "ai";
 import { nanoid } from "nanoid";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import type { PaperlessPartsClient, QuoteCostingVariable } from "./client";
 import type {
   AddressSchema,
@@ -75,7 +75,7 @@ const substanceSchema = z.object({
     .min(0)
     .max(1)
     .describe("Confidence level of the match (0-1)"),
-  reasoning: z
+  reasoningText: z
     .string()
     .describe("Brief explanation of why this substance was chosen"),
 });
@@ -154,7 +154,7 @@ const materialPropertiesSchema = z.object({
     .nullable(),
   quantity: z.number().describe("The quantity of the material properties"),
   confidence: z.number().describe("Confidence level of the match (0-1)"),
-  reasoning: z
+  reasoningText: z
     .string()
     .describe("Brief explanation of why this material properties were chosen"),
 });
@@ -336,7 +336,7 @@ export type MaterialNamingDetails = {
   // Other properties
   quantity?: number;
   confidence?: number;
-  reasoning?: string;
+  reasoningText?: string;
 };
 
 type PaperlessPartsMaterialInput = {
@@ -450,7 +450,7 @@ async function determineMaterialProperties(
     // Other properties
     quantity: object.quantity,
     confidence: object.confidence,
-    reasoning: object.reasoning,
+    reasoningText: object.reasoningText,
   };
 }
 
@@ -515,7 +515,7 @@ export async function getMaterialProperties(
       // Other properties
       quantity: undefined,
       confidence: undefined,
-      reasoning: undefined,
+      reasoningText: undefined,
     };
   } catch (error) {
     console.error("Error getting material properties:", error);

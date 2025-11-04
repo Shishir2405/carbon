@@ -15,7 +15,7 @@ import {
 import { useFetcher } from "@remix-run/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Input, Submit } from "~/components/Form";
 import Shape from "~/components/Form/Shape";
 import { usePermissions } from "~/hooks";

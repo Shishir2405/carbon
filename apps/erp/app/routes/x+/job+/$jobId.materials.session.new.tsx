@@ -10,7 +10,7 @@ import {
 } from "@internationalized/date";
 import type { ActionFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import {
   deleteStockTransfer,
   upsertStockTransfer,

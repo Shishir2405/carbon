@@ -3,7 +3,7 @@ import { Modal, ModalContent, toast } from "@carbon/react";
 import { useFetcher } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import {
   importSchemas,
   type fieldMappings,

@@ -47,7 +47,7 @@ import { Assignee, CustomerAvatar, EmployeeAvatarGroup } from "~/components";
 
 import { ValidatedForm } from "@carbon/form";
 import { FaTasks } from "react-icons/fa";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { Tags } from "~/components/Form";
 import { useTags } from "~/hooks/useTags";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";

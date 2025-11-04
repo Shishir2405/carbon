@@ -16,7 +16,7 @@ import { ValidatedForm } from "@carbon/form";
 import { useFetcher } from "@remix-run/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { CustomFormFields, Hidden, Input, Submit } from "~/components/Form";
 import AddressAutocomplete from "~/components/Form/AddressAutocomplete";
 import { usePermissions } from "~/hooks";

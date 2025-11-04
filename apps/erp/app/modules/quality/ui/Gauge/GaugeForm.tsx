@@ -35,7 +35,7 @@ import {
   LuCirclePlus,
   LuEllipsisVertical,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { EmployeeAvatar, Empty } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import {

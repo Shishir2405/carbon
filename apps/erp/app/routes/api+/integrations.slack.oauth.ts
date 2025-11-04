@@ -13,7 +13,7 @@ import {
   slackOAuthTokenResponseSchema,
 } from "@carbon/ee/slack.server";
 import { json, redirect, type LoaderFunctionArgs } from "@vercel/remix";
-import z from "zod";
+import { z } from 'zod/v3';
 import { upsertCompanyIntegration } from "~/modules/settings/settings.server";
 import { path } from "~/utils/path";
 

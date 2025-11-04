@@ -1,7 +1,7 @@
 import { VStack, cn, useDisclosure } from "@carbon/react";
 import { Link, useMatches } from "@remix-run/react";
 import { forwardRef, type AnchorHTMLAttributes } from "react";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { useModules, useOptimisticLocation } from "~/hooks";
 import type { Authenticated, NavItem } from "~/types";
 

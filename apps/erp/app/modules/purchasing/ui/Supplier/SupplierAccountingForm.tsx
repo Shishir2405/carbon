@@ -7,7 +7,7 @@ import {
   CardTitle,
   HStack,
 } from "@carbon/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Input, Submit, SupplierType } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { supplierAccountingValidator } from "~/modules/purchasing";

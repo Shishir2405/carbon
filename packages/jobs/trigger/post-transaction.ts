@@ -1,5 +1,5 @@
 import { task } from "@trigger.dev/sdk";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { getCarbonServiceRole } from "@carbon/auth";
 

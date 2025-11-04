@@ -19,7 +19,7 @@ import {
 import { Link, useFetcher } from "@remix-run/react";
 import { useState } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { TrackingTypeIcon } from "~/components";
 import {
   Boolean,

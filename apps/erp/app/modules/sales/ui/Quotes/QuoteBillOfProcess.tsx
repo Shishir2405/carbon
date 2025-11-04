@@ -58,7 +58,7 @@ import {
   LuTriangleAlert,
   LuX,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { DirectionAwareTabs, EmployeeAvatar, TimeTypeIcon } from "~/components";
 import {
   Hidden,

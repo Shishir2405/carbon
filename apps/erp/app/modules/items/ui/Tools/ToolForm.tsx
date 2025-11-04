@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   CustomFormFields,
   DefaultMethodType,

@@ -1,8 +1,7 @@
 import { task } from "@trigger.dev/sdk";
-import { z } from "zod";
+import { z } from "zod/v3";
 
-import type {
-  Result} from "@carbon/auth";
+import type { Result } from "@carbon/auth";
 import {
   error,
   getCarbonServiceRole,

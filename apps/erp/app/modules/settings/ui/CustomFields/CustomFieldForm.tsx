@@ -24,7 +24,7 @@ import {
   LuType,
   LuUser,
 } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Array, Hidden, Input, Submit, Tags } from "~/components/Form";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { AttributeDataType } from "~/modules/people";

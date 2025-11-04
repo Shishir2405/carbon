@@ -12,7 +12,7 @@ import {
 } from "@carbon/ee/paperless-parts";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { task } from "@trigger.dev/sdk";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const payloadSchema = z.discriminatedUnion("type", [
   z.object({

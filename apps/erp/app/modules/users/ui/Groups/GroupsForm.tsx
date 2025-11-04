@@ -11,7 +11,7 @@ import {
   VStack,
 } from "@carbon/react";
 import { useNavigate } from "@remix-run/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Input, Submit, Users } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { groupValidator } from "~/modules/users";

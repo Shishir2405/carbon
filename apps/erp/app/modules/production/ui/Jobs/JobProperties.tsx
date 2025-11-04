@@ -24,7 +24,7 @@ import {
 } from "@carbon/form";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { RiProgress8Line } from "react-icons/ri";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { zfd } from "zod-form-data";
 import { Assignee, Hyperlink, useOptimisticAssignment } from "~/components";
 import {

@@ -13,7 +13,7 @@ import {
   TabsTrigger,
 } from "@carbon/react";
 import { useNavigate } from "@remix-run/react";
-import { z } from "zod";
+import { z } from 'zod/v3';
 import { Hidden, Select, Submit } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";

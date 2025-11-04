@@ -13,7 +13,7 @@ import {
 
 import { ValidatedForm } from "@carbon/form";
 import { useFetcher } from "@remix-run/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import {
   AddressAutocomplete,
   CustomFormFields,

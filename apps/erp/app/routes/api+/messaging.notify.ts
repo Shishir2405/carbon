@@ -5,7 +5,7 @@ import type { notifyTask } from "@carbon/jobs/trigger/notify";
 import { NotificationEvent } from "@carbon/notifications";
 import { tasks } from "@trigger.dev/sdk";
 import { json, type ActionFunctionArgs } from "@vercel/remix";
-import { z } from "zod";
+import { z } from 'zod/v3';
 
 export const config = {
   runtime: "nodejs",

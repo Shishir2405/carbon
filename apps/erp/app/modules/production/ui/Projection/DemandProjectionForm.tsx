@@ -12,7 +12,7 @@ import {
 } from "@carbon/react";
 import { getLocalTimeZone, startOfWeek, today } from "@internationalized/date";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Item, Location, Number, Submit } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";

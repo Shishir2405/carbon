@@ -2,7 +2,7 @@ import Bolt from "@slack/bolt";
 import { InstallProvider } from "@slack/oauth";
 import { WebClient } from "@slack/web-api";
 import { createHmac } from "node:crypto";
-import { z } from "zod";
+import { z } from 'zod/v3';
 
 import {
   SLACK_CLIENT_ID,

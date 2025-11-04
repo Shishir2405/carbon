@@ -24,7 +24,7 @@ import { getItemReadableId } from "@carbon/utils";
 import { useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { LuCircleAlert } from "react-icons/lu";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { MethodIcon } from "~/components";
 import {
   CustomFormFields,

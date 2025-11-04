@@ -14,7 +14,7 @@ import {
 import { useFetcher, useParams } from "@remix-run/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import type { z } from "zod";
+import type { z } from 'zod/v3';
 import { Hidden, Item, Number, Shelf, Submit } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { stockTransferLineValidator } from "~/modules/inventory";

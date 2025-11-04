@@ -1,7 +1,7 @@
 import { getCarbonServiceRole } from "@carbon/auth";
 import type { FunctionsResponse } from "@supabase/functions-js";
 import { task } from "@trigger.dev/sdk";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const recalculateSchema = z.object({
   type: z.enum(["jobRequirements", "jobMakeMethodRequirements"]),
