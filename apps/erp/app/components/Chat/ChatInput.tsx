@@ -3,7 +3,6 @@ import { useChatActions, useChatId, useChatStatus } from "@ai-sdk-tools/store";
 import { cn } from "@carbon/react";
 import { forwardRef, useRef } from "react";
 import { CommandMenu } from "./CommandMenu";
-import { FollowupQuestions } from "./FollowupQuestions";
 import { useChatStore } from "./lib/store";
 import {
   PromptInput,
@@ -19,6 +18,7 @@ import {
 } from "./PromptInput";
 import { RecordButton, type RecordButtonRef } from "./RecordButton";
 import { SuggestedActionsButton } from "./SuggestedActions";
+import { SuggestedPrompts } from "./SuggestedPrompts";
 import { WebSearchButton } from "./WebSearch";
 
 export interface ChatInputMessage extends PromptInputMessage {
@@ -95,9 +95,8 @@ export const ChatInput = forwardRef<RecordButtonRef, ChatInputProps>(
           )}
         >
           <div className="mx-auto w-full pt-2 relative">
-            <FollowupQuestions />
-
             {/* Command Suggestions Menu */}
+            <SuggestedPrompts />
             <CommandMenu />
 
             <PromptInput onSubmit={handleSubmit} globalDrop multiple>

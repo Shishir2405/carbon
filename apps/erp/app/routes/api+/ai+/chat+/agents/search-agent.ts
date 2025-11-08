@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { webSearchTool } from "../tools/search-tools";
+import { webSearchTool } from "../tools/web-search";
 import { purchasingAgent } from "./purchasing-agent";
 import { createAgent } from "./shared/agent";
 import { COMMON_AGENT_RULES, formatContextForLLM } from "./shared/prompts";

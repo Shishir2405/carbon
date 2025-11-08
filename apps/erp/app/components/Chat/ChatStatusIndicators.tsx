@@ -1,8 +1,9 @@
 import { AnimatedStatus } from "./AnimatedStatus";
 import { getStatusMessage, getToolMessage } from "./lib/agent";
-import { getToolIcon } from "./lib/tools";
+
 import type { AgentStatus } from "./lib/types";
 import { Loader } from "./Loader";
+import { getToolIcon } from "./ToolCallIndicator";
 
 interface ChatStatusIndicatorsProps {
   agentStatus: AgentStatus | null;

@@ -1,10 +1,8 @@
 import { openai } from "@ai-sdk/openai";
-import { getPartTool } from "../tools/part-tools";
-import { createPurchaseOrderTool } from "../tools/purchasing-tools";
-import {
-  getSupplierForPartsTool,
-  getSupplierTool,
-} from "../tools/supplier-tools";
+import { createPurchaseOrderTool } from "../tools/create-purchase-order";
+import { getPartTool } from "../tools/get-part";
+import { getSupplierTool } from "../tools/get-supplier";
+import { getSupplierForPartsTool } from "../tools/get-supplier-for-parts";
 import { createAgent } from "./shared/agent";
 import { COMMON_AGENT_RULES, formatContextForLLM } from "./shared/prompts";
 

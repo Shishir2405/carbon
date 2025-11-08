@@ -1,5 +1,3 @@
-"use client";
-
 import { useChatActions } from "@ai-sdk-tools/store";
 import { IconButton } from "@carbon/react";
 import { useNavigate } from "@remix-run/react";

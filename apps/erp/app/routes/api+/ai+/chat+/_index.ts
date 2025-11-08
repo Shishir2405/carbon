@@ -13,11 +13,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const payload = await request.json();
 
-  console.log({
-    function: "chat",
-    ...payload,
-  });
-
   const {
     message,
     id,
@@ -32,7 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
     baseCurrency,
   } = payload;
 
-  const appContext = createChatContext({
+  const context = createChatContext({
     userId,
     companyId,
     client,
@@ -48,12 +43,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   return orchestrationAgent.toUIMessageStream({
     message,
+    context,
+    agentChoice,
+    toolChoice,
     strategy: "auto",
     maxRounds: 5,
     maxSteps: 20,
-    context: appContext,
-    agentChoice,
-    toolChoice,
     experimental_transform: smoothStream({
       chunking: "word",
     }),

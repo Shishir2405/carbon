@@ -1,14 +1,16 @@
 import { openai } from "@ai-sdk/openai";
 import type { Tool } from "ai";
 import { generateText, stepCountIs, tool } from "ai";
+import { LuGlobe } from "react-icons/lu";
 import { z } from "zod";
 import type { ChatContext } from "../agents/shared/context";
+import type { ToolConfig } from "../agents/shared/tools";
 
-export interface SourceItem {
-  url: string;
-  title: string;
-  publishedDate?: string;
-}
+export const config: ToolConfig = {
+  name: "webSearch",
+  icon: LuGlobe,
+  displayText: "Searching the Web",
+};
 
 // Static tool that uses context at execution time via experimental_context
 export const webSearchTool = tool({
@@ -86,3 +88,9 @@ export const webSearchTool = tool({
     }
   },
 });
+
+export interface SourceItem {
+  url: string;
+  title: string;
+  publishedDate?: string;
+}

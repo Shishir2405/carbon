@@ -1,34 +1,22 @@
 import { cn, TextShimmer } from "@carbon/react";
-import { LuGlobe, LuSearch, LuShoppingCart, LuSquareStack } from "react-icons/lu";
+import type { IconType } from "react-icons";
 
-export const toolDisplayConfig = {
-  createPurchaseOrder: {
-    displayText: "Purchasing",
-    icon: LuShoppingCart,
-  },
-  getSupplier: {
-    displayText: "Getting Supplier",
-    icon: LuSearch,
-  },
-  getSupplierForParts: {
-    displayText: "Getting Supplier for Parts",
-    icon: LuSearch,
-  },
-  getPart: {
-    displayText: "Getting Part",
-    icon: LuSquareStack,
-  },
-  webSearch: {
-    displayText: "Searching the Web",
-    icon: LuGlobe,
-  },
-} as const;
+import { toolConfigs as toolDisplayConfig } from "~/routes/api+/ai+/chat+/config";
 
+export interface ToolConfig {
+  name: string;
+  icon: IconType;
+  description?: string;
+}
 export type SupportedToolName = keyof typeof toolDisplayConfig;
 
 export interface ToolCallIndicatorProps {
   toolName: SupportedToolName;
   className?: string;
+}
+
+export function getToolIcon(toolName: SupportedToolName): IconType | null {
+  return toolDisplayConfig[toolName]?.icon ?? null;
 }
 
 export function ToolCallIndicator({
@@ -47,8 +35,8 @@ export function ToolCallIndicator({
         <div className="flex items-center justify-center size-3.5">
           <config.icon size={14} />
         </div>
-        <TextShimmer className="text-xs text-[#707070]" duration={1}>
-          {config.displayText}
+        <TextShimmer className="text-xs text-muted-foreground" duration={1}>
+          {config.displayText ?? ""}
         </TextShimmer>
       </div>
     </div>

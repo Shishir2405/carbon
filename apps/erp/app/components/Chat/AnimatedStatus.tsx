@@ -1,6 +1,6 @@
 import { TextShimmer } from "@carbon/react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { IconComponent } from "./lib/tools";
+import type { IconType } from "react-icons";
 
 interface AnimatedStatusProps {
   text: string | null;
@@ -10,7 +10,7 @@ interface AnimatedStatusProps {
   /** Animation variant for status changes */
   variant?: "fade" | "slide" | "scale" | "blur-fade";
   /** Optional icon to display before the text */
-  icon?: IconComponent | null;
+  icon?: IconType | null;
 }
 
 export function AnimatedStatus({

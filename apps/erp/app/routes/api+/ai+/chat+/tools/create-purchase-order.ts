@@ -10,9 +10,17 @@ import {
 } from "~/modules/purchasing/purchasing.service";
 
 import { getAppUrl, getCarbonServiceRole } from "@carbon/auth";
+import { LuShoppingCart } from "react-icons/lu";
 import { getNextSequence } from "~/modules/settings";
 import { path } from "~/utils/path";
 import type { ChatContext } from "../agents/shared/context";
+import type { ToolConfig } from "../agents/shared/tools";
+
+export const config: ToolConfig = {
+  name: "createPurchaseOrder",
+  icon: LuShoppingCart,
+  displayText: "Creating a Purchase Order",
+};
 
 export const createPurchaseOrderSchema = z.object({
   supplierId: z.string(),
@@ -59,46 +67,23 @@ export const createPurchaseOrderTool = tool({
       // getEmployeeJob(client, context.userId, context.companyId),
     ]);
 
-    console.log("[createPurchaseOrderTool] Retrieved data:", {
-      nextSequence: nextSequence.data,
-      supplierInteraction: !!supplierInteraction.data,
-      supplier: !!supplier.data,
-      supplierPayment: !!supplierPayment.data,
-      supplierShipping: !!supplierShipping.data,
-    });
-
     if (!supplierInteraction.data) {
-      console.log(
-        "[createPurchaseOrderTool] Failed to create supplier interaction"
-      );
       return {
         error: "Failed to create supplier interaction",
       };
     }
 
     if (!supplier.data) {
-      console.log(
-        "[createPurchaseOrderTool] Supplier not found:",
-        args.supplierId
-      );
       return {
         error: "Supplier not found",
       };
     }
     if (!supplierPayment.data) {
-      console.log(
-        "[createPurchaseOrderTool] Supplier payment not found for supplier:",
-        args.supplierId
-      );
       return {
         error: "Supplier payment not found",
       };
     }
     if (!supplierShipping.data) {
-      console.log(
-        "[createPurchaseOrderTool] Supplier shipping not found for supplier:",
-        args.supplierId
-      );
       return {
         error: "Supplier shipping not found",
       };
@@ -114,11 +99,6 @@ export const createPurchaseOrderTool = tool({
       createdBy: context.userId,
     };
 
-    console.log(
-      "[createPurchaseOrderTool] Initial purchase order data:",
-      purchaseOrder
-    );
-
     const {
       paymentTermId,
       invoiceSupplierId,
@@ -129,35 +109,23 @@ export const createPurchaseOrderTool = tool({
     const { shippingMethodId, shippingTermId } = supplierShipping.data;
 
     if (supplier.data?.currencyCode) {
-      console.log(
-        "[createPurchaseOrderTool] Getting currency for code:",
-        supplier.data.currencyCode
-      );
       const currency = await getCurrencyByCode(
         context.client,
         context.companyId,
         supplier.data?.currencyCode ?? ""
       );
       if (currency.data) {
-        console.log(
-          "[createPurchaseOrderTool] Updated exchange rate:",
-          currency.data.exchangeRate
-        );
         purchaseOrder.exchangeRate = currency.data.exchangeRate ?? 1;
         purchaseOrder.exchangeRateUpdatedAt = new Date().toISOString();
       }
     }
 
-    console.log("[createPurchaseOrderTool] Creating purchase order...");
     const order = await context.client
       .from("purchaseOrder")
       .insert(purchaseOrder)
       .select("id, purchaseOrderId");
 
     if (!order) {
-      console.log(
-        "[createPurchaseOrderTool] Failed to create purchase order - no order returned"
-      );
       return {
         error: "Failed to create purchase order",
       };
@@ -166,24 +134,13 @@ export const createPurchaseOrderTool = tool({
     const purchaseOrderId = order.data?.[0]?.id ?? "";
     const locationId = null; // TODO
 
-    console.log(
-      "[createPurchaseOrderTool] Created purchase order with ID:",
-      purchaseOrderId
-    );
-
     if (!purchaseOrderId) {
-      console.log(
-        "[createPurchaseOrderTool] Failed to create purchase order - no ID returned"
-      );
       return {
         error: "Failed to create purchase order",
       };
     }
 
     try {
-      console.log(
-        "[createPurchaseOrderTool] Creating purchase order delivery and payment records..."
-      );
       await Promise.all([
         context.client
           .from("purchaseOrderDelivery")
@@ -210,21 +167,9 @@ export const createPurchaseOrderTool = tool({
           .single(),
       ]);
 
-      console.log(
-        "[createPurchaseOrderTool] Creating purchase order lines for",
-        args.parts.length,
-        "parts..."
-      );
       // Create purchase order lines for each part
       await Promise.all(
         args.parts.map(async (part: { partId: string; quantity: number }) => {
-          console.log(
-            "[createPurchaseOrderTool] Processing part:",
-            part.partId,
-            "quantity:",
-            part.quantity
-          );
-
           // Get item details
           const [item, supplierPart] = await Promise.all([
             context.client
@@ -242,24 +187,7 @@ export const createPurchaseOrderTool = tool({
               .single(),
           ]);
 
-          console.log(
-            "[createPurchaseOrderTool] Retrieved item data for part:",
-            part.partId,
-            "found:",
-            !!item.data
-          );
-          console.log(
-            "[createPurchaseOrderTool] Retrieved supplier part data for part:",
-            part.partId,
-            "found:",
-            !!supplierPart.data
-          );
-
           if (!item.data) {
-            console.log(
-              "[createPurchaseOrderTool] Item not found:",
-              part.partId
-            );
             throw new Error(`Item not found: ${part.partId}`);
           }
 
@@ -278,11 +206,6 @@ export const createPurchaseOrderTool = tool({
               .eq("companyId", context.companyId)
               .single(),
           ]);
-
-          console.log(
-            "[createPurchaseOrderTool] Retrieved cost and replenishment data for part:",
-            part.partId
-          );
 
           const lineData = {
             purchaseOrderId: purchaseOrderId,
@@ -311,13 +234,6 @@ export const createPurchaseOrderTool = tool({
             createdBy: context.userId,
           };
 
-          console.log(
-            "[createPurchaseOrderTool] Creating purchase order line for part:",
-            part.partId,
-            "with data:",
-            lineData
-          );
-
           // Create the purchase order line
           return context.client
             .from("purchaseOrderLine")
@@ -327,24 +243,12 @@ export const createPurchaseOrderTool = tool({
         })
       );
 
-      console.log(
-        "[createPurchaseOrderTool] Successfully created purchase order:",
-        order.data
-      );
       return {
         ...order.data,
         link: `${getAppUrl()}${path.to.purchaseOrder(purchaseOrderId)}`,
       };
     } catch (error) {
-      console.log(
-        "[createPurchaseOrderTool] Error creating purchase order details:",
-        error
-      );
       if (purchaseOrderId) {
-        console.log(
-          "[createPurchaseOrderTool] Cleaning up purchase order:",
-          purchaseOrderId
-        );
         await deletePurchaseOrder(context.client, purchaseOrderId);
       }
       return {
