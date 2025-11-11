@@ -71,6 +71,7 @@ export default defineConfig({
         __dirname,
         "../../packages/form/src/index.tsx"
       ),
+      katex: path.resolve(__dirname, "../../packages/utils/src/empty.ts"),
     },
   },
 });
