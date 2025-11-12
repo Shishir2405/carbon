@@ -10,7 +10,7 @@ import {
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { generateObject } from "ai";
 import { nanoid } from "nanoid";
-import { z } from 'zod/v3';
+import { z } from "zod/v3";
 import type { PaperlessPartsClient, QuoteCostingVariable } from "./client";
 import type {
   AddressSchema,
@@ -1075,12 +1075,45 @@ export async function getCustomerIdAndContactId(
         name: customerName,
       });
 
-      if (newPaperlessPartsAccount.error || !newPaperlessPartsAccount.data) {
-        throw new Error("Failed to create account in Paperless Parts");
-      }
+      if (newPaperlessPartsAccount.error) {
+        // If we get an error creating the account (e.g., "An account with this name already exists"),
+        // try to find the existing account by name
+        console.log(
+          `Failed to create account in Paperless Parts, searching for existing account: ${customerName}`
+        );
 
-      paperlessPartsAccountId = newPaperlessPartsAccount.data.id;
-      console.log("🔰 New Paperless Parts account created");
+        const searchResponse = await paperless.accounts.listAccounts({
+          search: customerName,
+        });
+
+        if (searchResponse.data && searchResponse.data.length > 0) {
+          // Look for an exact name match
+          existingPaperlessAccount = searchResponse.data.find(
+            (account) =>
+              account.name?.trim().toLowerCase() === customerName.toLowerCase()
+          );
+
+          if (existingPaperlessAccount) {
+            paperlessPartsAccountId = existingPaperlessAccount.id!;
+            console.log(
+              `🔗 Found existing Paperless Parts account after error: ${customerName}`
+            );
+          } else {
+            throw new Error(
+              "Failed to create or find account in Paperless Parts"
+            );
+          }
+        } else {
+          throw new Error(
+            "Failed to create or find account in Paperless Parts"
+          );
+        }
+      } else if (!newPaperlessPartsAccount.data) {
+        throw new Error("Failed to create account in Paperless Parts");
+      } else {
+        paperlessPartsAccountId = newPaperlessPartsAccount.data.id;
+        console.log("🔰 New Paperless Parts account created");
+      }
     }
 
     // Check if customer already exists in Carbon with this paperless account ID
