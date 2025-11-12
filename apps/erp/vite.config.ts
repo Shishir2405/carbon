@@ -24,7 +24,7 @@ export default defineConfig({
   },
   ssr: {
     noExternal: [
-      "novel",
+      ...(process.env.NODE_ENV === "development" ? ["novel"] : []),
       "react-tweet",
       "react-dropzone",
       "react-icons",
