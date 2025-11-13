@@ -7396,6 +7396,7 @@ export type Database = {
       gaugeCalibrationRecord: {
         Row: {
           approvedBy: string | null
+          calibrationAttempts: Json | null
           companyId: string | null
           createdAt: string
           createdBy: string
@@ -7405,6 +7406,7 @@ export type Database = {
           humidity: number | null
           id: string
           inspectionStatus: Database["public"]["Enums"]["inspectionStatus"]
+          measurementStandard: string | null
           notes: Json
           requiresAction: boolean
           requiresAdjustment: boolean
@@ -7416,6 +7418,7 @@ export type Database = {
         }
         Insert: {
           approvedBy?: string | null
+          calibrationAttempts?: Json | null
           companyId?: string | null
           createdAt?: string
           createdBy: string
@@ -7425,6 +7428,7 @@ export type Database = {
           humidity?: number | null
           id?: string
           inspectionStatus: Database["public"]["Enums"]["inspectionStatus"]
+          measurementStandard?: string | null
           notes?: Json
           requiresAction?: boolean
           requiresAdjustment?: boolean
@@ -7436,6 +7440,7 @@ export type Database = {
         }
         Update: {
           approvedBy?: string | null
+          calibrationAttempts?: Json | null
           companyId?: string | null
           createdAt?: string
           createdBy?: string
@@ -7445,6 +7450,7 @@ export type Database = {
           humidity?: number | null
           id?: string
           inspectionStatus?: Database["public"]["Enums"]["inspectionStatus"]
+          measurementStandard?: string | null
           notes?: Json
           requiresAction?: boolean
           requiresAdjustment?: boolean
@@ -16572,7 +16578,6 @@ export type Database = {
           createdBy: string
           id: string
           name: string
-          processIds: string[] | null
           updatedAt: string | null
           updatedBy: string | null
         }
@@ -16583,7 +16588,6 @@ export type Database = {
           createdBy: string
           id?: string
           name: string
-          processIds?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -16594,7 +16598,6 @@ export type Database = {
           createdBy?: string
           id?: string
           name?: string
-          processIds?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -38817,6 +38820,7 @@ export type Database = {
       gaugeCalibrationRecords: {
         Row: {
           approvedBy: string | null
+          calibrationAttempts: Json | null
           companyId: string | null
           createdAt: string | null
           createdBy: string | null
@@ -38831,6 +38835,7 @@ export type Database = {
           inspectionStatus:
             | Database["public"]["Enums"]["inspectionStatus"]
             | null
+          measurementStandard: string | null
           notes: Json | null
           requiresAction: boolean | null
           requiresAdjustment: boolean | null
@@ -43446,14 +43451,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -45965,14 +45970,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -46508,14 +46513,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]

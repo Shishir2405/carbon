@@ -41466,6 +41466,168 @@ export default {
         tags: ["purchaseOrderSuppliers"],
       },
     },
+    "/nonConformanceActionProcess": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.actionTaskId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.processId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedBy",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/nonConformanceActionProcess",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["nonConformanceActionProcess"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.nonConformanceActionProcess",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["nonConformanceActionProcess"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.actionTaskId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.processId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedBy",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["nonConformanceActionProcess"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.actionTaskId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.processId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceActionProcess.updatedBy",
+          },
+          {
+            $ref: "#/parameters/body.nonConformanceActionProcess",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["nonConformanceActionProcess"],
+      },
+    },
     "/batchProperty": {
       get: {
         parameters: [
@@ -58283,6 +58445,85 @@ export default {
           },
         },
         tags: ["(rpc) get_part_details"],
+      },
+    },
+    "/rpc/get_action_tasks_by_item_and_process": {
+      get: {
+        parameters: [
+          {
+            format: "text",
+            in: "query",
+            name: "p_item_id",
+            required: true,
+            type: "string",
+          },
+          {
+            format: "text",
+            in: "query",
+            name: "p_process_id",
+            required: true,
+            type: "string",
+          },
+          {
+            format: "text",
+            in: "query",
+            name: "p_company_id",
+            required: true,
+            type: "string",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) get_action_tasks_by_item_and_process"],
+      },
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                p_company_id: {
+                  format: "text",
+                  type: "string",
+                },
+                p_item_id: {
+                  format: "text",
+                  type: "string",
+                },
+                p_process_id: {
+                  format: "text",
+                  type: "string",
+                },
+              },
+              required: ["p_item_id", "p_process_id", "p_company_id"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) get_action_tasks_by_item_and_process"],
       },
     },
     "/rpc/xid_pid": {
@@ -79691,6 +79932,64 @@ export default {
         companyId: {
           description:
             "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
+    nonConformanceActionProcess: {
+      required: [
+        "id",
+        "actionTaskId",
+        "processId",
+        "companyId",
+        "createdAt",
+        "createdBy",
+      ],
+      properties: {
+        id: {
+          default: "public.xid()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        actionTaskId: {
+          description:
+            "Note:\nThis is a Foreign Key to `nonConformanceActionTask.id`.<fk table='nonConformanceActionTask' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        processId: {
+          description:
+            "Note:\nThis is a Foreign Key to `process.id`.<fk table='process' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
           format: "text",
           type: "string",
         },
@@ -109082,6 +109381,63 @@ export default {
     },
     "rowFilter.purchaseOrderSuppliers.companyId": {
       name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.nonConformanceActionProcess": {
+      name: "nonConformanceActionProcess",
+      description: "nonConformanceActionProcess",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/nonConformanceActionProcess",
+      },
+    },
+    "rowFilter.nonConformanceActionProcess.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.actionTaskId": {
+      name: "actionTaskId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.processId": {
+      name: "processId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceActionProcess.updatedBy": {
+      name: "updatedBy",
       required: false,
       in: "query",
       type: "string",
