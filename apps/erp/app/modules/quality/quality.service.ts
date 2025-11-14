@@ -410,6 +410,19 @@ export async function getIssueApprovalTasks(
     .order("approvalType", { ascending: true });
 }
 
+export async function getIssueItems(
+  client: SupabaseClient<Database>,
+  id: string,
+  companyId: string
+) {
+  return client
+    .from("nonConformanceItem")
+    .select("*, ...item(name)")
+    .eq("nonConformanceId", id)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: true });
+}
+
 export async function getIssueAssociations(
   client: SupabaseClient<Database>,
   nonConformanceId: string,

@@ -49,6 +49,7 @@ import type {
   Issue,
   IssueActionTask,
   IssueInvestigationTask,
+  IssueItem,
   IssueReviewer,
 } from "~/modules/quality";
 import { nonConformanceTaskStatus } from "~/modules/quality";
@@ -69,6 +70,22 @@ export function TaskProgress({
       <Progress value={progressPercentage} className="h-2 w-24" />
       <span className="text-xs text-muted-foreground">
         {completedOrSkippedTasks} of {tasks.length} complete
+      </span>
+    </div>
+  );
+}
+
+export function ItemProgress({ items }: { items: IssueItem[] }) {
+  const completedOrSkippedItems = items.filter(
+    (item) => item.disposition
+  ).length;
+  const progressPercentage = (completedOrSkippedItems / items.length) * 100;
+
+  return (
+    <div className="flex flex-col items-end gap-2 pt-2 pr-14">
+      <Progress value={progressPercentage} className="h-2 w-24" />
+      <span className="text-xs text-muted-foreground">
+        {completedOrSkippedItems} of {items.length} complete
       </span>
     </div>
   );
@@ -216,6 +233,13 @@ export function TaskItem({
               />
             </>
           )}
+          <Assignee
+            table={getTable(type)}
+            id={task.id}
+            size="sm"
+            value={task.assignee ?? undefined}
+            disabled={isDisabled}
+          />
         </HStack>
         <HStack>
           <Button

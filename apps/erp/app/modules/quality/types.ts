@@ -7,7 +7,9 @@ import type {
   getInvestigationTypes,
   getIssueActionTasks,
   getIssueApprovalTasks,
+  getIssueAssociations,
   getIssueInvestigationTasks,
+  getIssueItems,
   getIssueReviewers,
   getIssues,
   getIssueTypes,
@@ -54,6 +56,14 @@ export type Issue = NonNullable<
   Awaited<ReturnType<typeof getIssues>>["data"]
 >[number];
 
+export type Associations = NonNullable<
+  Awaited<ReturnType<typeof getIssueAssociations>>
+>;
+
+export type AssociationItems = NonNullable<
+  Awaited<ReturnType<typeof getIssueAssociations>>
+>["items"];
+
 export type InvestigationType = NonNullable<
   Awaited<ReturnType<typeof getInvestigationTypes>>["data"]
 >[number];
@@ -76,6 +86,10 @@ export type IssueInvestigationTask = NonNullable<
 
 export type IssueActionTask = NonNullable<
   Awaited<ReturnType<typeof getIssueActionTasks>>["data"]
+>[number];
+
+export type IssueItem = NonNullable<
+  Awaited<ReturnType<typeof getIssueItems>>["data"]
 >[number];
 
 export type IssueApprovalTask = NonNullable<

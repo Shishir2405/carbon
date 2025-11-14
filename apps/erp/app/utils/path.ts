@@ -745,6 +745,8 @@ export const path = {
     issueInvestigations: (id: string) =>
       generatePath(`${x}/issue/${id}/investigations`),
     issueActions: (id: string) => generatePath(`${x}/issue/${id}/actions`),
+    issueDispositions: (id: string) =>
+      generatePath(`${x}/issue/${id}/dispositions`),
     issueTaskStatus: (id: string) =>
       generatePath(`${x}/issue/task/${id}/status`),
     issueActionDueDate: (id: string) =>

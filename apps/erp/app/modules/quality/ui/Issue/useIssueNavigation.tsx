@@ -8,13 +8,16 @@ import {
 } from "react-icons/lu";
 import { useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
-import type { Issue } from "../../types";
+import type { Associations, Issue } from "../../types";
 
 export function useIssueNavigation() {
   const { id } = useParams();
   if (!id) throw new Error("id not found");
 
-  const routeData = useRouteData<{ nonConformance: Issue }>(path.to.issue(id));
+  const routeData = useRouteData<{
+    nonConformance: Issue;
+    associations: Associations;
+  }>(path.to.issue(id));
   if (!routeData?.nonConformance?.source)
     throw new Error("Could not find source in routeData");
 
@@ -23,6 +26,8 @@ export function useIssueNavigation() {
 
   const hasActions =
     (routeData.nonConformance.requiredActionIds?.length ?? 0) > 0;
+
+  const hasItems = (routeData.associations?.items?.length ?? 0) > 0;
 
   const requiresManagementReview =
     routeData.nonConformance.approvalRequirements?.includes("MRB");
@@ -49,6 +54,13 @@ export function useIssueNavigation() {
       icon: LuListChecks,
       shortcut: "Command+Shift+a",
       isDisabled: !hasActions,
+    },
+    {
+      name: "Dispositions",
+      to: path.to.issueDispositions(id),
+      icon: LuListChecks,
+      shortcut: "Command+Shift+s",
+      isDisabled: !hasItems,
     },
     // {
     //   name: "Supplier",

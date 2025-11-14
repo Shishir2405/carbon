@@ -67,8 +67,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     nonConformanceTypes: nonConformanceTypes.data ?? [],
     investigationTypes: investigationTypes.data ?? [],
     requiredActions: requiredActions.data ?? [],
-    files: getItemFiles(client, id, companyId),
-    associations: getIssueAssociations(client, id, companyId),
+    files: await getItemFiles(client, id, companyId),
+    associations: await getIssueAssociations(client, id, companyId),
     tags: tags.data ?? [],
   });
 }
