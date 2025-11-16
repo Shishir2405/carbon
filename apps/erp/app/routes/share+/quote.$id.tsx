@@ -1452,7 +1452,7 @@ const Quote = ({
   );
 };
 
-const ErrorMessage = ({
+export const ErrorMessage = ({
   title,
   message,
 }: {

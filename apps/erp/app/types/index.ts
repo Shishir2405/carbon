@@ -52,6 +52,16 @@ export type Result = {
 
 export type Role = "employee" | "customer" | "supplier";
 
+export type Permissions = {
+  can: (
+    action: "view" | "create" | "update" | "delete",
+    feature: string
+  ) => boolean;
+  has: (feature: string) => boolean;
+  is: (role: Role) => boolean;
+  isOwner: () => boolean;
+};
+
 export type Route = {
   name: string;
   to: string;

@@ -1,26 +1,41 @@
 import { useRouteData } from "@carbon/remix";
 import { useCallback } from "react";
 import type { Permission } from "~/modules/users";
-import type { Role } from "~/types";
+import type { Role, Permissions } from "~/types";
 import { path } from "~/utils/path";
 import { useUser } from "./useUser";
 
-export function usePermissions() {
+export function usePermissions(permissionsOverride?: Permissions) {
   const data = useRouteData<{
     permissions: Record<string, Permission>;
     role: "employee" | "supplier" | "customer";
   }>(path.to.authenticatedRoot);
 
-  const {
-    id: userId,
-    company: { id: companyId, ownerId },
-  } = useUser();
+  const user = useUser(!!permissionsOverride);
 
-  if (!isPermissions(data?.permissions) || !isRole(data?.role)) {
-    // TODO: force logout -- the likely cause is development changes
+  if (!user && !permissionsOverride) {
     throw new Error(
       "usePermissions must be used within an authenticated route. If you are seeing this error, you are likely in development and have changed the session variables. Try deleting the cookies."
     );
+  }
+
+  const {
+    id: userId,
+    company: { id: companyId, ownerId },
+  } = user ?? {
+    id: "",
+    company: {
+      id: "",
+    },
+  };
+
+  if (!permissionsOverride) {
+    if (!isPermissions(data?.permissions) || !isRole(data?.role)) {
+      // TODO: force logout -- the likely cause is development changes
+      throw new Error(
+        "usePermissions must be used within an authenticated route. If you are seeing this error, you are likely in development and have changed the session variables. Try deleting the cookies."
+      );
+    }
   }
 
   const can = useCallback(
@@ -51,12 +66,14 @@ export function usePermissions() {
     return ownerId === userId;
   }, [ownerId, userId]);
 
-  return {
-    can,
-    has,
-    is,
-    isOwner,
-  };
+  return (
+    permissionsOverride ?? {
+      can,
+      has,
+      is,
+      isOwner,
+    }
+  );
 }
 
 function isPermissions(value: unknown): value is Record<string, Permission> {

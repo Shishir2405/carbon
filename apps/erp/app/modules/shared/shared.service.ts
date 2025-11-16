@@ -247,6 +247,15 @@ export async function insertTag(
   return client.from("tag").insert(tag).select("*").single();
 }
 
+export async function getExternalLink(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  let query = client.from("externalLink").select("*").eq("id", id).single();
+
+  return query;
+}
+
 export async function upsertExternalLink(
   client: SupabaseClient<Database>,
   externalLink:

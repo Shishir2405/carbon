@@ -20,7 +20,7 @@ import { useCallback, useEffect, useState } from "react";
 import { LuCirclePlus } from "react-icons/lu";
 import { useRouteData } from "~/hooks";
 import type { IssueActionTask } from "~/modules/quality";
-import type { ListItem } from "~/types";
+import type { ListItem, Permissions } from "~/types";
 import { path } from "~/utils/path";
 import { TaskItem, TaskProgress } from "./IssueTask";
 
@@ -28,10 +28,12 @@ export function ActionTasksList({
   tasks,
   suppliers,
   isDisabled,
+  permissionsOverride,
 }: {
   tasks: IssueActionTask[];
   suppliers: { supplierId: string; externalLinkId: string | null }[];
   isDisabled: boolean;
+  permissionsOverride?: Permissions;
 }) {
   if (tasks.length === 0) return <NewAction isDisabled={isDisabled} />;
 
@@ -54,6 +56,7 @@ export function ActionTasksList({
                 type="action"
                 suppliers={suppliers}
                 isDisabled={isDisabled}
+                permissionsOverride={permissionsOverride}
               />
             ))}
         </VStack>

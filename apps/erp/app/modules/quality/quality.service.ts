@@ -374,27 +374,39 @@ export async function getIssueWorkflow(
 export async function getIssueInvestigationTasks(
   client: SupabaseClient<Database>,
   id: string,
-  companyId: string
+  companyId: string,
+  supplierId?: string
 ) {
-  return client
+  const ret = client
     .from("nonConformanceInvestigationTask")
     .select("*, ...nonConformanceInvestigationType(name)")
     .eq("nonConformanceId", id)
     .eq("companyId", companyId);
+
+  if (!supplierId) {
+    return ret;
+  }
+  return ret.eq("supplierId", supplierId);
 }
 
 export async function getIssueActionTasks(
   client: SupabaseClient<Database>,
   id: string,
-  companyId: string
+  companyId: string,
+  supplierId?: string
 ) {
-  return client
+  const ret = client
     .from("nonConformanceActionTask")
     .select(
       "*, ...nonConformanceRequiredAction(name), nonConformanceActionProcess(processId, ...process(name))"
     )
     .eq("nonConformanceId", id)
     .eq("companyId", companyId);
+
+  if (!supplierId) {
+    return ret;
+  }
+  return ret.eq("supplierId", supplierId);
 }
 
 export async function getIssueApprovalTasks(

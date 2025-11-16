@@ -56,6 +56,7 @@ import type {
 } from "~/modules/quality";
 import { nonConformanceTaskStatus } from "~/modules/quality";
 import { useSuppliers } from "~/stores";
+import type { Permissions } from "~/types";
 import { getPrivateUrl, path } from "~/utils/path";
 
 export function TaskProgress({
@@ -243,13 +244,15 @@ export function TaskItem({
   type,
   suppliers,
   isDisabled = false,
+  permissionsOverride,
 }: {
   task: IssueInvestigationTask | IssueActionTask | IssueReviewer;
   type: "investigation" | "action" | "review";
   suppliers: { supplierId: string; externalLinkId: string | null }[];
   isDisabled?: boolean;
+  permissionsOverride?: Permissions;
 }) {
-  const permissions = usePermissions();
+  const permissions = usePermissions(permissionsOverride);
   const disclosure = useDisclosure({
     defaultIsOpen: true,
   });
@@ -257,12 +260,14 @@ export function TaskItem({
     task,
     type,
     disabled: isDisabled,
+    permissionsOverride,
   });
   const statusAction = statusActions[currentStatus];
   const { content, setContent, onUpdateContent, onUploadImage } = useTaskNotes({
     initialContent: (task.notes ?? {}) as JSONContent,
     taskId: task.id!,
     type,
+    permissionsOverride,
   });
 
   const { id } = useParams();
@@ -276,7 +281,6 @@ export function TaskItem({
       : type === "action"
       ? (task as IssueActionTask).name
       : (task as IssueReviewer).title;
-
   return (
     <div className="rounded-lg border w-full flex flex-col">
       <div className="flex w-full justify-between px-4 py-2 items-center">
@@ -335,38 +339,42 @@ export function TaskItem({
       )}
       <div className="bg-muted/30 border-t px-4 py-2 flex justify-between w-full">
         <HStack>
-          <IssueTaskStatus
-            task={task}
-            type="investigation"
-            isDisabled={isDisabled}
-          />
-          <Assignee
-            table={getTable(type)}
-            id={task.id}
-            size="sm"
-            value={task.assignee ?? undefined}
-            disabled={isDisabled}
-          />
-          {type === "action" && (
+          {!permissionsOverride ? (
             <>
-              <TaskDueDate
-                task={task as IssueActionTask}
+              <IssueTaskStatus
+                task={task}
+                type="investigation"
                 isDisabled={isDisabled}
               />
-              <TaskProcesses
-                task={task as IssueActionTask}
-                isDisabled={isDisabled}
+              <Assignee
+                table={getTable(type)}
+                id={task.id}
+                size="sm"
+                value={task.assignee ?? undefined}
+                disabled={isDisabled}
               />
+              {type === "action" && (
+                <>
+                  <TaskDueDate
+                    task={task as IssueActionTask}
+                    isDisabled={isDisabled}
+                  />
+                  <TaskProcesses
+                    task={task as IssueActionTask}
+                    isDisabled={isDisabled}
+                  />
+                </>
+              )}
+              {(type === "investigation" || type === "action") && (
+                <SupplierAssignment
+                  task={task as IssueInvestigationTask | IssueActionTask}
+                  type={type}
+                  supplierIds={suppliers.map((s) => s.supplierId)}
+                  isDisabled={isDisabled}
+                />
+              )}
             </>
-          )}
-          {(type === "investigation" || type === "action") && (
-            <SupplierAssignment
-              task={task as IssueInvestigationTask | IssueActionTask}
-              type={type}
-              supplierIds={suppliers.map((s) => s.supplierId)}
-              isDisabled={isDisabled}
-            />
-          )}
+          ) : null}
         </HStack>
         <HStack>
           <Button
@@ -390,15 +398,23 @@ function useTaskNotes({
   initialContent,
   taskId,
   type,
+  permissionsOverride,
 }: {
   initialContent: JSONContent;
   taskId: string;
   type: "investigation" | "action" | "approval" | "review";
+  permissionsOverride?: Permissions;
 }) {
+  const user = useUser(!!permissionsOverride);
   const {
     id: userId,
     company: { id: companyId },
-  } = useUser();
+  } = user || {
+    id: "",
+    company: {
+      id: "",
+    },
+  };
   const { carbon } = useCarbon();
 
   const [content, setContent] = useState(initialContent ?? {});
@@ -462,6 +478,7 @@ function useTaskStatus({
   task,
   type,
   onChange,
+  permissionsOverride,
 }: {
   disabled?: boolean;
   task: {
@@ -471,9 +488,10 @@ function useTaskStatus({
   };
   type: "investigation" | "action" | "approval" | "review";
   onChange?: (status: IssueInvestigationTask["status"]) => void;
+  permissionsOverride?: Permissions;
 }) {
   const submit = useSubmit();
-  const permissions = usePermissions();
+  const permissions = usePermissions(permissionsOverride);
   const optimisticStatus = useOptimisticTaskStatus(task.id!);
 
   const isDisabled = !permissions.can("update", "production") || disabled;
