@@ -10,6 +10,7 @@ import JobMaterialForm from "./JobMaterialForm";
 import JobMaterialsTable from "./JobMaterialsTable";
 import JobNotes from "./JobNotes";
 import JobOperationsTable from "./JobOperationsTable";
+import JobOperationStepRecordsTable from "./JobOperationStepRecordsTable";
 import JobProperties from "./JobProperties";
 import JobsTable from "./JobsTable";
 import JobStatus from "./JobStatus";
@@ -31,6 +32,7 @@ export {
   JobMaterialsTable,
   JobNotes,
   JobOperationsTable,
+  JobOperationStepRecordsTable,
   JobProperties,
   JobsTable,
   JobStatus,

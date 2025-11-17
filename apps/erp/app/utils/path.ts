@@ -799,6 +799,8 @@ export const path = {
     jobOperationTool: (id: string) =>
       generatePath(`${x}/job/methods/operation/tool/${id}`),
     jobOperationStatus: `${x}/job/methods/operation/status`,
+    jobOperationStepRecords: (id: string) =>
+      generatePath(`${x}/job/${id}/steps`),
     jobProductionEvent: (jobId: string, eventId: string) =>
       generatePath(`${x}/job/${jobId}/events/${eventId}`),
     jobProductionEvents: (id: string) => generatePath(`${x}/job/${id}/events`),

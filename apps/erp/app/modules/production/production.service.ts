@@ -8,7 +8,7 @@ import {
   type PostgrestError,
   type SupabaseClient,
 } from "@supabase/supabase-js";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import type { StorageItem } from "~/types";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
@@ -936,6 +936,18 @@ export async function getJobOperationsByMethodId(
     )
     .eq("jobMakeMethodId", jobMakeMethodId)
     .order("order", { ascending: true });
+}
+
+export async function getJobOperationStepRecords(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  args: GenericQueryFilters
+) {
+  let query = client.rpc("get_job_operation_step_records", {
+    p_job_id: jobId,
+  });
+
+  return query;
 }
 
 export async function getOutsideOperationsByJobId(

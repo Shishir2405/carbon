@@ -49,6 +49,7 @@ import {
   LuCirclePlay,
   LuCircleStop,
   LuClock,
+  LuClipboardList,
   LuEllipsisVertical,
   LuHardHat,
   LuList,
@@ -99,6 +100,8 @@ const JobHeader = () => {
       return "materials";
     if (location.pathname.includes(path.to.jobOperations(jobId)))
       return "operations";
+    if (location.pathname.includes(path.to.jobOperationStepRecords(jobId)))
+      return "step-records";
     if (location.pathname.includes(path.to.jobProductionEvents(jobId)))
       return "events";
     if (location.pathname.includes(path.to.jobProductionQuantities(jobId)))
@@ -216,7 +219,7 @@ const JobHeader = () => {
                   </DropdownMenuRadioItem>
                 ))}
                 <DropdownMenuSeparator />
-                {["events", "quantities"].map((i) => (
+                {["events", "quantities", "step-records"].map((i) => (
                   <DropdownMenuRadioItem value={i} key={i}>
                     <DropdownMenuIcon icon={getExplorerMenuIcon(i)} />
                     {getExplorerLabel(i)}
@@ -410,6 +413,8 @@ function getExplorerLabel(type: string) {
       return "Materials";
     case "operations":
       return "Operations";
+    case "step-records":
+      return "Step Records";
     case "events":
       return "Production Events";
     case "quantities":
@@ -425,6 +430,8 @@ function getExplorerMenuIcon(type: string) {
       return <LuPackage />;
     case "operations":
       return <LuSettings />;
+    case "step-records":
+      return <LuClipboardList />;
     case "events":
       return <LuClock />;
     case "quantities":
@@ -440,6 +447,8 @@ const getExplorePath = (jobId: string, type: string) => {
       return path.to.jobMaterials(jobId);
     case "operations":
       return path.to.jobOperations(jobId);
+    case "step-records":
+      return path.to.jobOperationStepRecords(jobId);
     case "events":
       return path.to.jobProductionEvents(jobId);
     case "quantities":

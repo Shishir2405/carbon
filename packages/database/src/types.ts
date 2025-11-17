@@ -49562,6 +49562,33 @@ export type Database = {
           workInstruction: Json
         }[]
       }
+      get_job_operation_step_records: {
+        Args: { p_job_id: string }
+        Returns: {
+          booleanValue: boolean
+          companyId: string
+          createdAt: string
+          createdBy: string
+          id: string
+          index: number
+          itemId: string
+          itemReadableId: string
+          jobOperationStepId: string
+          maxValue: number
+          minValue: number
+          name: string
+          numericValue: number
+          operationDescription: string
+          operationId: string
+          operationOrder: number
+          type: Database["public"]["Enums"]["procedureStepType"]
+          unitOfMeasureCode: string
+          updatedAt: string
+          updatedBy: string
+          userValue: string
+          value: string
+        }[]
+      }
       get_job_operations_by_work_center: {
         Args: { location_id: string; work_center_id: string }
         Returns: {
