@@ -24,7 +24,9 @@ export default $config({
           cert: process.env.CERT_ARN_ERP,
         },
         health: {
-          path: "/health",
+          "3000/http": {
+            path: "/health",
+          },
         },
         ports: [
           { listen: "80/http", forward: "3000/http" },
@@ -80,6 +82,19 @@ export default $config({
         VERCEL_ENV: "production",
         VERCEL_URL: process.env.URL_ERP ?? "itar.carbon.ms",
       },
+      transform: {
+        loadBalancer: {
+          idleTimeout: 600,
+        },
+        // Add this to fix the health check path
+        target: (args) => {
+          args.healthCheck = {
+            enabled: true,
+            path: "/health",
+            protocol: "HTTP",
+          };
+        },
+      },
     });
 
     const mes = cluster.addService("CarbonMESService", {
@@ -91,7 +106,9 @@ export default $config({
           cert: process.env.CERT_ARN_MES,
         },
         health: {
-          path: "/health",
+          "3000/http": {
+            path: "/health",
+          },
         },
         ports: [
           { listen: "80/http", forward: "3000/http" },
@@ -138,6 +155,19 @@ export default $config({
         UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
         VERCEL_ENV: "production",
         VERCEL_URL: process.env.URL_MES ?? "mes.itar.carbon.ms",
+      },
+      transform: {
+        loadBalancer: {
+          idleTimeout: 600,
+        },
+        // Add this to fix the health check path
+        target: (args) => {
+          args.healthCheck = {
+            enabled: true,
+            path: "/health",
+            protocol: "HTTP",
+          };
+        },
       },
     });
 
