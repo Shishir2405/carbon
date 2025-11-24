@@ -1,5 +1,4 @@
-
--- Add customerName to get_active_job_operations_by_location function
+-- Fix salesOrderReadableId in get_active_job_operations_by_location function
 DROP FUNCTION IF EXISTS get_active_job_operations_by_location;
 CREATE OR REPLACE FUNCTION get_active_job_operations_by_location(
   location_id TEXT,
@@ -85,7 +84,7 @@ BEGIN
     jo."quantityScrapped",
     rj."salesOrderId",
     rj."salesOrderLineId",
-    so."readableId" as "salesOrderReadableId",
+    so."salesOrderId" as "salesOrderReadableId",
     jo."assignee",
     jo."tags",
     COALESCE(mu."thumbnailPath", i."thumbnailPath") as "thumbnailPath"
@@ -103,3 +102,4 @@ BEGIN
   ORDER BY jo."priority";
 END;
 $$ LANGUAGE plpgsql;
+

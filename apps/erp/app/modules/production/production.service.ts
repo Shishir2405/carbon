@@ -2459,3 +2459,21 @@ export async function upsertDemandProjections(
     error: hasError ? results.find((r) => r.error)?.error : null,
   };
 }
+
+export async function triggerJobReschedule(
+  jobId: string,
+  companyId: string,
+  userId: string
+) {
+  const { rescheduleJob } = await import(
+    "@carbon/jobs/trigger/reschedule-job"
+  );
+
+  const handle = await rescheduleJob.trigger({
+    jobId,
+    companyId,
+    userId,
+  });
+
+  return { success: true, runId: handle.id };
+}

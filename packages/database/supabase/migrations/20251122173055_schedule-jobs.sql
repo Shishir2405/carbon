@@ -32,7 +32,8 @@ RETURNS TABLE (
   "tags" TEXT[],
   "thumbnailPath" TEXT,
   "operationCount" INTEGER,
-  "completedOperationCount" INTEGER
+  "completedOperationCount" INTEGER,
+  "hasConflict" BOOLEAN
 )
 SECURITY INVOKER
 AS $$
@@ -80,7 +81,8 @@ BEGIN
     SELECT
       jo."jobId",
       COUNT(*)::INTEGER AS "operationCount",
-      COUNT(*) FILTER (WHERE jo."status" = 'Done')::INTEGER AS "completedOperationCount"
+      COUNT(*) FILTER (WHERE jo."status" = 'Done')::INTEGER AS "completedOperationCount",
+      BOOL_OR(COALESCE(jo."hasConflict", FALSE)) AS "hasConflict"
     FROM "jobOperation" jo
     GROUP BY jo."jobId"
   )
@@ -107,7 +109,8 @@ BEGIN
     rj."tags",
     COALESCE(ji."itemThumbnailPath", ji."itemModelThumbnailPath", rj."thumbnailPath") AS "thumbnailPath",
     COALESCE(os."operationCount", 0) AS "operationCount",
-    COALESCE(os."completedOperationCount", 0) AS "completedOperationCount"
+    COALESCE(os."completedOperationCount", 0) AS "completedOperationCount",
+    COALESCE(os."hasConflict", FALSE) AS "hasConflict"
   FROM relevant_jobs rj
   LEFT JOIN "salesOrderLine" sol ON sol."id" = rj."salesOrderLineId"
   LEFT JOIN "salesOrder" so ON so."id" = sol."salesOrderId"

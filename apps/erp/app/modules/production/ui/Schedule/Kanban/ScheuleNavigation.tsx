@@ -15,6 +15,7 @@ import {
   LuCalendar,
   LuCalendarDays,
   LuChevronDown,
+  LuCog,
   LuList,
 } from "react-icons/lu";
 import { path } from "~/utils/path";
@@ -41,7 +42,7 @@ export function ScheduleNavigation() {
   const getViewLabel = (option: string) => {
     switch (option) {
       case "operations":
-        return "Operations";
+        return "Work Centers";
       case "week":
         return "Week";
       case "month":
@@ -54,7 +55,7 @@ export function ScheduleNavigation() {
   const getViewIcon = (option: string) => {
     switch (option) {
       case "operations":
-        return <LuList />;
+        return <LuCog />;
       case "week":
         return <LuCalendarDays />;
       case "month":
@@ -98,6 +99,7 @@ export function ScheduleNavigation() {
           value={currentValue}
           onValueChange={navigateToView}
         >
+          <DropdownMenuLabel>Operations</DropdownMenuLabel>
           <DropdownMenuRadioItem value="operations">
             <DropdownMenuIcon icon={getViewIcon("operations")} />
             {getViewLabel("operations")}

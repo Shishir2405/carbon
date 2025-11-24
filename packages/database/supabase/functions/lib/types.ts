@@ -10523,11 +10523,13 @@ export type Database = {
         Row: {
           assignee: string | null
           companyId: string
+          conflictReason: string | null
           createdAt: string
           createdBy: string
           customFields: Json | null
           description: string | null
           dueDate: string | null
+          hasConflict: boolean | null
           id: string
           jobId: string
           jobMakeMethodId: string | null
@@ -10565,11 +10567,13 @@ export type Database = {
         Insert: {
           assignee?: string | null
           companyId: string
+          conflictReason?: string | null
           createdAt?: string
           createdBy: string
           customFields?: Json | null
           description?: string | null
           dueDate?: string | null
+          hasConflict?: boolean | null
           id?: string
           jobId: string
           jobMakeMethodId?: string | null
@@ -10607,11 +10611,13 @@ export type Database = {
         Update: {
           assignee?: string | null
           companyId?: string
+          conflictReason?: string | null
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
           description?: string | null
           dueDate?: string | null
+          hasConflict?: boolean | null
           id?: string
           jobId?: string
           jobMakeMethodId?: string | null
@@ -41809,14 +41815,14 @@ export type Database = {
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["supplierLocationId"]
+            columns: ["id"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["id"]
+            columns: ["supplierLocationId"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
@@ -43180,14 +43186,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -46242,14 +46248,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -48814,14 +48820,17 @@ export type Database = {
       get_active_job_operations_by_location: {
         Args: { location_id: string; work_center_ids: string[] }
         Returns: {
+          assignee: string
           customerName: string
           description: string
           id: string
+          itemDescription: string
           itemReadableId: string
           jobCustomerId: string
           jobDeadlineType: Database["public"]["Enums"]["deadlineType"]
           jobDueDate: string
           jobId: string
+          jobMakeMethodId: string
           jobReadableId: string
           jobStatus: Database["public"]["Enums"]["jobStatus"]
           laborTime: number
@@ -48837,8 +48846,13 @@ export type Database = {
           processId: string
           quantityComplete: number
           quantityScrapped: number
+          salesOrderId: string
+          salesOrderLineId: string
+          salesOrderReadableId: string
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
+          tags: string[]
+          thumbnailPath: string
           workCenterId: string
         }[]
       }
@@ -49261,6 +49275,7 @@ export type Database = {
           customerName: string
           deadlineType: Database["public"]["Enums"]["deadlineType"]
           dueDate: string
+          hasConflict: boolean
           id: string
           itemDescription: string
           itemId: string

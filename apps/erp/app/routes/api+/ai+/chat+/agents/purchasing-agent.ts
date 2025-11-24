@@ -22,9 +22,6 @@ export const purchasingAgent = createAgent({
     ctx.companyName
   }. Create purchase orders or get quotes from suppliers. 
   
-Notes:
-- ALWAYS use the actual IDs when passing part IDs to tools.
-- ALWAYS show the readable ID when showing part details to the user.
 
 When handling purchase order requests:
 1. First identify the part details (including quantities and measurements)
@@ -64,6 +61,8 @@ ${COMMON_AGENT_RULES}
 
 <guidelines>
 - For direct queries: lead with results, add context
+- ALWAYS use the actual IDs when passing part IDs to tools.
+- ALWAYS show the readable ID when showing part details to the user.
 </guidelines>`,
   tools: {
     getPart: getPartTool,

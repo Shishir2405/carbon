@@ -20800,6 +20800,9 @@ export default {
             $ref: "#/parameters/rowFilter.job.shelfId",
           },
           {
+            $ref: "#/parameters/rowFilter.job.priority",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -20970,6 +20973,9 @@ export default {
             $ref: "#/parameters/rowFilter.job.shelfId",
           },
           {
+            $ref: "#/parameters/rowFilter.job.priority",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -21092,6 +21098,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.job.shelfId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.job.priority",
           },
           {
             $ref: "#/parameters/body.job",
@@ -26884,6 +26893,12 @@ export default {
             $ref: "#/parameters/rowFilter.jobOperation.dueDate",
           },
           {
+            $ref: "#/parameters/rowFilter.jobOperation.hasConflict",
+          },
+          {
+            $ref: "#/parameters/rowFilter.jobOperation.conflictReason",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -27063,6 +27078,12 @@ export default {
             $ref: "#/parameters/rowFilter.jobOperation.dueDate",
           },
           {
+            $ref: "#/parameters/rowFilter.jobOperation.hasConflict",
+          },
+          {
+            $ref: "#/parameters/rowFilter.jobOperation.conflictReason",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -27194,6 +27215,12 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.jobOperation.dueDate",
+          },
+          {
+            $ref: "#/parameters/rowFilter.jobOperation.hasConflict",
+          },
+          {
+            $ref: "#/parameters/rowFilter.jobOperation.conflictReason",
           },
           {
             $ref: "#/parameters/body.jobOperation",
@@ -57151,6 +57178,49 @@ export default {
         tags: ["(rpc) create_rfq_from_models_v1"],
       },
     },
+    "/rpc/get_jobs_by_date_range": {
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                end_date: {
+                  format: "date",
+                  type: "string",
+                },
+                location_id: {
+                  format: "text",
+                  type: "string",
+                },
+                start_date: {
+                  format: "date",
+                  type: "string",
+                },
+              },
+              required: ["location_id", "start_date", "end_date"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) get_jobs_by_date_range"],
+      },
+    },
     "/rpc/get_companies_with_permission": {
       post: {
         parameters: [
@@ -69815,6 +69885,7 @@ export default {
         "companyId",
         "createdAt",
         "createdBy",
+        "priority",
       ],
       properties: {
         id: {
@@ -70008,6 +70079,11 @@ export default {
             "Note:\nThis is a Foreign Key to `shelf.id`.<fk table='shelf' column='id'/>",
           format: "text",
           type: "string",
+        },
+        priority: {
+          default: 1,
+          format: "double precision",
+          type: "number",
         },
       },
       type: "object",
@@ -72826,6 +72902,18 @@ export default {
         },
         dueDate: {
           format: "date",
+          type: "string",
+        },
+        hasConflict: {
+          default: false,
+          description:
+            "Indicates if this operation has a scheduling conflict (e.g., start date in the past)",
+          format: "boolean",
+          type: "boolean",
+        },
+        conflictReason: {
+          description: "Human-readable explanation of the scheduling conflict",
+          format: "text",
           type: "string",
         },
       },
@@ -98025,6 +98113,12 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.job.priority": {
+      name: "priority",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.contact": {
       name: "contact",
       description: "contact",
@@ -101153,6 +101247,21 @@ export default {
     },
     "rowFilter.jobOperation.dueDate": {
       name: "dueDate",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.jobOperation.hasConflict": {
+      name: "hasConflict",
+      description:
+        "Indicates if this operation has a scheduling conflict (e.g., start date in the past)",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.jobOperation.conflictReason": {
+      name: "conflictReason",
+      description: "Human-readable explanation of the scheduling conflict",
       required: false,
       in: "query",
       type: "string",

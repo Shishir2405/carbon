@@ -40,7 +40,6 @@ import type { ColumnFilter } from "~/components/Table/components/Filter/types";
 import { useUrlParams } from "~/hooks";
 import { getJobsByDateRange } from "~/modules/production";
 import type { Column, JobItem } from "~/modules/production/ui/Schedule";
-
 import type { DisplaySettings } from "~/modules/production/ui/Schedule/Kanban";
 import { DateKanban } from "~/modules/production/ui/Schedule/Kanban/DateKanban";
 import { ScheduleNavigation } from "~/modules/production/ui/Schedule/Kanban/ScheuleNavigation";
@@ -351,6 +350,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         laborDuration: 0,
         machineDuration: 0,
         thumbnailPath: job.thumbnailPath,
+        hasConflict: job.hasConflict,
       };
     }) ?? []) satisfies JobItem[],
     salesOrders: Object.entries(

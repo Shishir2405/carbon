@@ -28,6 +28,7 @@ import {
   LuGripVertical,
   LuPencil,
   LuStar,
+  LuTriangleAlert,
   LuUsers,
 } from "react-icons/lu";
 
@@ -163,6 +164,7 @@ export function JobCard({ item, isOverlay, progressByItemId }: JobCardProps) {
       style={style}
       className={cn(
         "max-w-[330px] shadow-sm dark:shadow-sm py-0",
+        item.hasConflict && "border-red-500 border-2",
         cardVariants({
           dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
           status: status,
@@ -184,12 +186,24 @@ export function JobCard({ item, isOverlay, progressByItemId }: JobCardProps) {
                 {item?.description || item.itemReadableId}
               </span>
             )}
-            <Link
-              to={item.link ?? path.to.job(item.jobId)}
-              className="mr-auto font-semibold line-clamp-2 leading-tight"
-            >
-              {item.jobReadableId}
-            </Link>
+            <HStack spacing={1} className="items-center">
+              <Link
+                to={item.link ?? path.to.job(item.jobId)}
+                className="mr-auto font-semibold line-clamp-2 leading-tight"
+              >
+                {item.jobReadableId}
+              </Link>
+              {item.hasConflict && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <LuTriangleAlert className="h-4 w-4 text-red-500 flex-shrink-0" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Scheduling conflict: operations cannot meet due date
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </HStack>
             {customer && displaySettings.showCustomer && (
               <span className="text-xs text-muted-foreground line-clamp-1">
                 {customer.name}

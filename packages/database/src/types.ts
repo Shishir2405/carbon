@@ -10523,11 +10523,13 @@ export type Database = {
         Row: {
           assignee: string | null
           companyId: string
+          conflictReason: string | null
           createdAt: string
           createdBy: string
           customFields: Json | null
           description: string | null
           dueDate: string | null
+          hasConflict: boolean | null
           id: string
           jobId: string
           jobMakeMethodId: string | null
@@ -10565,11 +10567,13 @@ export type Database = {
         Insert: {
           assignee?: string | null
           companyId: string
+          conflictReason?: string | null
           createdAt?: string
           createdBy: string
           customFields?: Json | null
           description?: string | null
           dueDate?: string | null
+          hasConflict?: boolean | null
           id?: string
           jobId: string
           jobMakeMethodId?: string | null
@@ -10607,11 +10611,13 @@ export type Database = {
         Update: {
           assignee?: string | null
           companyId?: string
+          conflictReason?: string | null
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
           description?: string | null
           dueDate?: string | null
+          hasConflict?: boolean | null
           id?: string
           jobId?: string
           jobMakeMethodId?: string | null
@@ -45703,14 +45709,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -49273,6 +49279,7 @@ export type Database = {
           customerName: string
           deadlineType: Database["public"]["Enums"]["deadlineType"]
           dueDate: string
+          hasConflict: boolean
           id: string
           itemDescription: string
           itemId: string

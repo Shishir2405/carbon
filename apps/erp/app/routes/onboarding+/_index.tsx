@@ -40,7 +40,7 @@ export default function GetStarted() {
           transition={{ duration: 1.2, ease: "easeInOut", delay: 1.7 }}
           className="text-muted-foreground text-balance text-base pb-4"
         >
-          The new standard for tech-enabled manufacturing
+          The operating system for manufacturing
         </motion.p>
 
         <Button
