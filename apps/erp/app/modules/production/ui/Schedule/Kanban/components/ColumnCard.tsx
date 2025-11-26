@@ -22,7 +22,7 @@ type ColumnCardProps = {
   items: Item[];
   isOverlay?: boolean;
   progressByItemId: Record<string, Progress>;
-  hideInactiveIndicator?: boolean;
+  isDateView?: boolean;
   disableColumnDrag?: boolean;
   CardComponent?: ComponentType<{
     item: Item;
@@ -36,7 +36,7 @@ export function ColumnCard({
   items,
   isOverlay,
   progressByItemId,
-  hideInactiveIndicator = false,
+  isDateView = false,
   disableColumnDrag = false,
   CardComponent = ItemCard,
 }: ColumnCardProps) {
@@ -47,7 +47,7 @@ export function ColumnCard({
   }, [items]);
 
   const totalDuration = items.reduce((acc, item) => {
-    return acc + Math.max((item.duration ?? 0) - (item.progress ?? 0), 0);
+    return acc + Math.max((item?.duration ?? 0) - (item?.progress ?? 0), 0);
   }, 0);
 
   const {
@@ -101,12 +101,12 @@ export function ColumnCard({
     >
       <div className="p-4 w-full font-semibold text-left flex flex-row space-between items-center sticky top-0 bg-card z-1 border-b">
         <div className="flex flex-grow items-start space-x-2">
-          {column.active || !hideInactiveIndicator ? (
+          {column.active || !isDateView ? (
             <PulsingDot inactive={!column.active} className="mt-2" />
           ) : null}
           <div className="flex flex-col flex-grow">
             <span className="mr-auto truncate"> {column.title}</span>
-            {totalDuration > 0 ? (
+            {!isDateView && totalDuration > 0 ? (
               <span className="text-muted-foreground text-xs">
                 {formatDurationMilliseconds(totalDuration)}
               </span>

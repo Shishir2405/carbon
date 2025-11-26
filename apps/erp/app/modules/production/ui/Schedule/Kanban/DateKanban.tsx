@@ -1,7 +1,4 @@
-import type {
-  DragOverEvent,
-  DragStartEvent,
-} from "@dnd-kit/core";
+import type { DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import {
   DndContext,
   DragOverlay,
@@ -263,7 +260,7 @@ const DateKanban = ({
                 column={col}
                 items={items.filter((item) => item.columnId === col.id)}
                 progressByItemId={progressByItemId}
-                hideInactiveIndicator={true}
+                isDateView={true}
                 disableColumnDrag={true}
                 CardComponent={JobCard as any}
               />
