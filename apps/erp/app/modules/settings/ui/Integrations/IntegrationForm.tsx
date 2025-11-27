@@ -1,5 +1,12 @@
 import { integrations as availableIntegrations } from "@carbon/ee";
-import { Boolean, Input, Select, Submit, ValidatedForm } from "@carbon/form";
+import {
+  Array,
+  Boolean,
+  Input,
+  Select,
+  Submit,
+  ValidatedForm,
+} from "@carbon/form";
 import {
   Badge,
   Button,
@@ -126,7 +133,19 @@ export function IntegrationForm({
                       );
                     case "processes":
                       return (
-                        <Processes name={setting.name} label={setting.label} />
+                        <Processes
+                          key={setting.name}
+                          name={setting.name}
+                          label={setting.label}
+                        />
+                      );
+                    case "array":
+                      return (
+                        <Array
+                          key={setting.name}
+                          name={setting.name}
+                          label={setting.label}
+                        />
                       );
                     case "options":
                       return (
