@@ -56,24 +56,17 @@ export async function getBase64ImageFromSupabase(
     return null;
   }
 
-  // Check file size before processing
   const arrayBuffer = await data.arrayBuffer();
+  const base64String = arrayBufferToBase64(arrayBuffer);
 
-  try {
-    const base64String = arrayBufferToBase64(arrayBuffer);
+  // Determine the mime type based on file extension
+  const fileExtension = path.split(".").pop()?.toLowerCase();
+  const mimeType =
+    fileExtension === "jpg" || fileExtension === "jpeg"
+      ? "image/jpeg"
+      : "image/png";
 
-    // Determine the mime type based on file extension
-    const fileExtension = path.split(".").pop()?.toLowerCase();
-    const mimeType =
-      fileExtension === "jpg" || fileExtension === "jpeg"
-        ? "image/jpeg"
-        : "image/png";
-
-    return `data:${mimeType};base64,${base64String}`;
-  } catch (err) {
-    console.error(`Failed to convert image to base64: ${path}`, err);
-    return null;
-  }
+  return `data:${mimeType};base64,${base64String}`;
 }
 
 export async function getCountries(client: SupabaseClient<Database>) {
