@@ -48,7 +48,16 @@ export async function getBase64ImageFromSupabase(
   path: string
 ) {
   function arrayBufferToBase64(buffer: ArrayBuffer): string {
-    const binary = String.fromCharCode(...new Uint8Array(buffer));
+    // Use chunking for large objects to prevent stack overflow
+    const bytes = new Uint8Array(buffer);
+    const chunkSize = 8192;
+    let binary = "";
+
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.slice(i, i + chunkSize);
+      binary += String.fromCharCode(...chunk);
+    }
+
     return btoa(binary);
   }
 
@@ -57,17 +66,24 @@ export async function getBase64ImageFromSupabase(
     return null;
   }
 
+  // Check file size before processing
   const arrayBuffer = await data.arrayBuffer();
-  const base64String = arrayBufferToBase64(arrayBuffer);
 
-  // Determine the mime type based on file extension
-  const fileExtension = path.split(".").pop()?.toLowerCase();
-  const mimeType =
-    fileExtension === "jpg" || fileExtension === "jpeg"
-      ? "image/jpeg"
-      : "image/png";
+  try {
+    const base64String = arrayBufferToBase64(arrayBuffer);
 
-  return `data:${mimeType};base64,${base64String}`;
+    // Determine the mime type based on file extension
+    const fileExtension = path.split(".").pop()?.toLowerCase();
+    const mimeType =
+      fileExtension === "jpg" || fileExtension === "jpeg"
+        ? "image/jpeg"
+        : "image/png";
+
+    return `data:${mimeType};base64,${base64String}`;
+  } catch (err) {
+    console.error(`Failed to convert image to base64: ${path}`, err);
+    return null;
+  }
 }
 
 export async function getCountries(client: SupabaseClient<Database>) {
