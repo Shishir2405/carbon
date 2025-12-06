@@ -48,17 +48,7 @@ export async function getBase64ImageFromSupabase(
   path: string
 ) {
   function arrayBufferToBase64(buffer: ArrayBuffer): string {
-    // Use chunking for large objects to prevent stack overflow
-    const bytes = new Uint8Array(buffer);
-    const chunkSize = 8192;
-    let binary = "";
-
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      const chunk = bytes.slice(i, i + chunkSize);
-      binary += String.fromCharCode(...chunk);
-    }
-
-    return btoa(binary);
+    return Buffer.from(buffer).toString("base64");
   }
 
   const { data, error } = await client.storage.from("private").download(path);
