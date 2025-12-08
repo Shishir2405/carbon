@@ -2,7 +2,10 @@ import { Select, ValidatedForm } from "@carbon/form";
 import {
   Badge,
   Button,
+  cn,
+  Count,
   HStack,
+  Input,
   ModalDrawer,
   ModalDrawerBody,
   ModalDrawerContent,
@@ -14,20 +17,21 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  ToggleGroup,
+  ToggleGroupItem,
   VStack,
 } from "@carbon/react";
 import { useFetcher } from "@remix-run/react";
-import { memo, useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import { memo, useMemo, useState } from "react";
 import {
   LuTriangleAlert,
   LuCalendar,
   LuCircleCheck,
   LuClock,
-  LuUser,
+  LuSearch,
 } from "react-icons/lu";
 import type { z } from "zod/v3";
-import { EmployeeAvatar, Table } from "~/components";
+import { EmployeeAvatar, Empty } from "~/components";
 import { Hidden, Submit, Users } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { trainingAssignmentValidator } from "~/modules/people";
@@ -76,7 +80,86 @@ function StatusBadge({ status }: { status: string }) {
   }
 }
 
-const StatusTable = memo(
+type StatusFilter =
+  | "All"
+  | "Completed"
+  | "Pending"
+  | "Overdue"
+  | "Not Required";
+
+function AssignmentListItem({
+  assignment,
+  currentPeriod,
+  disabled,
+  isLast,
+}: {
+  assignment: TrainingAssignmentStatusItem;
+  currentPeriod: string | null;
+  disabled: boolean;
+  isLast: boolean;
+}) {
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state !== "idle";
+  const canMarkComplete =
+    assignment.status !== "Completed" && assignment.status !== "Not Required";
+
+  return (
+    <div className={cn("p-4", !isLast && "border-b w-full")}>
+      <div className="flex flex-1 justify-between items-center w-full">
+        <HStack spacing={4} className="flex-1">
+          <VStack spacing={0} className="flex-1">
+            <EmployeeAvatar employeeId={assignment.employeeId} />
+            {assignment.employeeStartDate && (
+              <HStack spacing={1} className="text-xs text-muted-foreground">
+                <LuCalendar className="size-3" />
+                <span>
+                  Started{" "}
+                  {new Date(assignment.employeeStartDate).toLocaleDateString()}
+                </span>
+              </HStack>
+            )}
+          </VStack>
+        </HStack>
+        <HStack spacing={4}>
+          <StatusBadge status={assignment.status} />
+          {assignment.completedAt && (
+            <span className="text-xs text-muted-foreground">
+              <LuClock className="inline mr-1 size-3" />
+              {new Date(assignment.completedAt).toLocaleDateString()}
+            </span>
+          )}
+          {canMarkComplete && (
+            <fetcher.Form method="post" action={path.to.markTrainingComplete}>
+              <input
+                type="hidden"
+                name="trainingAssignmentId"
+                value={assignment.trainingAssignmentId}
+              />
+              <input
+                type="hidden"
+                name="employeeId"
+                value={assignment.employeeId}
+              />
+              <input type="hidden" name="period" value={currentPeriod ?? ""} />
+              <Button
+                type="submit"
+                variant="secondary"
+                size="sm"
+                disabled={disabled || isSubmitting}
+                isLoading={isSubmitting}
+                leftIcon={<LuCircleCheck />}
+              >
+                Mark Complete
+              </Button>
+            </fetcher.Form>
+          )}
+        </HStack>
+      </div>
+    </div>
+  );
+}
+
+const StatusList = memo(
   ({
     data,
     currentPeriod,
@@ -85,101 +168,129 @@ const StatusTable = memo(
     currentPeriod: string | null;
   }) => {
     const permissions = usePermissions();
-    const fetcher = useFetcher();
+    const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
 
-    const columns: ColumnDef<TrainingAssignmentStatusItem>[] = [
-      {
-        accessorKey: "employeeName",
-        header: "Employee",
-        cell: ({ row }) => (
-          <HStack spacing={2}>
-            <EmployeeAvatar employeeId={row.original.employeeId} />
-            <span>{row.original.employeeName}</span>
-          </HStack>
-        ),
-        meta: {
-          icon: <LuUser />,
-        },
-      },
-      {
-        accessorKey: "employeeStartDate",
-        header: "Start Date",
-        cell: ({ row }) =>
-          row.original.employeeStartDate
-            ? new Date(row.original.employeeStartDate).toLocaleDateString()
-            : "-",
-        meta: {
-          icon: <LuCalendar />,
-        },
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => <StatusBadge status={row.original.status} />,
-      },
-      {
-        accessorKey: "completedAt",
-        header: "Completed At",
-        cell: ({ row }) =>
-          row.original.completedAt
-            ? new Date(row.original.completedAt).toLocaleDateString()
-            : "-",
-        meta: {
-          icon: <LuClock />,
-        },
-      },
-      {
-        id: "actions",
-        header: "",
-        cell: ({ row }) => {
-          if (
-            row.original.status === "Completed" ||
-            row.original.status === "Not Required"
-          ) {
-            return null;
-          }
-          const isSubmitting = fetcher.state !== "idle";
-          return (
-            <fetcher.Form method="post" action={path.to.markTrainingComplete}>
-              <input
-                type="hidden"
-                name="trainingAssignmentId"
-                value={row.original.trainingAssignmentId}
-              />
-              <input
-                type="hidden"
-                name="employeeId"
-                value={row.original.employeeId}
-              />
-              <input type="hidden" name="period" value={currentPeriod ?? ""} />
-              <Button
-                type="submit"
-                variant="secondary"
-                size="sm"
-                leftIcon={<LuCircleCheck />}
-                disabled={!permissions.can("update", "people") || isSubmitting}
-                isLoading={isSubmitting}
-              >
-                Mark Complete
-              </Button>
-            </fetcher.Form>
-          );
-        },
-      },
-    ];
+    const filteredAssignments = useMemo(() => {
+      return data.filter((assignment) => {
+        const matchesSearch =
+          (search === "" ||
+            assignment.employeeName
+              ?.toLowerCase()
+              .includes(search.toLowerCase())) ??
+          false;
+        const matchesStatus =
+          statusFilter === "All" || assignment.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+    }, [data, search, statusFilter]);
+
+    const statusCounts = useMemo(() => {
+      return data.reduce((acc, assignment) => {
+        acc[assignment.status] = (acc[assignment.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+    }, [data]);
 
     return (
-      <Table<TrainingAssignmentStatusItem>
-        data={data}
-        columns={columns}
-        count={data.length}
-        withPagination={false}
-      />
+      <VStack spacing={0} className="h-full w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="relative">
+            <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <Input
+              placeholder="Search employees..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <ToggleGroup
+            type="single"
+            value={statusFilter}
+            onValueChange={(value) => {
+              if (value) setStatusFilter(value as StatusFilter);
+            }}
+            className="justify-start flex-wrap"
+          >
+            <ToggleGroupItem
+              className="flex gap-1.5 items-center"
+              size="sm"
+              value="All"
+            >
+              All <Count count={data.length} />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="flex gap-1.5 items-center"
+              size="sm"
+              value="Completed"
+            >
+              <LuCircleCheck className="mr-1 size-3" />
+              Completed <Count count={statusCounts["Completed"] || 0} />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="flex gap-1.5 items-center"
+              size="sm"
+              value="Pending"
+            >
+              <LuClock className="mr-1 size-3" />
+              Pending <Count count={statusCounts["Pending"] || 0} />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="flex gap-1.5 items-center"
+              size="sm"
+              value="Overdue"
+            >
+              <LuTriangleAlert className="mr-1 size-3" />
+              Overdue <Count count={statusCounts["Overdue"] || 0} />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="flex gap-1.5 items-center"
+              size="sm"
+              value="Not Required"
+            >
+              Not Required <Count count={statusCounts["Not Required"] || 0} />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className="flex-1 overflow-y-auto w-full pt-4">
+          {filteredAssignments.length > 0 ? (
+            <div className="border rounded-lg w-full">
+              {filteredAssignments.map((assignment, index) => (
+                <AssignmentListItem
+                  key={`${assignment.employeeId}-${assignment.trainingAssignmentId}`}
+                  assignment={assignment}
+                  currentPeriod={currentPeriod}
+                  disabled={!permissions.can("update", "people")}
+                  isLast={index === filteredAssignments.length - 1}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground p-8">
+              <VStack
+                spacing={2}
+                className="w-full items-center justify-center"
+              >
+                <Empty>No employees found</Empty>
+                {search && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearch("")}
+                  >
+                    Clear search
+                  </Button>
+                )}
+              </VStack>
+            </div>
+          )}
+        </div>
+      </VStack>
     );
   }
 );
 
-StatusTable.displayName = "StatusTable";
+StatusList.displayName = "StatusList";
 
 const TrainingAssignmentForm = ({
   initialValues,
@@ -199,6 +310,9 @@ const TrainingAssignmentForm = ({
 
   const [activeTab, setActiveTab] = useState<string>("details");
 
+  // Drawer grows when status tab is visible
+  const drawerSize = activeTab === "status" ? "lg" : undefined;
+
   return (
     <ModalDrawerProvider type="drawer">
       <ModalDrawer
@@ -207,7 +321,7 @@ const TrainingAssignmentForm = ({
           if (!open) onClose?.();
         }}
       >
-        <ModalDrawerContent>
+        <ModalDrawerContent size={drawerSize}>
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
@@ -259,7 +373,7 @@ const TrainingAssignmentForm = ({
                       className="w-full flex flex-col gap-4"
                     >
                       {assignmentStatus.length > 0 ? (
-                        <StatusTable
+                        <StatusList
                           data={assignmentStatus}
                           currentPeriod={currentPeriod}
                         />

@@ -4,8 +4,8 @@ import { flash } from "@carbon/auth/session.server";
 import {
   Badge,
   Button,
-  Count,
   cn,
+  Count,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -27,11 +27,11 @@ import type { LoaderFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { useMemo, useState } from "react";
 import {
-  LuTriangleAlert,
   LuCalendar,
   LuCircleCheck,
   LuClock,
   LuSearch,
+  LuTriangleAlert,
 } from "react-icons/lu";
 import { EmployeeAvatar, Empty } from "~/components";
 import { usePermissions } from "~/hooks";
@@ -218,8 +218,11 @@ export default function TrainingAssignmentDetailRoute() {
   const filteredAssignments = useMemo(() => {
     return assignments.filter((assignment) => {
       const matchesSearch =
-        search === "" ||
-        assignment.employeeName.toLowerCase().includes(search.toLowerCase());
+        (search === "" ||
+          assignment.employeeName
+            ?.toLowerCase()
+            .includes(search.toLowerCase())) ??
+        false;
       const matchesStatus =
         statusFilter === "All" || assignment.status === statusFilter;
       return matchesSearch && matchesStatus;
@@ -328,7 +331,7 @@ export default function TrainingAssignmentDetailRoute() {
                     spacing={2}
                     className="w-full items-center justify-center"
                   >
-                    <Empty description="No employees found" />
+                    <Empty>No employees found</Empty>
                     {search && (
                       <Button
                         variant="ghost"

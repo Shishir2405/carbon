@@ -26,6 +26,7 @@ import {
   LuChartColumnIncreasing,
   LuCircleCheck,
   LuClock,
+  LuEye,
   LuPencil,
   LuRepeat,
   LuTrash,
@@ -222,6 +223,12 @@ const TrainingAssignmentsTable = memo(
 
         return (
           <>
+            <MenuItem asChild>
+              <Link to={path.to.trainingAssignmentDetail(row.trainingId)}>
+                <MenuIcon icon={<LuEye />} />
+                View Status
+              </Link>
+            </MenuItem>
             {permissions.can("update", "people") && (
               <MenuItem asChild>
                 <Link to={path.to.trainingAssignment(assignmentId)}>
