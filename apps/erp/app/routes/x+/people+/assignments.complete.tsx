@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const result = await insertTrainingCompletion(client, {
-    trainingAssignmentId: parseInt(trainingAssignmentId.toString(), 10),
+    trainingAssignmentId: trainingAssignmentId.toString(),
     employeeId: employeeId.toString(),
     period: period?.toString() || null,
     companyId,

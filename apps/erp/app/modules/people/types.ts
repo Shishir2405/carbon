@@ -77,7 +77,7 @@ export type TrainingQuestion = NonNullable<
 >[number];
 
 export type TrainingAssignmentStatusItem = {
-  trainingAssignmentId: number;
+  trainingAssignmentId: string;
   trainingId: string;
   trainingName: string;
   frequency: (typeof trainingFrequency)[number];

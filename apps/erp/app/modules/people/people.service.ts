@@ -775,7 +775,7 @@ export async function upsertTrainingQuestion(
 export async function upsertTrainingAssignment(
   client: SupabaseClient<Database>,
   assignment: {
-    id?: number;
+    id?: string;
     trainingId: string;
     groupIds: string[];
     companyId: string;
@@ -809,7 +809,7 @@ export async function upsertTrainingAssignment(
 export async function insertTrainingCompletion(
   client: SupabaseClient<Database>,
   completion: {
-    trainingAssignmentId: number;
+    trainingAssignmentId: string;
     employeeId: string;
     period: string | null;
     companyId: string;
@@ -829,7 +829,7 @@ export async function insertTrainingCompletion(
 
 export async function getTrainingAssignment(
   client: SupabaseClient<Database>,
-  assignmentId: number
+  assignmentId: string
 ) {
   return client
     .from("trainingAssignment")
@@ -857,7 +857,31 @@ export async function getTrainingAssignments(
 
 export async function deleteTrainingAssignment(
   client: SupabaseClient<Database>,
-  assignmentId: number
+  assignmentId: string
 ) {
   return client.from("trainingAssignment").delete().eq("id", assignmentId);
+}
+
+export async function getTrainingAssignmentForCompletion(
+  client: SupabaseClient<Database>,
+  assignmentId: string
+) {
+  return client
+    .from("trainingAssignment")
+    .select(
+      `*,
+      training(
+        id,
+        name,
+        description,
+        content,
+        frequency,
+        type,
+        status,
+        estimatedDuration,
+        trainingQuestion(*)
+      )`
+    )
+    .eq("id", assignmentId)
+    .single();
 }

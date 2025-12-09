@@ -91,7 +91,7 @@ FOR DELETE USING (
 
 
 CREATE TABLE "trainingAssignment" (
-  "id" SERIAL PRIMARY KEY,
+  "id" TEXT NOT NULL DEFAULT id('ta'),
   "trainingId" TEXT NOT NULL,
   "groupIds" TEXT[],
   "companyId" TEXT NOT NULL,
@@ -100,11 +100,11 @@ CREATE TABLE "trainingAssignment" (
   "updatedAt" TIMESTAMP WITH TIME ZONE,
   "updatedBy" TEXT,
 
+  CONSTRAINT "trainingAssignment_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "trainingAssignment_trainingId_fkey" FOREIGN KEY ("trainingId") REFERENCES "training"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "trainingAssignment_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "trainingAssignment_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id") ON UPDATE CASCADE,
   CONSTRAINT "trainingAssignment_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id") ON UPDATE CASCADE
-  
 );
 
 CREATE INDEX "trainingAssignment_companyId_idx" ON "trainingAssignment" ("companyId");
@@ -155,7 +155,7 @@ FOR DELETE USING (
 
 CREATE TABLE "trainingCompletion" (
   "id" SERIAL PRIMARY KEY,
-  "trainingAssignmentId" INTEGER NOT NULL,
+  "trainingAssignmentId" TEXT NOT NULL,
   "employeeId" TEXT NOT NULL,
   "companyId" TEXT NOT NULL,
   "completedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -77,7 +77,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       acc[assignment.trainingId].push(assignment.id);
       return acc;
     },
-    {} as Record<string, number[]>
+    {} as Record<string, string[]>
   );
 
   return json({
@@ -92,7 +92,7 @@ const TrainingAssignmentsTable = memo(
     assignmentsByTraining,
   }: {
     data: TrainingAssignmentSummaryItem[];
-    assignmentsByTraining: Record<string, number[]>;
+    assignmentsByTraining: Record<string, string[]>;
   }) => {
     const permissions = usePermissions();
     const fetcher = useFetcher();

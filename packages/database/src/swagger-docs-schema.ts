@@ -69141,8 +69141,8 @@ export default {
         trainingAssignmentId: {
           description:
             "Note:\nThis is a Foreign Key to `trainingAssignment.id`.<fk table='trainingAssignment' column='id'/>",
-          format: "integer",
-          type: "integer",
+          format: "text",
+          type: "string",
         },
         employeeId: {
           description:
@@ -77429,9 +77429,10 @@ export default {
       required: ["id", "trainingId", "companyId", "createdAt", "createdBy"],
       properties: {
         id: {
+          default: "public.id('ta'::text)",
           description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "integer",
-          type: "integer",
+          format: "text",
+          type: "string",
         },
         trainingId: {
           description:
@@ -84553,8 +84554,8 @@ export default {
       properties: {
         trainingAssignmentId: {
           description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "integer",
-          type: "integer",
+          format: "text",
+          type: "string",
         },
         trainingId: {
           description:

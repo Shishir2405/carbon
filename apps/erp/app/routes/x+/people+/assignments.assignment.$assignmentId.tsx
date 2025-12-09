@@ -36,16 +36,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const assignmentIdNum = parseInt(assignmentId, 10);
-  if (isNaN(assignmentIdNum)) {
-    throw redirect(
-      path.to.trainingAssignments,
-      await flash(request, error(null, "Invalid assignment ID"))
-    );
-  }
-
   const [assignment, trainings, assignmentStatus] = await Promise.all([
-    getTrainingAssignment(client, assignmentIdNum),
+    getTrainingAssignment(client, assignmentId),
     getTrainingsList(client, companyId),
     getTrainingAssignmentStatus(client, companyId, {
       // We'll filter by trainingId which we'll get from the assignment
@@ -68,7 +60,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   // Filter assignment status by trainingAssignmentId
   const filteredStatus = (assignmentStatus.data ?? []).filter(
-    (s) => s.trainingAssignmentId === assignmentIdNum
+    (s) => s.trainingAssignmentId === assignmentId
   );
 
   const currentPeriod =
@@ -96,14 +88,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const assignmentIdNum = parseInt(assignmentId, 10);
-  if (isNaN(assignmentIdNum)) {
-    return json(
-      { error: "Invalid assignment ID" },
-      { status: 400 }
-    );
-  }
-
   const formData = await request.formData();
   const validation = await validator(trainingAssignmentValidator).validate(
     formData
@@ -116,7 +100,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { trainingId, groupIds } = validation.data;
 
   const result = await upsertTrainingAssignment(client, {
-    id: assignmentIdNum,
+    id: assignmentId,
     trainingId,
     groupIds,
     companyId: "", // not used for updates
@@ -149,7 +133,7 @@ export default function EditTrainingAssignmentRoute() {
   const params = useParams();
 
   const initialValues = {
-    id: parseInt(params.assignmentId!, 10),
+    id: params.assignmentId!,
     trainingId: assignment?.trainingId ?? "",
     groupIds: assignment?.groupIds ?? [],
   };

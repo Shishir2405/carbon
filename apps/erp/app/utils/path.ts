@@ -718,6 +718,8 @@ export const path = {
       generatePath(`/share/customer/${id}/${path}`),
     externalQuote: (id: string) => generatePath(`/share/quote/${id}`),
     externalScar: (id: string) => generatePath(`/share/scar/${id}`),
+    externalTraining: (assignmentId: string) =>
+      generatePath(`/share/training/${assignmentId}`),
     feedback: `${x}/feedback`,
     fiscalYears: `${x}/accounting/years`,
     gauge: (id: string) => generatePath(`${x}/quality/gauges/${id}`),
@@ -1183,9 +1185,9 @@ export const path = {
     trainingAssignmentDetail: (trainingId: string) =>
       generatePath(`${x}/people/assignments/${trainingId}`),
     newTrainingAssignment: `${x}/people/assignments/new`,
-    trainingAssignment: (assignmentId: string | number) =>
+    trainingAssignment: (assignmentId: string) =>
       generatePath(`${x}/people/assignments/assignment/${assignmentId}`),
-    deleteTrainingAssignment: (assignmentId: string | number) =>
+    deleteTrainingAssignment: (assignmentId: string) =>
       generatePath(`${x}/people/assignments/assignment/${assignmentId}/delete`),
 
     quote: (id: string) => generatePath(`${x}/quote/${id}`),

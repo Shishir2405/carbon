@@ -202,13 +202,13 @@ export const trainingQuestionValidator = z
   );
 
 export const trainingAssignmentValidator = z.object({
-  id: zfd.numeric(z.number().optional()),
+  id: zfd.text(z.string().optional()),
   trainingId: z.string().min(1, { message: "Training is required" }),
   groupIds: z.array(z.string()).min(1, { message: "At least one group is required" }),
 });
 
 export const trainingCompletionValidator = z.object({
-  trainingAssignmentId: zfd.numeric(),
+  trainingAssignmentId: z.string().min(1, { message: "Training assignment is required" }),
   employeeId: z.string().min(1, { message: "Employee is required" }),
   period: zfd.text(z.string().optional()),
 });

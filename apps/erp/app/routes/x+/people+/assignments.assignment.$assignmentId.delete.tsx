@@ -24,15 +24,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const assignmentIdNum = parseInt(assignmentId, 10);
-  if (isNaN(assignmentIdNum)) {
-    throw redirect(
-      path.to.trainingAssignments,
-      await flash(request, error(null, "Invalid assignment ID"))
-    );
-  }
-
-  const result = await deleteTrainingAssignment(client, assignmentIdNum);
+  const result = await deleteTrainingAssignment(client, assignmentId);
 
   if (result.error) {
     throw redirect(

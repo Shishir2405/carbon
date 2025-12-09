@@ -38003,7 +38003,7 @@ export type Database = {
           createdAt: string
           createdBy: string
           groupIds: string[] | null
-          id: number
+          id: string
           trainingId: string
           updatedAt: string | null
           updatedBy: string | null
@@ -38013,7 +38013,7 @@ export type Database = {
           createdAt?: string
           createdBy: string
           groupIds?: string[] | null
-          id?: number
+          id?: string
           trainingId: string
           updatedAt?: string | null
           updatedBy?: string | null
@@ -38023,7 +38023,7 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           groupIds?: string[] | null
-          id?: number
+          id?: string
           trainingId?: string
           updatedAt?: string | null
           updatedBy?: string | null
@@ -38167,7 +38167,7 @@ export type Database = {
           employeeId: string
           id: number
           period: string | null
-          trainingAssignmentId: number
+          trainingAssignmentId: string
           updatedAt: string | null
           updatedBy: string | null
         }
@@ -38180,7 +38180,7 @@ export type Database = {
           employeeId: string
           id?: number
           period?: string | null
-          trainingAssignmentId: number
+          trainingAssignmentId: string
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -38193,7 +38193,7 @@ export type Database = {
           employeeId?: string
           id?: number
           period?: string | null
-          trainingAssignmentId?: number
+          trainingAssignmentId?: string
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -52745,7 +52745,7 @@ export type Database = {
           employeeStartDate: string | null
           frequency: Database["public"]["Enums"]["trainingFrequency"] | null
           status: string | null
-          trainingAssignmentId: number | null
+          trainingAssignmentId: string | null
           trainingId: string | null
           trainingName: string | null
           type: Database["public"]["Enums"]["trainingType"] | null
