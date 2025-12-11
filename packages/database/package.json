@@ -35,7 +35,7 @@
     "db:stop": "supabase stop",
     "db:types": "supabase gen types typescript --local > src/types.ts",
     "deploy": "supabase link --project-ref $SUPABASE_PROJECT_ID && supabase db push",
-    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
+    "lint": "biome lint --write ",
     "setup": "tsx src/seed.ts"
   },
   "sideEffects": false,

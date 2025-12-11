@@ -22,7 +22,7 @@
   "scripts": {
     "clean": "rimraf .turbo node_modules dist",
     "dev": "tsup --watch",
-    "lint": "TIMING=1 eslint \"src/**/*.ts*\""
+    "lint": "biome lint --write "
   },
   "sideEffects": false,
   "version": "*"

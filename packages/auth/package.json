@@ -44,7 +44,7 @@
   "private": true,
   "scripts": {
     "clean": "rimraf .turbo node_modules",
-    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
+    "lint": "biome lint --fix",
     "test": "jest"
   },
   "sideEffects": false,

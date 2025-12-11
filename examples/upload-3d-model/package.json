@@ -33,7 +33,7 @@
   "scripts": {
     "clean": "rimraf .cache .turbo node_modules dist build",
     "start": "remix vite:dev",
-    "lint": "TIMING=1 eslint \"app/**/*.ts*\"",
+    "lint": "biome lint --write ",
     "types": "tsc"
   },
   "sideEffects": false
