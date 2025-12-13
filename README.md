@@ -75,7 +75,7 @@ Technical highlights:
 
 ## Techstack
 
-- [Remix](https://remix.run) – framework
+- [React Router](https://reactrouter.com) – framework
 - [Typescript](https://www.typescriptlang.org/) – language
 - [Tailwind](https://tailwindcss.com) – styling
 - [Radix UI](https://radix-ui.com) - behavior
