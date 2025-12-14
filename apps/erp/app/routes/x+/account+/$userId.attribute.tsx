@@ -96,7 +96,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function UserAttributeValueRoute() {
-  // Remix bug
+  // React Router bug
   return null;
 }
 

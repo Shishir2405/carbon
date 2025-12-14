@@ -161,9 +161,9 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect(`${path.to.operation(validation.data.jobOperationId)}`);
   } else {
     // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-    const { trackedEntityId, trackingType, ...data } = validation.data;
+    const { trackedEntityId, trackingType, ...d } = validation.data;
     const insertProduction = await insertProductionQuantity(client, {
-      ...data,
+      ...d,
       companyId,
       createdBy: userId
     });
