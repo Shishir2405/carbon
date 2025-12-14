@@ -176,7 +176,9 @@ export function OperationStatusIcon({
 }) {
   switch (status) {
     case "Todo":
-      return <TodoStatusIcon className={cn("text-foreground", className)} />;
+      return (
+        <LuCircleDashed className={cn("text-muted-foreground", className)} />
+      );
     case "Ready":
       return <TodoStatusIcon className={cn("text-blue-600", className)} />;
     case "Waiting":
