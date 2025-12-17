@@ -34,8 +34,6 @@ export const getSupplierTool = tool({
     const context = executionOptions.experimental_context as ChatContext;
     let { name, description, partIds } = args;
 
-    console.log("[getSupplierTool]", args);
-
     if (args.id) {
       const supplier = await context.client
         .from("supplier")

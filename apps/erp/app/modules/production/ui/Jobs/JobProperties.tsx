@@ -225,7 +225,6 @@ const JobProperties = () => {
                     const trackingNumber: string =
                       // @ts-ignore
                       entity?.attributes?.["Batch Number"]?.toString() ?? "";
-                    console.log("trackingNumber", trackingNumber);
 
                     const label =
                       trackingType === "Serial" && trackedEntities.length > 1

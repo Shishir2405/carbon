@@ -56,8 +56,6 @@ export default function JobOperationStepRecordsRoute() {
 
   const { setIsExplorerCollapsed } = usePanels();
 
-  console.log({ stepRecords });
-
   useMount(() => {
     setIsExplorerCollapsed(true);
   });

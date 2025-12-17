@@ -37,8 +37,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     qrColor = "2563eb"; // blue-600
   }
 
-  console.log({ qrColor });
-
   const buffer = await generateQRCodeBuffer(kanbanUrl, 36, qrColor);
 
   // @ts-ignore

@@ -55,8 +55,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  console.log(convert.data);
-
   const converted = convert.data as {
     success: boolean;
     message: string;

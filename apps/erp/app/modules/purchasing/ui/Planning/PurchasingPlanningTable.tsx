@@ -111,7 +111,6 @@ const PlanningTable = memo(
       }
     );
 
-    console.log(suppliersMap);
     const isDisabled =
       !permissions.can("create", "production") ||
       bulkUpdateFetcher.state !== "idle" ||

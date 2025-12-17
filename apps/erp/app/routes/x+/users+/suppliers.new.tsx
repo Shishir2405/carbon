@@ -77,8 +77,6 @@ export async function action({ request }: ActionFunctionArgs) {
     )
   });
 
-  console.log(invitationEmail);
-
   if (supplierRedirect) {
     throw redirect(
       path.to.supplierContacts(supplierRedirect),

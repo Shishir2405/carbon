@@ -56,7 +56,6 @@ type JobMaterialsTableProps = {
   count: number;
 };
 const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
-  console.log({ data });
   const { jobId } = useParams();
   if (!jobId) throw new Error("Job ID is required");
 
@@ -88,7 +87,6 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
     }> = [];
 
     data.forEach((material) => {
-      console.log({ material });
       if (
         material.itemTrackingType === "Non-Inventory" ||
         material.methodType === "Make" ||

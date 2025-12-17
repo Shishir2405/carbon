@@ -165,10 +165,6 @@ export default function CustomerPortal() {
     jobOperationAttachments
   } = useLoaderData<typeof loader>();
 
-  console.log({
-    salesOrderLines
-  });
-
   const formatter = useNumberFormatter({
     minimumFractionDigits: 0,
     maximumFractionDigits: 2

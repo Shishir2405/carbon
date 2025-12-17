@@ -106,8 +106,6 @@ export async function action({ request }: ActionFunctionArgs) {
     )
   });
 
-  console.log(invitationEmail);
-
   throw redirect(
     path.to.personJob(result.userId),
     await flash(request, success("Successfully invited employee"))

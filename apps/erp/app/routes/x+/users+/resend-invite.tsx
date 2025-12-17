@@ -88,8 +88,6 @@ export async function action({ request }: ActionFunctionArgs) {
       )
     });
 
-    console.log(invitationEmail);
-
     return data(
       {},
       await flash(request, success("Successfully resent invite"))

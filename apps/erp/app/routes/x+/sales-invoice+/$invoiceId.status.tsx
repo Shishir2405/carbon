@@ -37,7 +37,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     })
   ]);
 
-  console.log("update", update);
   if (update.error) {
     throw redirect(
       requestReferrer(request) ?? path.to.salesInvoiceDetails(id),

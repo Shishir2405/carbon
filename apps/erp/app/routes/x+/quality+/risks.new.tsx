@@ -20,7 +20,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   const { id: _, ...d } = validation.data;
-  console.log(d);
 
   const result = await upsertRisk(client, {
     ...d,

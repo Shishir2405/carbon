@@ -18,8 +18,6 @@ export async function action({ request }: ActionFunctionArgs) {
     return { error: { message: "Invalid form data" }, data: null };
   }
 
-  console.log({ field, value });
-
   switch (field) {
     case "defaultMethodType":
     case "itemTrackingType":
@@ -83,7 +81,6 @@ export async function action({ request }: ActionFunctionArgs) {
             .single();
           name = materialSubstance.data?.name ?? "";
           code = materialSubstance.data?.code ?? "";
-          console.log({ materialSubstance });
         }
         if (field === "materialFormId") {
           const materialForm = await client
@@ -130,8 +127,6 @@ export async function action({ request }: ActionFunctionArgs) {
         }
 
         for await (const id of items as string[]) {
-          console.log(`Processing item ID: ${id}`);
-
           const item = await client
             .from("item")
             .select("readableId")
@@ -139,12 +134,9 @@ export async function action({ request }: ActionFunctionArgs) {
             .eq("companyId", companyId)
             .single();
 
-          console.log(`Item query result:`, item);
           const readableId = item.data?.readableId;
 
           if (readableId) {
-            console.log(`Found readableId: ${readableId}`);
-
             const [materialDetails, relatedItems] = await Promise.all([
               client
                 .rpc("get_material_naming_details", { readable_id: readableId })
@@ -156,12 +148,8 @@ export async function action({ request }: ActionFunctionArgs) {
                 .eq("companyId", companyId)
             ]);
 
-            console.log(`Material details result:`, materialDetails);
-            console.log(`Related items result:`, relatedItems);
-
             if (materialDetails.data) {
               const namingDetails = materialDetails.data;
-              console.log(`Original naming details:`, namingDetails);
 
               if (field === "materialSubstanceId") {
                 namingDetails.substance = name;
@@ -185,30 +173,19 @@ export async function action({ request }: ActionFunctionArgs) {
                 namingDetails.dimensions = name;
               }
 
-              console.log(`Updated naming details:`, namingDetails);
-
               const newMaterialId = getMaterialId(namingDetails);
               const newDescription = getMaterialDescription(namingDetails);
 
-              console.log(`New material ID: ${newMaterialId}`);
-              console.log(`New description: ${newDescription}`);
-
               const relatedItemIds = relatedItems.data?.map((item) => item.id);
-              console.log(`Related item IDs:`, relatedItemIds);
 
               if (relatedItemIds) {
-                console.log(`Updating ${relatedItemIds.length} related items`);
-
                 const itemUpdateResult = await client
                   .from("item")
                   .update({ readableId: newMaterialId, name: newDescription })
                   .in("id", relatedItemIds as string[])
                   .eq("companyId", companyId);
 
-                console.log(`Item update result:`, itemUpdateResult);
-
                 if (itemUpdateResult.error) {
-                  console.error(`Item update error:`, itemUpdateResult.error);
                   return itemUpdateResult;
                 }
               }
@@ -234,31 +211,19 @@ export async function action({ request }: ActionFunctionArgs) {
                 updateData.materialTypeId = null;
               }
 
-              console.log(`Material update data:`, updateData);
-              console.log(`Updating material with readableId: ${readableId}`);
-
               const update = await client
                 .from("material")
                 .update(updateData)
                 .eq("id", readableId)
                 .eq("companyId", companyId);
 
-              console.log(`Material update result:`, update);
-
               if (update.error) {
-                console.error(`Material update error:`, update.error);
                 return {
                   error: { message: update.error.message },
                   data: null
                 };
               }
-            } else {
-              console.log(
-                `No material details found for readableId: ${readableId}`
-              );
             }
-          } else {
-            console.log(`No readableId found for item ID: ${id}`);
           }
         }
 
@@ -334,7 +299,6 @@ export async function action({ request }: ActionFunctionArgs) {
         return itemData;
       }
       if (itemData.data?.type !== "Part") {
-        console.error("itemData.data?.type", itemData.data?.type);
         return { error: { message: "Item is not a part" }, data: null };
       }
 
@@ -346,7 +310,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("readableId", currentReadableId)
         .eq("companyId", companyId);
       if (relatedItems.error) {
-        console.error(relatedItems.error);
         return relatedItems;
       }
       const relatedItemIds = relatedItems.data?.map((item) => item.id);
@@ -372,13 +335,9 @@ export async function action({ request }: ActionFunctionArgs) {
             .eq("companyId", companyId)
         ]);
         if (partUpdate.error) {
-          console.error("partUpdate error");
-          console.error(partUpdate.error);
           return partUpdate;
         }
         if (itemUpdates.error) {
-          console.error("itemUpdates error");
-          console.error(itemUpdates.error);
         }
         return itemUpdates;
       }
@@ -416,7 +375,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("readableId", currentConsumableId)
         .eq("companyId", companyId);
       if (relatedConsumables.error) {
-        console.error(relatedConsumables.error);
         return relatedConsumables;
       }
       const relatedConsumableIds = relatedConsumables.data?.map(
@@ -444,13 +402,9 @@ export async function action({ request }: ActionFunctionArgs) {
             .eq("companyId", companyId)
         ]);
         if (consumableUpdate.error) {
-          console.error("consumableUpdate error");
-          console.error(consumableUpdate.error);
           return consumableUpdate;
         }
         if (consumableItemUpdates.error) {
-          console.error("consumableItemUpdates error");
-          console.error(consumableItemUpdates.error);
         }
         return consumableItemUpdates;
       }
@@ -488,7 +442,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("readableId", currentMaterialId)
         .eq("companyId", companyId);
       if (relatedMaterials.error) {
-        console.error(relatedMaterials.error);
         return relatedMaterials;
       }
       const relatedMaterialIds = relatedMaterials.data?.map((item) => item.id);
@@ -514,13 +467,9 @@ export async function action({ request }: ActionFunctionArgs) {
             .eq("companyId", companyId)
         ]);
         if (materialUpdate.error) {
-          console.error("materialUpdate error");
-          console.error(materialUpdate.error);
           return materialUpdate;
         }
         if (materialItemUpdates.error) {
-          console.error("materialItemUpdates error");
-          console.error(materialItemUpdates.error);
         }
         return materialItemUpdates;
       }
@@ -555,7 +504,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .eq("readableId", currentToolId)
         .eq("companyId", companyId);
       if (relatedTools.error) {
-        console.error(relatedTools.error);
         return relatedTools;
       }
       const relatedToolIds = relatedTools.data?.map((item) => item.id);
@@ -581,13 +529,9 @@ export async function action({ request }: ActionFunctionArgs) {
             .eq("companyId", companyId)
         ]);
         if (toolUpdate.error) {
-          console.error("toolUpdate error");
-          console.error(toolUpdate.error);
           return toolUpdate;
         }
         if (toolItemUpdates.error) {
-          console.error("toolItemUpdates error");
-          console.error(toolItemUpdates.error);
         }
         return toolItemUpdates;
       }

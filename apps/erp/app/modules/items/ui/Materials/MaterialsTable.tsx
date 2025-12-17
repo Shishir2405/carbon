@@ -77,8 +77,6 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
   const navigate = useNavigate();
   const permissions = usePermissions();
 
-  console.log(data);
-
   const deleteItemModal = useDisclosure();
   const [selectedItem, setSelectedItem] = useState<Material | null>(null);
 

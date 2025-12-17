@@ -14,7 +14,6 @@ import { WarehouseTransferLineForm } from "~/modules/inventory/ui/WarehouseTrans
 import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  console.log("DEBUG: new action called");
   const { client, companyId, userId } = await requirePermissions(request, {
     update: "inventory"
   });
