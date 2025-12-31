@@ -1,4 +1,11 @@
-import { Combobox, HStack, MenuIcon, MenuItem, Status } from "@carbon/react";
+import {
+  Badge,
+  Combobox,
+  HStack,
+  MenuIcon,
+  MenuItem,
+  Status
+} from "@carbon/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
@@ -38,6 +45,36 @@ const MaintenanceSchedulesTable = memo(
     const navigate = useNavigate();
     const permissions = usePermissions();
     const allLocations = useLocations();
+
+    const renderDays = useCallback((row: MaintenanceSchedule) => {
+      const days = [
+        row.monday && "M",
+        row.tuesday && "Tu",
+        row.wednesday && "W",
+        row.thursday && "Th",
+        row.friday && "F",
+        row.saturday && "Sa",
+        row.sunday && "Su"
+      ].filter(Boolean);
+
+      return days.map((day) => (
+        <Badge key={day as string} variant="outline" className="mr-0.5">
+          {day}
+        </Badge>
+      ));
+    }, []);
+
+    const allDaysSelected = useCallback((row: MaintenanceSchedule) => {
+      return (
+        row.monday &&
+        row.tuesday &&
+        row.wednesday &&
+        row.thursday &&
+        row.friday &&
+        row.saturday &&
+        row.sunday
+      );
+    }, []);
 
     const locationOptions = useMemo(
       () =>
@@ -89,10 +126,19 @@ const MaintenanceSchedulesTable = memo(
         {
           accessorKey: "frequency",
           header: "Frequency",
-          cell: (item) => {
-            const frequency =
-              item.getValue<(typeof maintenanceFrequency)[number]>();
-            return <Enumerable value={frequency} />;
+          cell: ({ row }) => {
+            const frequency = row.original.frequency;
+            const showDays =
+              frequency === "Daily" && !allDaysSelected(row.original);
+            return (
+              <HStack>
+                {showDays ? (
+                  renderDays(row.original)
+                ) : (
+                  <Enumerable value={frequency} />
+                )}
+              </HStack>
+            );
           },
           meta: {
             icon: <LuActivity />,
@@ -162,7 +208,7 @@ const MaintenanceSchedulesTable = memo(
           }
         }
       ];
-    }, []);
+    }, [allDaysSelected, allLocations, renderDays]);
 
     const renderContextMenu = useCallback(
       (row: MaintenanceSchedule) => {
