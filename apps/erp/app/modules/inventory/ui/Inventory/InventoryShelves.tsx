@@ -90,10 +90,24 @@ const InventoryShelves = ({
   const [selectedTrackedEntityId, setSelectedTrackedEntityId] = useState<
     string | null
   >(null);
+  const [selectedReadableId, setSelectedReadableId] = useState<string | null>(
+    null
+  );
 
-  const openAdjustmentModal = (shelfId?: string, trackedEntityId?: string) => {
+  const isEditing = selectedTrackedEntityId !== null;
+
+  const openAdjustmentModal = (
+    shelfId?: string,
+    trackedEntityId?: string,
+    readableId?: string,
+    currentQuantity?: number
+  ) => {
     setSelectedShelfId(shelfId || null);
     setSelectedTrackedEntityId(trackedEntityId || null);
+    setSelectedReadableId(readableId || null);
+    if (currentQuantity !== undefined) {
+      setQuantity(currentQuantity);
+    }
     adjustmentModal.onOpen();
   };
 
@@ -185,12 +199,14 @@ const InventoryShelves = ({
                             icon={<LuEllipsisVertical />}
                           />
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
+                        <DropdownMenuContent className="w-56">
                           <DropdownMenuItem
                             onClick={() =>
                               openAdjustmentModal(
                                 item.shelfId,
-                                item.trackedEntityId
+                                item.trackedEntityId,
+                                item.readableId,
+                                item.quantity
                               )
                             }
                           >
@@ -248,11 +264,15 @@ const InventoryShelves = ({
               action={path.to.inventoryItemAdjustment(pickMethod.itemId)}
               defaultValues={{
                 itemId: pickMethod.itemId,
-                quantity: quantity,
+                quantity: isSerial && !isEditing ? 1 : quantity,
                 locationId: pickMethod.locationId,
                 shelfId: selectedShelfId || undefined,
-                adjustmentType: isSerial ? "Positive Adjmt." : "Set Quantity",
-                trackedEntityId: selectedTrackedEntityId || nanoid()
+                originalShelfId: isEditing
+                  ? selectedShelfId || undefined
+                  : undefined,
+                adjustmentType: "Set Quantity",
+                trackedEntityId: selectedTrackedEntityId || nanoid(),
+                readableId: selectedReadableId || undefined
               }}
               onSubmit={adjustmentModal.onClose}
             >
@@ -261,6 +281,7 @@ const InventoryShelves = ({
               </ModalHeader>
               <ModalBody>
                 <Hidden name="itemId" />
+                {isEditing && <Hidden name="originalShelfId" />}
 
                 <VStack spacing={2}>
                   <Location name="locationId" label="Location" isReadOnly />
@@ -272,19 +293,28 @@ const InventoryShelves = ({
                   <Select
                     name="adjustmentType"
                     label="Adjustment Type"
-                    options={[
-                      ...(isSerial
-                        ? []
-                        : [{ label: "Set Quantity", value: "Set Quantity" }]),
-                      {
-                        label: "Positive Adjustment",
-                        value: "Positive Adjmt."
-                      },
-                      {
-                        label: "Negative Adjustment",
-                        value: "Negative Adjmt."
-                      }
-                    ]}
+                    options={
+                      isEditing && (isSerial || isBatch)
+                        ? [{ label: "Set Quantity", value: "Set Quantity" }]
+                        : [
+                            ...(isSerial
+                              ? []
+                              : [
+                                  {
+                                    label: "Set Quantity",
+                                    value: "Set Quantity"
+                                  }
+                                ]),
+                            {
+                              label: "Positive Adjustment",
+                              value: "Positive Adjmt."
+                            },
+                            {
+                              label: "Negative Adjustment",
+                              value: "Negative Adjmt."
+                            }
+                          ]
+                    }
                   />
                   {(isBatch || isSerial) && (
                     <>
@@ -300,9 +330,10 @@ const InventoryShelves = ({
                     name="quantity"
                     label="Quantity"
                     minValue={0}
-                    value={isSerial ? 1 : quantity}
+                    maxValue={isSerial && isEditing ? 1 : undefined}
+                    value={isSerial && !isEditing ? 1 : quantity}
                     onChange={setQuantity}
-                    isReadOnly={isSerial}
+                    isReadOnly={isSerial && !isEditing}
                   />
 
                   <Input

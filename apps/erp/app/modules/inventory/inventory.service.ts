@@ -913,7 +913,8 @@ export async function insertManualInventoryAdjustment(
     createdBy: string;
   }
 ) {
-  const { adjustmentType, readableId, ...rest } = inventoryAdjustment;
+  const { adjustmentType, readableId, originalShelfId, ...rest } =
+    inventoryAdjustment;
   const data = {
     ...rest,
     entryType:
@@ -941,6 +942,67 @@ export async function insertManualInventoryAdjustment(
 
   const currentQuantityOnHand = currentQuantity?.quantity ?? 0;
 
+  // Check if this is a shelf transfer for a tracked entity
+  const isShelfTransfer =
+    inventoryAdjustment.trackedEntityId &&
+    originalShelfId &&
+    originalShelfId !== data.shelfId;
+
+  if (isShelfTransfer) {
+    // Handle shelf transfer: negative adjustment at original shelf, positive at new shelf
+    // First, update the readableId if provided
+    if (readableId !== undefined) {
+      const trackedEntityUpdate = await client
+        .from("trackedEntity")
+        .update({ readableId })
+        .eq("id", inventoryAdjustment.trackedEntityId);
+
+      if (trackedEntityUpdate.error) {
+        return trackedEntityUpdate;
+      }
+    }
+
+    // Create negative adjustment at original shelf
+    const negativeAdjustment = await client
+      .from("itemLedger")
+      .insert([
+        {
+          itemId: data.itemId,
+          locationId: data.locationId,
+          shelfId: originalShelfId,
+          trackedEntityId: inventoryAdjustment.trackedEntityId,
+          entryType: "Negative Adjmt." as const,
+          quantity: -currentQuantityOnHand,
+          companyId: data.companyId,
+          createdBy: data.createdBy
+        }
+      ])
+      .select("*")
+      .single();
+
+    if (negativeAdjustment.error) {
+      return negativeAdjustment;
+    }
+
+    // Create positive adjustment at new shelf
+    return client
+      .from("itemLedger")
+      .insert([
+        {
+          itemId: data.itemId,
+          locationId: data.locationId,
+          shelfId: data.shelfId,
+          trackedEntityId: inventoryAdjustment.trackedEntityId,
+          entryType: "Positive Adjmt." as const,
+          quantity: currentQuantityOnHand,
+          companyId: data.companyId,
+          createdBy: data.createdBy
+        }
+      ])
+      .select("*")
+      .single();
+  }
+
   if (adjustmentType === "Set Quantity" && currentQuantity) {
     const quantityDifference = data.quantity - currentQuantityOnHand;
     if (quantityDifference > 0) {
@@ -950,7 +1012,13 @@ export async function insertManualInventoryAdjustment(
       data.entryType = "Negative Adjmt.";
       data.quantity = -Math.abs(quantityDifference);
     } else {
-      // No change in quantity, we can return early
+      // No change in quantity, but readableId might have changed
+      if (inventoryAdjustment.trackedEntityId && readableId !== undefined) {
+        return client
+          .from("trackedEntity")
+          .update({ readableId })
+          .eq("id", inventoryAdjustment.trackedEntityId);
+      }
       return { data: null };
     }
   }
