@@ -2,13 +2,13 @@ import { PaperlessPartsClient } from "./client";
 
 export {
   createPartFromComponent,
-  findPartByExternalId,
   getCarbonOrderStatus,
   getCustomerIdAndContactId,
   getCustomerLocationIds,
   getEmployeeAndSalesPersonId,
   getOrCreatePart,
   getOrderLocationId,
+  getPaperlessPart,
   insertOrderLines
 } from "./lib";
 export { OrderSchema } from "./schemas";

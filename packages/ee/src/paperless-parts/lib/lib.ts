@@ -1681,14 +1681,23 @@ export function getCarbonOrderStatus(
 /**
  * Find existing part by Paperless Parts external ID
  */
-export async function findPartByExternalId(
+export async function getPaperlessPart(
   carbon: SupabaseClient<Database>,
   args: {
     companyId: string;
     paperlessPartsId: string | number;
+    paperlessPartNumber?: string;
+    paperlessPartRevision?: string;
+    paperlessPartName?: string;
   }
 ): Promise<{ itemId: string; partId: string; revision: string | null } | null> {
-  const { companyId, paperlessPartsId } = args;
+  const {
+    companyId,
+    paperlessPartsId,
+    paperlessPartNumber,
+    paperlessPartRevision,
+    paperlessPartName
+  } = args;
 
   const existingPart = await carbon
     .from("item")
@@ -1703,6 +1712,25 @@ export async function findPartByExternalId(
       partId: existingPart.data.readableId,
       revision: existingPart.data.revision
     };
+  }
+
+  if (paperlessPartNumber && paperlessPartRevision && paperlessPartName) {
+    const existingPart = await carbon
+      .from("item")
+      .select("id, readableId, revision, name")
+      .eq("companyId", companyId)
+      .eq("readableId", paperlessPartNumber)
+      .eq("revision", paperlessPartRevision)
+      .eq("name", paperlessPartName)
+      .maybeSingle();
+
+    if (existingPart.data) {
+      return {
+        itemId: existingPart.data.id,
+        partId: existingPart.data.readableId,
+        revision: existingPart.data.revision
+      };
+    }
   }
 
   return null;
@@ -2262,9 +2290,12 @@ export async function getOrCreatePart(
   }
 
   // First, try to find existing part by external ID
-  const existingPart = await findPartByExternalId(carbon, {
+  const existingPart = await getPaperlessPart(carbon, {
     companyId,
-    paperlessPartsId: component.part_uuid
+    paperlessPartsId: component.part_uuid,
+    paperlessPartNumber: component.part_number,
+    paperlessPartRevision: component.revision,
+    paperlessPartName: component.part_name
   });
 
   if (existingPart) {
