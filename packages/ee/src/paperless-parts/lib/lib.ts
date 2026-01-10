@@ -2728,6 +2728,70 @@ export async function insertQuoteLines(
     return;
   }
 
+  // Fetch work centers for the company to calculate operation rates
+  const workCentersResult = await carbon
+    .from("workCenters")
+    .select("*")
+    .eq("companyId", companyId);
+
+  const workCenters = workCentersResult.data;
+
+  /**
+   * Get labor and overhead rates for an operation based on its process.
+   * If a specific workCenterId is provided, uses that work center's rates.
+   * Otherwise, calculates blended (average) rates from all work centers
+   * that have the process assigned to them.
+   */
+  function getOperationRates(
+    processId: string,
+    workCenterId: string | null = null
+  ): { laborRate: number; overheadRate: number; machineRate: number } {
+    if (!workCenters) {
+      return { laborRate: 0, overheadRate: 0, machineRate: 0 };
+    }
+
+    // If a specific work center is provided, use its rates
+    if (workCenterId) {
+      const workCenter = workCenters.find(
+        (wc) => wc.id === workCenterId && wc.active
+      );
+      if (workCenter) {
+        return {
+          laborRate: workCenter.laborRate ?? 0,
+          overheadRate: workCenter.overheadRate ?? 0,
+          machineRate: workCenter.machineRate ?? 0
+        };
+      }
+    }
+
+    // Find all active work centers that have this process assigned
+    const relatedWorkCenters = workCenters.filter((wc) => {
+      const processes = wc.processes ?? [];
+      return wc.active && processes.some((p: string) => p === processId);
+    });
+
+    // Calculate blended (average) rates from related work centers
+    if (relatedWorkCenters.length > 0) {
+      const laborRate =
+        relatedWorkCenters.reduce((acc, wc) => acc + (wc.laborRate ?? 0), 0) /
+        relatedWorkCenters.length;
+
+      const overheadRate =
+        relatedWorkCenters.reduce(
+          (acc, wc) => acc + (wc.overheadRate ?? 0),
+          0
+        ) / relatedWorkCenters.length;
+
+      const machineRate =
+        relatedWorkCenters.reduce((acc, wc) => acc + (wc.machineRate ?? 0), 0) /
+        relatedWorkCenters.length;
+
+      return { laborRate, overheadRate, machineRate };
+    }
+
+    return { laborRate: 0, overheadRate: 0, machineRate: 0 };
+  }
+
   let insertedLinesCount = 0;
 
   for (const quoteItem of quoteItems) {
@@ -2889,6 +2953,9 @@ export async function insertQuoteLines(
                   );
                   if (!process) continue;
 
+                  // Get labor and overhead rates for this operation
+                  const operationRates = getOperationRates(process.id);
+
                   const quoteOperation: Database["public"]["Tables"]["quoteOperation"]["Insert"] =
                     {
                       quoteId,
@@ -2906,6 +2973,9 @@ export async function insertQuoteLines(
                       laborUnit: "Minutes/Piece",
                       machineTime: (operation.runtime ?? 0) * 60,
                       machineUnit: "Minutes/Piece",
+                      laborRate: operationRates.laborRate,
+                      overheadRate: operationRates.overheadRate,
+                      machineRate: operationRates.machineRate,
                       workInstruction: operation.notes
                         ? textToTiptap(operation.notes)
                         : {},
