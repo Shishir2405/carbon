@@ -107,8 +107,9 @@ export const purchaseOrderValidator = z.object({
 
 export const supplierQuoteFinalizeValidator = z
   .object({
-    notification: z.enum(["Email", "None"]).optional(),
-    supplierContact: zfd.text(z.string().optional())
+    notification: z.enum(["Email", "Share"]).optional(),
+    supplierContact: zfd.text(z.string().optional()),
+    sendAttachments: zfd.checkbox()
   })
   .refine(
     (data) => (data.notification === "Email" ? data.supplierContact : true),

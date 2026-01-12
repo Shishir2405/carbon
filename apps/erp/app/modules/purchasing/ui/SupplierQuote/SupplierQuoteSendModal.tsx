@@ -1,10 +1,13 @@
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
+  Checkbox,
   Copy,
+  HStack,
   Input,
   InputGroup,
   InputRightElement,
+  Label,
   Modal,
   ModalBody,
   ModalContent,
@@ -39,8 +42,9 @@ const SupplierQuoteSendModal = ({
   const canEmail = integrations.has("resend");
 
   const [notificationType, setNotificationType] = useState(
-    canEmail ? "Email" : "None"
+    canEmail ? "Email" : "Share"
   );
+  const [sendAttachments, setSendAttachments] = useState(true);
 
   const digitalQuoteUrl =
     externalLinkId && typeof window !== "undefined"
@@ -100,15 +104,16 @@ const SupplierQuoteSendModal = ({
           action={path.to.supplierQuoteSend(quote?.id || "")}
           onSubmit={onClose}
           defaultValues={{
-            notification: notificationType as "Email" | "None",
-            supplierContact: quote?.supplierContactId ?? undefined
+            notification: notificationType as "Email" | "Share",
+            supplierContact: quote?.supplierContactId ?? undefined,
+            sendAttachments: sendAttachments
           }}
           fetcher={fetcher}
         >
           <ModalHeader>
             <ModalTitle>Send {quote?.supplierQuoteId}</ModalTitle>
             <ModalDescription>
-              Send the supplier quote to the supplier via email.
+              Share the supplier quote via link or email.
             </ModalDescription>
           </ModalHeader>
           <ModalBody>
@@ -119,8 +124,8 @@ const SupplierQuoteSendModal = ({
                   name="notification"
                   options={[
                     {
-                      label: "None",
-                      value: "None"
+                      label: "Share Link",
+                      value: "Share"
                     },
                     {
                       label: "Email",
@@ -133,19 +138,61 @@ const SupplierQuoteSendModal = ({
                   }}
                 />
               )}
+              {notificationType === "Share" && (
+                <VStack spacing={2} className="w-full items-start">
+                  <Label htmlFor="digitalQuoteUrl">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Share Link
+                    </span>
+                  </Label>
+                  <InputGroup>
+                    <Input
+                      id="digitalQuoteUrl"
+                      value={digitalQuoteUrl}
+                      isReadOnly
+                    />
+                    <InputRightElement>
+                      <Copy text={digitalQuoteUrl} />
+                    </InputRightElement>
+                  </InputGroup>
+                </VStack>
+              )}
               {notificationType === "Email" && (
-                <SupplierContact
-                  name="supplierContact"
-                  supplier={quote?.supplierId ?? undefined}
-                />
+                <>
+                  <SupplierContact
+                    name="supplierContact"
+                    supplier={quote?.supplierId ?? undefined}
+                  />
+                  <HStack spacing={2}>
+                    <Checkbox
+                      id="sendAttachments"
+                      name="sendAttachments"
+                      isChecked={sendAttachments}
+                      onCheckedChange={(checked) =>
+                        setSendAttachments(checked === true)
+                      }
+                    />
+                    <label htmlFor="sendAttachments" className="text-sm">
+                      Send documents attached to line items
+                    </label>
+                  </HStack>
+                </>
               )}
             </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">Send</Button>
+            {notificationType === "Share" ? (
+              <Button variant="secondary" onClick={onClose}>
+                Close
+              </Button>
+            ) : (
+              <>
+                <Button variant="secondary" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit">Send</Button>
+              </>
+            )}
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>
