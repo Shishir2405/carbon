@@ -19,10 +19,11 @@ import {
   InputGroup,
   InputLeftElement,
   useDisclosure,
+  useMount,
   VStack
 } from "@carbon/react";
 import { useOptimisticLocation } from "@carbon/remix";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   LuBraces,
   LuChevronDown,
@@ -112,7 +113,7 @@ const BoMExplorer = ({
   if (!methodId) throw new Error("methodId not found");
 
   const [selectedMaterialId, setSelectedMaterialId] = useBom();
-  useEffect(() => {
+  useMount(() => {
     if (selectedMaterialId) {
       const node = methods.find(
         (m) => m.data.methodMaterialId === selectedMaterialId
@@ -128,7 +129,7 @@ const BoMExplorer = ({
         selectNode(node.id);
       }
     }
-  }, [selectedMaterialId, params.makeMethodId, methods, selectNode]);
+  });
 
   const importBomDisclosure = useDisclosure();
 
@@ -258,25 +259,12 @@ const BoMExplorer = ({
                     <div
                       key={node.id}
                       className={cn(
-                        "flex h-8 items-center overflow-hidden rounded-sm pr-2 gap-1 group/node",
-                        node.data.methodType !== "Pick" &&
-                          node.data.methodType !== "Buy" &&
-                          "cursor-pointer",
+                        "flex h-8 cursor-pointer items-center overflow-hidden rounded-sm pr-2 gap-1 group/node",
                         state.selected
                           ? "bg-muted hover:bg-muted/90"
-                          : node.data.methodType !== "Pick" &&
-                              node.data.methodType !== "Buy"
-                            ? "bg-transparent hover:bg-muted/90"
-                            : "bg-transparent"
+                          : "bg-transparent hover:bg-muted/90"
                       )}
                       onClick={() => {
-                        // Buy and Pick items are not clickable
-                        if (
-                          node.data.methodType === "Buy" ||
-                          node.data.methodType === "Pick"
-                        ) {
-                          return;
-                        }
                         selectNode(node.id);
                         setSelectedMaterialId(node.data.methodMaterialId);
                         if (node.data.isRoot) {
@@ -319,10 +307,7 @@ const BoMExplorer = ({
                         <div
                           className={cn(
                             "flex h-8 w-4 items-center",
-                            node.hasChildren &&
-                              node.data.methodType !== "Pick" &&
-                              node.data.methodType !== "Buy" &&
-                              "hover:bg-accent"
+                            node.hasChildren && "hover:bg-accent"
                           )}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -338,9 +323,7 @@ const BoMExplorer = ({
                             scrollToNode(node.id);
                           }}
                         >
-                          {node.hasChildren &&
-                          node.data.methodType !== "Pick" &&
-                          node.data.methodType !== "Buy" ? (
+                          {node.hasChildren ? (
                             state.expanded ? (
                               <LuChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0 ml-1" />
                             ) : (
