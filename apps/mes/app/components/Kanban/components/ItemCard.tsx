@@ -307,20 +307,36 @@ export function ItemCard({
 }
 
 function getStatusIcon(status: Item["status"] | "In Progress") {
-  switch (status) {
-    case "Ready":
-    case "Todo":
-      return <TodoStatusIcon className="text-foreground" />;
-    case "Waiting":
-    case "Canceled":
-      return <LuCircleX className="text-muted-foreground" />;
-    case "Done":
-      return <LuCircleCheck className="text-blue-600" />;
-    case "In Progress":
-      return <AlmostDoneIcon />;
-    case "Paused":
-      return <InProgressStatusIcon />;
-    default:
-      return null;
-  }
+  const getIcon = () => {
+    switch (status) {
+      case "Ready":
+      case "Todo":
+        return <TodoStatusIcon className="text-foreground" />;
+      case "Waiting":
+      case "Canceled":
+        return <LuCircleX className="text-muted-foreground" />;
+      case "Done":
+        return <LuCircleCheck className="text-blue-600" />;
+      case "In Progress":
+        return <AlmostDoneIcon />;
+      case "Paused":
+        return <InProgressStatusIcon />;
+      default:
+        return null;
+    }
+  };
+
+  const icon = getIcon();
+  if (!icon) return null;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-flex">{icon}</span>
+      </TooltipTrigger>
+      <TooltipContent>
+        <span>{status}</span>
+      </TooltipContent>
+    </Tooltip>
+  );
 }

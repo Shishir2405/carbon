@@ -41,7 +41,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   // Get all make methods for this job
   const jobMakeMethods = await serviceRole
     .from("jobMakeMethod")
-    .select("*, ...item(itemType:type)")
+    .select("*, ...item(itemType:type, methodRevision:revision)")
     .eq("jobId", jobId)
     .order("createdAt", { ascending: true });
 
@@ -177,6 +177,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
             batchNumber={data.batchNumber}
             notes={index === 0 ? jobNotes : undefined}
             thumbnail={data.thumbnail}
+            methodRevision={data.makeMethod.methodRevision}
           />
         </Page>
       ))}

@@ -910,7 +910,7 @@ export async function getJobMakeMethodById(
 ) {
   return client
     .from("jobMakeMethod")
-    .select("*, ...item(itemType:type)")
+    .select("*, ...item(itemType:type, methodRevision:revision)")
     .eq("id", jobMakeMethodId)
     .eq("companyId", companyId)
     .single();
