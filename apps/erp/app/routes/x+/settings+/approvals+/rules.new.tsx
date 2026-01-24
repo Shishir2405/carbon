@@ -5,7 +5,12 @@ import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useNavigate } from "react-router";
 import { useUrlParams } from "~/hooks";
-import { approvalRuleValidator, upsertApprovalRule } from "~/modules/approvals";
+import {
+  type ApprovalDocumentType,
+  approvalDocumentType,
+  approvalRuleValidator,
+  upsertApprovalRule
+} from "~/modules/approvals";
 import ApprovalRuleDrawer from "~/modules/approvals/ui/ApprovalRuleDrawer";
 import { getParams, path } from "~/utils/path";
 
@@ -16,18 +21,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   const url = new URL(request.url);
-  const documentType = url.searchParams.get("documentType") as
-    | "purchaseOrder"
-    | "qualityDocument"
-    | null;
+  const tab = url.searchParams.get("tab") as ApprovalDocumentType | null;
 
-  if (
-    !documentType ||
-    !["purchaseOrder", "qualityDocument"].includes(documentType)
-  ) {
+  if (!tab || !approvalDocumentType.includes(tab)) {
     throw redirect(
       path.to.approvalSettings,
-      await flash(request, error(null, "Invalid document type"))
+      await flash(request, error(null, "Invalid tab"))
     );
   }
 
@@ -40,7 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   return {
     rule: null,
-    documentType,
+    documentType: tab,
     groups: groupsResult.data ?? []
   };
 }
@@ -74,14 +73,27 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (result.error) {
+    const tab =
+      validation.data.documentType === "qualityDocument"
+        ? "qualityDocument"
+        : "purchaseOrder";
     throw redirect(
-      `${path.to.newApprovalRule(validation.data.documentType)}?${getParams(request)}`,
+      `${path.to.newApprovalRule(tab)}?${getParams(request)}`,
       await flash(request, error(result.error, result.error.message))
     );
   }
 
+  // Redirect to the appropriate tab based on document type
+  const tab =
+    validation.data.documentType === "qualityDocument"
+      ? "qualityDocument"
+      : "purchaseOrder";
+  const existingParams = getParams(request);
+  const params = new URLSearchParams(existingParams || "");
+  params.set("tab", tab);
+
   throw redirect(
-    `${path.to.approvalSettings}?${getParams(request)}`,
+    `${path.to.approvalSettings}?${params.toString()}`,
     await flash(request, success("Approval rule created"))
   );
 }

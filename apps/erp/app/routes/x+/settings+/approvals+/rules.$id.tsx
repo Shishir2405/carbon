@@ -133,7 +133,7 @@ export default function EditApprovalRuleRoute() {
   return (
     <ApprovalRuleDrawer
       rule={rule}
-      documentType={rule.documentType as "purchaseOrder" | "qualityDocument"}
+      documentType={rule.documentType}
       groups={groups}
       onClose={onClose}
     />

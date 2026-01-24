@@ -59,10 +59,20 @@ const ApprovalsTable = memo(({ data, count }: ApprovalsTableProps) => {
             );
           }
 
-          const link =
-            docType === "purchaseOrder"
-              ? path.to.purchaseOrderDetails(docId)
-              : path.to.qualityDocument(docId);
+          let link: string | null = null;
+          if (docType === "purchaseOrder") {
+            link = path.to.purchaseOrderDetails(docId);
+          } else if (docType === "qualityDocument") {
+            link = path.to.qualityDocument(docId);
+          }
+
+          if (!link) {
+            return (
+              <HStack>
+                <span>{label}</span>
+              </HStack>
+            );
+          }
 
           return (
             <HStack>

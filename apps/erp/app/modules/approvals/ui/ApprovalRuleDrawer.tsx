@@ -19,12 +19,16 @@ import {
 } from "@carbon/react";
 import { User } from "~/components/Form";
 import { usePermissions } from "~/hooks";
-import { type ApprovalRule, approvalRuleValidator } from "~/modules/approvals";
+import {
+  ApprovalDocumentType,
+  type ApprovalRule,
+  approvalRuleValidator
+} from "~/modules/approvals";
 import { path } from "~/utils/path";
 
 type ApprovalRuleDrawerProps = {
   rule: ApprovalRule | null;
-  documentType: "purchaseOrder" | "qualityDocument";
+  documentType: ApprovalDocumentType;
   groups: Array<{ id: string; name: string }>;
   onClose: () => void;
 };
@@ -91,12 +95,7 @@ const ApprovalRuleDrawer = ({
             <div className="flex flex-col gap-6">
               {isEditing && rule?.id && <Hidden name="id" value={rule.id} />}
               <Hidden name="documentType" value={documentType} />
-              <Input
-                name="name"
-                label="Rule Name"
-                helperText="A descriptive name for this approval rule (e.g., 'Low Value PO Rule', 'High Value PO Rule')"
-                required
-              />
+              <Input name="name" label="Rule Name" required />
               <Switch name="enabled" label="Enabled" />
               <MultiSelect
                 name="approverGroupIds"
@@ -115,13 +114,22 @@ const ApprovalRuleDrawer = ({
                     name="lowerBoundAmount"
                     label="Lower Bound Amount"
                     helperText="Minimum amount (inclusive) for this rule"
-                    step={0.01}
+                    step={100}
+                    formatOptions={{
+                      style: "currency",
+                      currency: "USD"
+                    }}
                   />
+
                   <FormNumber
                     name="upperBoundAmount"
                     label="Upper Bound Amount"
                     helperText="Maximum amount (exclusive) for this rule. Leave empty for no upper limit."
-                    step={0.01}
+                    step={100}
+                    formatOptions={{
+                      style: "currency",
+                      currency: "USD"
+                    }}
                   />
                 </>
               )}

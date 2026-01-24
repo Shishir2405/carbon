@@ -11,7 +11,8 @@ import {
 import { LuInbox } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, Outlet, redirect, useLoaderData } from "react-router";
-import { getApprovalRules } from "~/modules/approvals";
+import { useUrlParams } from "~/hooks";
+import { ApprovalDocumentType, getApprovalRules } from "~/modules/approvals";
 import ApprovalRulesTable from "~/modules/approvals/ui/ApprovalRulesTable";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -51,12 +52,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function ApprovalSettingsRoute() {
   const { poRules, qdRules } = useLoaderData<typeof loader>();
+  const [params, setParams] = useUrlParams();
+  const activeTab =
+    (params.get("tab") as ApprovalDocumentType) || "purchaseOrder";
 
   return (
     <>
       <div className="h-full w-full flex flex-col">
         <Tabs
-          defaultValue="purchaseOrder"
+          value={activeTab}
+          onValueChange={(value) => {
+            setParams({ tab: value });
+          }}
           className="h-full w-full flex flex-col"
         >
           <div className="border-b border-border bg-card">
