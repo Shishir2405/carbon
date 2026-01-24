@@ -1,11 +1,22 @@
+import { getCarbonServiceRole } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { NotificationEvent } from "@carbon/notifications";
+import { tasks } from "@trigger.dev/sdk";
 import { type ActionFunctionArgs } from "react-router";
+import {
+  createApprovalRequest,
+  getApprovalRuleByAmount,
+  hasPendingApproval,
+  isApprovalRequired
+} from "~/modules/approvals";
+import { qualityDocumentStatus } from "~/modules/quality/quality.models";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { client, userId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     update: "quality"
   });
 
+  const serviceRole = getCarbonServiceRole();
   const formData = await request.formData();
   const ids = formData.getAll("ids");
   const field = formData.get("field");
@@ -18,11 +29,110 @@ export async function action({ request }: ActionFunctionArgs) {
   switch (field) {
     case "content":
     case "name":
-    case "status":
       return await client
         .from("qualityDocument")
         .update({
           [field]: value,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .in("id", ids as string[]);
+    case "status":
+      // When status changes to "Active", check if approval is required
+      if (value === "Active") {
+        const currentDocs = await client
+          .from("qualityDocument")
+          .select("id, status")
+          .in("id", ids as string[]);
+
+        if (currentDocs.error) {
+          return { error: currentDocs.error, data: null };
+        }
+
+        // Process each document that's changing from Draft to Active
+        for (const doc of currentDocs.data ?? []) {
+          if (doc.status === "Draft") {
+            const approvalRequired = await isApprovalRequired(
+              serviceRole,
+              "qualityDocument",
+              companyId,
+              undefined
+            );
+
+            if (approvalRequired) {
+              const hasPending = await hasPendingApproval(
+                serviceRole,
+                "qualityDocument",
+                doc.id
+              );
+
+              if (!hasPending) {
+                const config = await getApprovalRuleByAmount(
+                  serviceRole,
+                  "qualityDocument",
+                  companyId,
+                  undefined
+                );
+
+                const approvalResult = await createApprovalRequest(
+                  serviceRole,
+                  {
+                    documentType: "qualityDocument",
+                    documentId: doc.id,
+                    companyId,
+                    requestedBy: userId,
+                    createdBy: userId,
+                    approverGroupIds:
+                      config.data?.approverGroupIds || undefined,
+                    approverId: config.data?.defaultApproverId || undefined
+                  }
+                );
+
+                if (!approvalResult.error && approvalResult.data) {
+                  // Notify approvers
+                  let notifyRecipient:
+                    | { type: "group"; groupIds: string[] }
+                    | { type: "user"; userId: string }
+                    | null = null;
+                  if (
+                    config.data?.approverGroupIds &&
+                    config.data.approverGroupIds.length > 0
+                  ) {
+                    notifyRecipient = {
+                      type: "group",
+                      groupIds: config.data.approverGroupIds
+                    };
+                  } else if (config.data?.defaultApproverId) {
+                    notifyRecipient = {
+                      type: "user",
+                      userId: config.data.defaultApproverId
+                    };
+                  }
+
+                  if (notifyRecipient) {
+                    try {
+                      await tasks.trigger("notify", {
+                        event: NotificationEvent.ApprovalRequested,
+                        companyId,
+                        documentId: approvalResult.data.id,
+                        recipient: notifyRecipient,
+                        from: userId
+                      });
+                    } catch (err) {
+                      console.error("Failed to notify approvers", err);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return await client
+        .from("qualityDocument")
+        .update({
+          [field]: value as (typeof qualityDocumentStatus)[number],
           updatedBy: userId,
           updatedAt: new Date().toISOString()
         })
