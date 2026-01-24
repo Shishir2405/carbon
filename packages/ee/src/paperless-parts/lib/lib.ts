@@ -1947,15 +1947,15 @@ export async function createPartFromComponent(
       operation
     ] of component.shop_operations.entries()) {
       if (operation.category === "operation") {
-        // Check if operation is ed
+        // Check if operation is blacklisted
         const operationName =
           operation.operation_definition_name ?? operation.name;
         if (billOfProcessBlackList.length > 0 && operationName) {
-          const isBlacklisted = billOfProcessBlackList.some((edName) =>
-            operationName.toLowerCase().includes(edName.toLowerCase())
+          const isBlacklisted = billOfProcessBlackList.some((blacklistedName) =>
+            operationName.toLowerCase().includes(blacklistedName.toLowerCase())
           );
           if (isBlacklisted) {
-            console.log(`Skipping ed operation: ${operationName}`);
+            console.log(`Skipping blacklisted operation: ${operationName}`);
             continue;
           }
         }
@@ -2932,7 +2932,7 @@ export async function insertQuoteLines(
                   const operationName =
                     operation.operation_definition_name ?? operation.name;
 
-                  // Check
+                  // Check blacklist
                   if (operationName && billOfProcessBlackList.length > 0) {
                     const isBlacklisted = billOfProcessBlackList.some((bl) =>
                       operationName.toLowerCase().includes(bl.toLowerCase())
