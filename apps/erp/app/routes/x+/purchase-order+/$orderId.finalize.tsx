@@ -89,8 +89,6 @@ export async function action(args: ActionFunctionArgs) {
 
   // If approval is required, we'll set status to "Needs Approval" after finalizing
   // Otherwise, finalizePurchaseOrder will set the calculated status
-  const shouldSetNeedsApproval =
-    approvalRequired && purchaseOrder.data.status !== "Planned";
 
   // Finalize the purchase order (sets orderDate, updatedAt, etc.)
   // If approval is not required, it will also set the calculated status
@@ -114,7 +112,7 @@ export async function action(args: ActionFunctionArgs) {
     userId
   });
 
-  if (shouldSetNeedsApproval) {
+  if (approvalRequired) {
     const hasPending = await hasPendingApproval(
       serviceRole,
       "purchaseOrder",
@@ -141,15 +139,6 @@ export async function action(args: ActionFunctionArgs) {
       });
 
       if (!approvalResult.error && approvalResult.data) {
-        // Set status to "Needs Approval" immediately after finalizing
-        // This ensures the flow is: Draft → Finalize → Needs Approval (not Draft → Finalize → To Receive and Invoice → Needs Approval)
-        await updatePurchaseOrderStatus(client, {
-          id: orderId,
-          status: "Needs Approval",
-          assignee: undefined,
-          updatedBy: userId
-        });
-
         // Notify approvers
         let notifyRecipient:
           | { type: "group"; groupIds: string[] }
@@ -185,6 +174,13 @@ export async function action(args: ActionFunctionArgs) {
         }
       }
     }
+
+    await updatePurchaseOrderStatus(client, {
+      id: orderId,
+      status: "Needs Approval",
+      assignee: undefined,
+      updatedBy: userId
+    });
   }
 
   // Check if we should update prices on purchase order finalize

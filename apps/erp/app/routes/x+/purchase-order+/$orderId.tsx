@@ -1,10 +1,15 @@
-import { error } from "@carbon/auth";
+import { error, getCarbonServiceRole } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import {
+  canApproveRequest,
+  canCancelRequest,
+  getLatestApprovalForDocument
+} from "~/modules/approvals";
 import {
   getPurchaseOrder,
   getPurchaseOrderDelivery,
@@ -29,7 +34,7 @@ export const handle: Handle = {
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "purchasing",
     bypassRls: true
   });
@@ -67,12 +72,53 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.purchaseOrders);
   }
 
-  const [supplier, interaction] = await Promise.all([
+  const serviceRole = getCarbonServiceRole();
+  const [supplier, interaction, approvalRequest] = await Promise.all([
     purchaseOrder.data?.supplierId
       ? getSupplier(client, purchaseOrder.data.supplierId)
       : null,
-    getSupplierInteraction(client, purchaseOrder.data.supplierInteractionId)
+    getSupplierInteraction(client, purchaseOrder.data.supplierInteractionId),
+    // Only fetch approval request if status is "Needs Approval"
+    purchaseOrder.data?.status === "Needs Approval"
+      ? getLatestApprovalForDocument(serviceRole, "purchaseOrder", orderId)
+      : Promise.resolve({ data: null, error: null })
   ]);
+
+  // Check if user can approve the request
+  let canApprove = false;
+  let canReopen = true; // Default to true (no approval request = can reopen)
+  let canDelete = true; // Default to true (no approval request = can delete)
+
+  if (
+    approvalRequest.data &&
+    purchaseOrder.data?.status === "Needs Approval" &&
+    approvalRequest.data.status === "Pending" &&
+    approvalRequest.data.requestedBy
+  ) {
+    const requestedBy = approvalRequest.data.requestedBy;
+    const status = approvalRequest.data.status;
+
+    canApprove = await canApproveRequest(
+      serviceRole,
+      approvalRequest.data,
+      userId
+    );
+
+    // Check if user can reopen: must be requester OR approver
+    const isRequester = canCancelRequest(
+      {
+        requestedBy,
+        status
+      },
+      userId
+    );
+    const isApprover = canApprove;
+    canReopen = isRequester || isApprover;
+
+    // Check if user can delete: only requester can delete POs in "Needs Approval"
+    // Approvers should reject instead, normal users have no permission
+    canDelete = isRequester;
+  }
 
   return {
     purchaseOrder: purchaseOrder.data,
@@ -84,7 +130,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       purchaseOrder.data.supplierInteractionId!
     ),
     interaction: interaction?.data,
-    supplier: supplier?.data ?? null
+    supplier: supplier?.data ?? null,
+    approvalRequest: approvalRequest.data,
+    canApprove,
+    canReopen,
+    canDelete
   };
 }
 

@@ -28,7 +28,8 @@ import {
   LuPanelLeft,
   LuPanelRight,
   LuTrash,
-  LuTruck
+  LuTruck,
+  LuX
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 
@@ -56,6 +57,10 @@ const PurchaseOrderHeader = () => {
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
     lines: PurchaseOrderLine[];
+    approvalRequest: { id: string } | null;
+    canApprove: boolean;
+    canReopen: boolean;
+    canDelete: boolean;
   }>(path.to.purchaseOrder(orderId));
 
   if (!routeData?.purchaseOrder)
@@ -64,7 +69,12 @@ const PurchaseOrderHeader = () => {
   const permissions = usePermissions();
 
   const statusFetcher = useFetcher<{}>();
+  const approvalFetcher = useFetcher<{}>();
   const { receive, invoice, ship } = usePurchaseOrder();
+
+  const isNeedsApproval = routeData?.purchaseOrder?.status === "Needs Approval";
+  const hasApprovalRequest = !!routeData?.approvalRequest;
+  const canApprove = routeData?.canApprove ?? false;
   const { receipts, invoices, shipments } = usePurchaseOrderRelatedDocuments(
     routeData?.purchaseOrder?.supplierInteractionId ?? "",
     routeData?.purchaseOrder?.purchaseOrderType === "Outside Processing"
@@ -115,7 +125,8 @@ const PurchaseOrderHeader = () => {
                 <DropdownMenuItem
                   disabled={
                     !permissions.can("delete", "purchasing") ||
-                    !permissions.is("employee")
+                    !permissions.is("employee") ||
+                    (isNeedsApproval && !routeData?.canDelete)
                   }
                   destructive
                   onClick={deleteModal.onOpen}
@@ -174,14 +185,19 @@ const PurchaseOrderHeader = () => {
               }
               onClick={finalizeDisclosure.onOpen}
               isDisabled={
-                !["Draft"].includes(routeData?.purchaseOrder?.status ?? "") ||
-                routeData?.lines.length === 0
+                !["Draft", "Planned"].includes(
+                  routeData?.purchaseOrder?.status ?? ""
+                ) || routeData?.lines.length === 0
               }
               dropdownItems={[
                 {
                   label: "Mark as Planned",
                   icon: <LuCheckCheck />,
-                  onClick: markAsPlanned
+                  onClick: markAsPlanned,
+                  disabled:
+                    !["Draft"].includes(
+                      routeData?.purchaseOrder?.status ?? ""
+                    ) || routeData?.lines.length === 0
                 }
               ]}
             >
@@ -299,6 +315,49 @@ const PurchaseOrderHeader = () => {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+            ) : isNeedsApproval && hasApprovalRequest ? (
+              <>
+                <approvalFetcher.Form
+                  method="post"
+                  action={path.to.approvalDecision(
+                    routeData.approvalRequest?.id ?? ""
+                  )}
+                >
+                  <input type="hidden" name="decision" value="Approved" />
+                  <Button
+                    type="submit"
+                    leftIcon={<LuCheckCheck />}
+                    variant="primary"
+                    isLoading={
+                      approvalFetcher.state !== "idle" &&
+                      approvalFetcher.formData?.get("decision") === "Approved"
+                    }
+                    isDisabled={!canApprove || approvalFetcher.state !== "idle"}
+                  >
+                    Approve
+                  </Button>
+                </approvalFetcher.Form>
+                <approvalFetcher.Form
+                  method="post"
+                  action={path.to.approvalDecision(
+                    routeData.approvalRequest?.id ?? ""
+                  )}
+                >
+                  <input type="hidden" name="decision" value="Rejected" />
+                  <Button
+                    type="submit"
+                    leftIcon={<LuX />}
+                    variant="destructive"
+                    isLoading={
+                      approvalFetcher.state !== "idle" &&
+                      approvalFetcher.formData?.get("decision") === "Rejected"
+                    }
+                    isDisabled={!canApprove || approvalFetcher.state !== "idle"}
+                  >
+                    Reject
+                  </Button>
+                </approvalFetcher.Form>
+              </>
             ) : (
               <Button
                 leftIcon={<LuHandCoins />}
@@ -322,12 +381,63 @@ const PurchaseOrderHeader = () => {
               </Button>
             )}
 
-            {invoices?.length > 0 ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            {!isNeedsApproval && (
+              <>
+                {invoices?.length > 0 ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        leftIcon={<LuCreditCard />}
+                        rightIcon={<LuChevronDown />}
+                        variant={
+                          ["To Invoice", "To Receive and Invoice"].includes(
+                            routeData?.purchaseOrder?.status ?? ""
+                          ) && !requiresShipment
+                            ? "primary"
+                            : "secondary"
+                        }
+                      >
+                        Invoice
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        disabled={
+                          !["To Invoice", "To Receive and Invoice"].includes(
+                            routeData?.purchaseOrder?.status ?? ""
+                          )
+                        }
+                        onClick={() => {
+                          invoice(routeData?.purchaseOrder);
+                        }}
+                      >
+                        <DropdownMenuIcon icon={<LuCirclePlus />} />
+                        New Invoice
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      {invoices.map((invoice) => (
+                        <DropdownMenuItem key={invoice.id} asChild>
+                          <Link to={path.to.purchaseInvoice(invoice.id!)}>
+                            <DropdownMenuIcon icon={<LuCreditCard />} />
+                            <HStack spacing={8}>
+                              <span>{invoice.invoiceId}</span>
+                              <PurchaseInvoicingStatus
+                                status={invoice.status}
+                              />
+                            </HStack>
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
                   <Button
                     leftIcon={<LuCreditCard />}
-                    rightIcon={<LuChevronDown />}
+                    isDisabled={
+                      !["To Invoice", "To Receive and Invoice"].includes(
+                        routeData?.purchaseOrder?.status ?? ""
+                      )
+                    }
                     variant={
                       ["To Invoice", "To Receive and Invoice"].includes(
                         routeData?.purchaseOrder?.status ?? ""
@@ -335,59 +445,14 @@ const PurchaseOrderHeader = () => {
                         ? "primary"
                         : "secondary"
                     }
-                  >
-                    Invoice
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    disabled={
-                      !["To Invoice", "To Receive and Invoice"].includes(
-                        routeData?.purchaseOrder?.status ?? ""
-                      )
-                    }
                     onClick={() => {
                       invoice(routeData?.purchaseOrder);
                     }}
                   >
-                    <DropdownMenuIcon icon={<LuCirclePlus />} />
-                    New Invoice
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  {invoices.map((invoice) => (
-                    <DropdownMenuItem key={invoice.id} asChild>
-                      <Link to={path.to.purchaseInvoice(invoice.id!)}>
-                        <DropdownMenuIcon icon={<LuCreditCard />} />
-                        <HStack spacing={8}>
-                          <span>{invoice.invoiceId}</span>
-                          <PurchaseInvoicingStatus status={invoice.status} />
-                        </HStack>
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                leftIcon={<LuCreditCard />}
-                isDisabled={
-                  !["To Invoice", "To Receive and Invoice"].includes(
-                    routeData?.purchaseOrder?.status ?? ""
-                  )
-                }
-                variant={
-                  ["To Invoice", "To Receive and Invoice"].includes(
-                    routeData?.purchaseOrder?.status ?? ""
-                  ) && !requiresShipment
-                    ? "primary"
-                    : "secondary"
-                }
-                onClick={() => {
-                  invoice(routeData?.purchaseOrder);
-                }}
-              >
-                Invoice
-              </Button>
+                    Invoice
+                  </Button>
+                )}
+              </>
             )}
             <statusFetcher.Form
               method="post"
@@ -425,7 +490,8 @@ const PurchaseOrderHeader = () => {
                 isDisabled={
                   ["Draft"].includes(routeData?.purchaseOrder?.status ?? "") ||
                   statusFetcher.state !== "idle" ||
-                  !permissions.can("update", "purchasing")
+                  !permissions.can("update", "purchasing") ||
+                  (isNeedsApproval && !routeData?.canReopen)
                 }
                 isLoading={
                   statusFetcher.state !== "idle" &&
