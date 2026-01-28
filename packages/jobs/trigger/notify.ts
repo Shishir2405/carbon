@@ -34,18 +34,18 @@ export const notifyTask = task({
     companyId: string;
     documentId: string;
     recipient:
-    | {
-      type: "user";
-      userId: string;
-    }
-    | {
-      type: "group";
-      groupIds: string[];
-    }
-    | {
-      type: "users";
-      userIds: string[];
-    };
+      | {
+          type: "user";
+          userId: string;
+        }
+      | {
+          type: "group";
+          groupIds: string[];
+        }
+      | {
+          type: "users";
+          userIds: string[];
+        };
     from?: string;
   }) => {
     if (isLocal) {
@@ -142,7 +142,7 @@ export const notifyTask = task({
             .select("*")
             .eq("id", documentId)
             .single();
-
+            
           if (maintenanceDispatchCreated.error) {
             console.error("Failed to get maintenanceDispatchCreated", maintenanceDispatchCreated.error);
             throw maintenanceDispatchCreated.error;
@@ -155,7 +155,7 @@ export const notifyTask = task({
             .select("*")
             .eq("id", documentId)
             .single();
-
+            
           if (maintenanceDispatchAssignment.error) {
             console.error("Failed to get maintenanceDispatchAssignment", maintenanceDispatchAssignment.error);
             throw maintenanceDispatchAssignment.error;
@@ -369,7 +369,7 @@ export const notifyTask = task({
             .eq("id", documentId)
             .single();
 
-
+          
           if (supplierQuote.error) {
             console.error("Failed to get supplier quote", supplierQuote.error);
             throw supplierQuote.error;
@@ -489,12 +489,12 @@ export const notifyTask = task({
       const userIds =
         payload.recipient.type === "group"
           ? await client.rpc("users_for_groups", {
-            groups: payload.recipient.groupIds,
-          })
+              groups: payload.recipient.groupIds,
+            })
           : {
-            data: payload.recipient.userIds,
-            error: null,
-          };
+              data: payload.recipient.userIds,
+              error: null,
+            };
 
       if (userIds.error) {
         console.error("Failed to get userIds", userIds.error);
