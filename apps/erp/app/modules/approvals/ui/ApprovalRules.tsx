@@ -14,7 +14,10 @@ import { LuInbox, LuPlus } from "react-icons/lu";
 import { Link } from "react-router";
 import { Empty } from "~/components";
 import { usePermissions } from "~/hooks";
-import type { ApprovalRule } from "~/modules/approvals";
+import {
+  type ApprovalRule,
+  approvalDocumentTypesWithAmounts
+} from "~/modules/approvals";
 import { path } from "~/utils/path";
 import ApprovalRuleCard from "./ApprovalRuleCard";
 
@@ -29,7 +32,7 @@ const ApprovalRules = memo(({ poRules, qdRules }: ApprovalRulesProps) => {
 
   return (
     <ScrollArea className="h-full w-full">
-      <div className="px-4 py-6 md:px-6 lg:px-8 max-w-[90rem] mx-auto">
+      <div className="py-12 px-4 max-w-[60rem] mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <Heading size="h2">Approval Rules</Heading>
@@ -52,7 +55,9 @@ const ApprovalRules = memo(({ poRules, qdRules }: ApprovalRulesProps) => {
               </div>
               {canCreate && (
                 <Button variant="primary" leftIcon={<LuPlus />} asChild>
-                  <Link to={path.to.newApprovalRule()}>New Rule</Link>
+                  <Link to={path.to.newApprovalRule("purchaseOrder")}>
+                    New Rule
+                  </Link>
                 </Button>
               )}
             </div>
@@ -85,11 +90,15 @@ const ApprovalRules = memo(({ poRules, qdRules }: ApprovalRulesProps) => {
                   Require approval for quality documents in your workflow
                 </CardDescription>
               </div>
-              {canCreate && (
-                <Button variant="primary" leftIcon={<LuPlus />} asChild>
-                  <Link to={path.to.newApprovalRule()}>New Rule</Link>
-                </Button>
-              )}
+              {canCreate &&
+                (approvalDocumentTypesWithAmounts.includes("qualityDocument") ||
+                  qdRules.length === 0) && (
+                  <Button variant="primary" leftIcon={<LuPlus />} asChild>
+                    <Link to={path.to.newApprovalRule("qualityDocument")}>
+                      New Rule
+                    </Link>
+                  </Button>
+                )}
             </div>
           </CardHeader>
           <CardContent>

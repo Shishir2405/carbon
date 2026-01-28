@@ -16,9 +16,9 @@ CREATE TABLE "approvalRequest" (
   "documentType" "approvalDocumentType" NOT NULL,
   "documentId" TEXT NOT NULL,
   "status" "approvalStatus" NOT NULL DEFAULT 'Pending',
+  "amount" NUMERIC,
   "requestedBy" TEXT NOT NULL,
   "requestedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  "approverGroupIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
   "approverId" TEXT,
   "decisionBy" TEXT,
   "decisionAt" TIMESTAMP WITH TIME ZONE,
@@ -45,19 +45,16 @@ CREATE INDEX "approvalRequest_documentId_idx" ON "approvalRequest"("documentId")
 CREATE INDEX "approvalRequest_status_idx" ON "approvalRequest"("status");
 CREATE INDEX "approvalRequest_requestedBy_idx" ON "approvalRequest"("requestedBy");
 CREATE INDEX "approvalRequest_approverId_idx" ON "approvalRequest"("approverId");
-CREATE INDEX "approvalRequest_approverGroupIds_idx" ON "approvalRequest" USING GIN("approverGroupIds");
 
 -- Multiple approval rules per document type
 -- Each rule defines conditions (amount range for POs) and associated approver groups/users
 CREATE TABLE "approvalRule" (
-  "id" TEXT NOT NULL DEFAULT id('aprl'),
-  "name" TEXT NOT NULL,
+  "id" TEXT NOT NULL DEFAULT id('approval'),
   "documentType" "approvalDocumentType" NOT NULL,
   "enabled" BOOLEAN NOT NULL DEFAULT true,
   "approverGroupIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
   "defaultApproverId" TEXT,
   "lowerBoundAmount" NUMERIC NOT NULL DEFAULT 0,
-  "upperBoundAmount" NUMERIC,
   "escalationDays" INTEGER,
   "companyId" TEXT NOT NULL,
   "createdBy" TEXT NOT NULL,
@@ -70,18 +67,13 @@ CREATE TABLE "approvalRule" (
   CONSTRAINT "approvalRule_defaultApproverId_fkey" FOREIGN KEY ("defaultApproverId") REFERENCES "user"("id") ON DELETE SET NULL,
   CONSTRAINT "approvalRule_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id"),
   CONSTRAINT "approvalRule_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id"),
-  CONSTRAINT "approvalRule_name_check" CHECK (LENGTH("name") > 0 AND LENGTH("name") <= 100),
-  CONSTRAINT "approvalRule_lowerBoundAmount_check" CHECK ("lowerBoundAmount" >= 0),
-  CONSTRAINT "approvalRule_amountRange_check" CHECK (
-    "upperBoundAmount" IS NULL OR "upperBoundAmount" > "lowerBoundAmount"
-  )
+  CONSTRAINT "approvalRule_lowerBoundAmount_check" CHECK ("lowerBoundAmount" >= 0)
 );
 
 -- Indexes for approval rules
 CREATE INDEX "approvalRule_companyId_idx" ON "approvalRule"("companyId");
 CREATE INDEX "approvalRule_documentType_idx" ON "approvalRule"("documentType");
-CREATE INDEX "approvalRule_name_idx" ON "approvalRule"("companyId", "documentType", "name");
-CREATE INDEX "approvalRule_amountRange_idx" ON "approvalRule"("companyId", "documentType", "lowerBoundAmount", "upperBoundAmount") WHERE "enabled" = true;
+CREATE INDEX "approvalRule_name_idx" ON "approvalRule"("companyId", "documentType");
 
 -- View for approval requests with related data
 CREATE OR REPLACE VIEW "approvalRequests" WITH (SECURITY_INVOKER=true) AS
@@ -92,7 +84,6 @@ SELECT
   ar."status",
   ar."requestedBy",
   ar."requestedAt",
-  ar."approverGroupIds",
   ar."approverId",
   ar."decisionBy",
   ar."decisionAt",
@@ -110,32 +101,50 @@ SELECT
     WHEN ar."documentType" = 'purchaseOrder' THEN s."name"
     WHEN ar."documentType" = 'qualityDocument' THEN qd."description"
     ELSE NULL
-  END AS "documentDescription",
-  -- Requester info
-  ru."fullName" AS "requestedByName",
-  ru."avatarUrl" AS "requestedByAvatarUrl",
-  -- Approver info
-  au."fullName" AS "approverName",
-  au."avatarUrl" AS "approverAvatarUrl",
-  -- Decision maker info
-  du."fullName" AS "decisionByName",
-  du."avatarUrl" AS "decisionByAvatarUrl",
-  -- Group names as array (get names for all groups in the array)
-  (
-    SELECT ARRAY_AGG(g."name" ORDER BY g."name")
-    FROM "group" g
-    WHERE g."id" = ANY(ar."approverGroupIds")
-  ) AS "approverGroupNames"
+  END AS "documentDescription"
+  
 FROM "approvalRequest" ar
 LEFT JOIN "purchaseOrder" po ON ar."documentType" = 'purchaseOrder' AND ar."documentId" = po."id"
 LEFT JOIN "supplier" s ON po."supplierId" = s."id"
-LEFT JOIN "qualityDocument" qd ON ar."documentType" = 'qualityDocument' AND ar."documentId" = qd."id"
-LEFT JOIN "user" ru ON ar."requestedBy" = ru."id"
-LEFT JOIN "user" au ON ar."approverId" = au."id"
-LEFT JOIN "user" du ON ar."decisionBy" = du."id";
+LEFT JOIN "qualityDocument" qd ON ar."documentType" = 'qualityDocument' AND ar."documentId" = qd."id";
 
 -- Enable RLS on approvalRequest
 ALTER TABLE "approvalRequest" ENABLE ROW LEVEL SECURITY;
 
 -- Enable RLS on approval rules table
 ALTER TABLE "approvalRule" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "approvalRule"
+FOR SELECT
+USING (
+  "companyId" = ANY (
+    (
+      SELECT get_companies_with_employee_permission('settings_view')
+    )::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "approvalRule"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (
+      SELECT get_companies_with_employee_permission('settings_create')
+    )::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "approvalRule" USING (
+  "companyId" = ANY (
+    (
+      SELECT get_companies_with_employee_permission('settings_update')
+    )::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "approvalRule" USING (
+  "companyId" = ANY (
+    (
+      SELECT get_companies_with_employee_permission('settings_delete')
+    )::text[]
+  )
+);

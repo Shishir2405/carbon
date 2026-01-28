@@ -2,8 +2,6 @@ import {
   Boolean as FormBoolean,
   Number as FormNumber,
   Hidden,
-  Input,
-  SelectControlled,
   Submit,
   ValidatedForm
 } from "@carbon/form";
@@ -18,53 +16,37 @@ import {
   HStack,
   VStack
 } from "@carbon/react";
-import { useState } from "react";
 import { Employee, Users } from "~/components/Form";
-import { usePermissions } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import {
   ApprovalDocumentType,
   type ApprovalRule,
+  approvalDocumentTypesWithAmounts,
   approvalRuleValidator
 } from "~/modules/approvals";
 import { path } from "~/utils/path";
 
-type ApprovalRuleDrawerProps = {
+type ApprovalRuleFormProps = {
   rule: ApprovalRule | null;
   documentType: ApprovalDocumentType | null;
-  groups?: Array<{ id: string; name: string }>;
-  canEdit?: boolean;
   onClose: () => void;
 };
 
-const ApprovalRuleDrawer = ({
+const ApprovalRuleForm = ({
   rule,
   documentType,
-  groups,
-  canEdit = true,
   onClose
-}: ApprovalRuleDrawerProps) => {
+}: ApprovalRuleFormProps) => {
   const permissions = usePermissions();
-  const isEditing = !!rule;
-  const isDisabled =
-    !permissions.can("update", "settings") || (isEditing && !canEdit);
-
-  const [selectedDocumentType, setSelectedDocumentType] =
-    useState<ApprovalDocumentType | null>(documentType || null);
-
-  const documentTypeOptions: Array<{
-    value: ApprovalDocumentType;
-    label: string;
-  }> = [
-    { value: "purchaseOrder", label: "Purchase Order" },
-    { value: "qualityDocument", label: "Quality Document" }
-  ];
-
-  const effectiveDocumentType = rule?.documentType || selectedDocumentType;
-
+  const {
+    company: { baseCurrencyCode }
+  } = useUser();
+  const isEditing = !!rule?.id;
+  const isDisabled = !permissions.can("update", "settings");
+  const effectiveDocumentType = rule?.documentType || documentType;
   const defaultValues = rule
     ? {
         id: rule.id,
-        name: rule.name ?? "",
         documentType: rule.documentType,
         enabled: rule.enabled ?? false,
         approverGroupIds: Array.isArray(rule.approverGroupIds)
@@ -72,16 +54,14 @@ const ApprovalRuleDrawer = ({
           : [],
         defaultApproverId: rule.defaultApproverId ?? undefined,
         lowerBoundAmount: rule.lowerBoundAmount ?? 0,
-        upperBoundAmount: rule.upperBoundAmount ?? undefined,
         escalationDays: rule.escalationDays ?? undefined
       }
     : {
         name: "",
-        documentType: selectedDocumentType || undefined,
+        documentType: documentType || undefined,
         enabled: true,
         approverGroupIds: [],
         lowerBoundAmount: 0,
-        upperBoundAmount: undefined,
         escalationDays: undefined
       };
 
@@ -108,25 +88,39 @@ const ApprovalRuleDrawer = ({
             <VStack spacing={4} className="items-stretch">
               {isEditing && rule?.id && <Hidden name="id" value={rule.id} />}
 
-              {!isEditing && (
-                <SelectControlled
-                  name="documentType"
-                  label="Document Type"
-                  options={documentTypeOptions}
-                  value={selectedDocumentType || ""}
-                  onChange={(option) => {
-                    if (option) {
-                      setSelectedDocumentType(
-                        option.value as ApprovalDocumentType
-                      );
-                    }
-                  }}
-                />
-              )}
-
-              {isEditing && effectiveDocumentType && (
+              {effectiveDocumentType && (
                 <Hidden name="documentType" value={effectiveDocumentType} />
               )}
+
+              {/* Purchase Order Specific Fields */}
+              {effectiveDocumentType &&
+                approvalDocumentTypesWithAmounts.includes(
+                  effectiveDocumentType
+                ) && (
+                  <>
+                    <FormNumber
+                      name="lowerBoundAmount"
+                      label="Minimum Amount"
+                      step={100}
+                      formatOptions={{
+                        style: "currency",
+                        currency: baseCurrencyCode
+                      }}
+                    />
+                  </>
+                )}
+
+              <Users
+                name="approverGroupIds"
+                label="Approvers"
+                placeholder="Select approver groups"
+              />
+
+              <Employee
+                name="defaultApproverId"
+                label="Default Approver"
+                placeholder="Select a default approver"
+              />
 
               <FormBoolean
                 name="enabled"
@@ -134,50 +128,11 @@ const ApprovalRuleDrawer = ({
                 helperText="Enable this rule to automatically require approval for matching documents"
                 variant="large"
               />
-
-              <Input name="name" label="Rule Name" required />
-
-              <Users
-                type="employee"
-                name="approverGroupIds"
-                label="Approver Groups"
-                placeholder="Select approver groups"
-              />
-
-              <Employee
-                name="defaultApproverId"
-                label="Default Approver (Optional)"
-                placeholder="Select a default approver"
-              />
-
-              {/* Purchase Order Specific Fields */}
-              {effectiveDocumentType === "purchaseOrder" && (
-                <>
-                  <FormNumber
-                    name="lowerBoundAmount"
-                    label="Minimum Amount"
-                    formatOptions={{
-                      style: "currency",
-                      currency: "USD"
-                    }}
-                  />
-
-                  <FormNumber
-                    name="upperBoundAmount"
-                    label="Maximum Amount (Optional)"
-                    formatOptions={{
-                      style: "currency",
-                      currency: "USD"
-                    }}
-                  />
-                </>
-              )}
-
-              <FormNumber
+              {/* <FormNumber
                 name="escalationDays"
                 label="Escalation Days"
                 helperText="Automatically escalate approval requests after this many days. Leave empty to disable escalation."
-              />
+              /> */}
             </VStack>
           </DrawerBody>
           <DrawerFooter>
@@ -196,4 +151,4 @@ const ApprovalRuleDrawer = ({
   );
 };
 
-export default ApprovalRuleDrawer;
+export default ApprovalRuleForm;

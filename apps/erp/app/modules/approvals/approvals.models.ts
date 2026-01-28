@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { ApprovalDocumentType } from "./types";
 
 export const approvalStatusType = [
   "Pending",
@@ -12,6 +13,15 @@ export const approvalDocumentType = [
   "purchaseOrder",
   "qualityDocument"
 ] as const;
+
+export const approvalDocumentTypesWithAmounts: ApprovalDocumentType[] = [
+  "purchaseOrder"
+] as const;
+
+export const approvalDocumentTypeLabel: Record<ApprovalDocumentType, string> = {
+  purchaseOrder: "Purchase Order",
+  qualityDocument: "Quality Document"
+};
 
 export const approvalRequestValidator = z.object({
   id: zfd.text(z.string().optional()),
@@ -35,19 +45,15 @@ export const approvalDecisionValidator = z.object({
 
 export const approvalRuleValidator = z.object({
   id: zfd.text(z.string().optional()),
-  name: z
-    .string()
-    .min(1, { message: "Rule name is required" })
-    .max(100, { message: "Rule name must be 100 characters or less" }),
   documentType: z.enum(approvalDocumentType, {
     errorMap: () => ({ message: "Document type is required" })
   }),
-  enabled: zfd.checkbox(),
-  approverGroupIds: zfd.repeatableOfType(z.string()).optional(),
+  approverGroupIds: z.array(
+    z.string().min(1, { message: "Invalid selection" })
+  ),
   defaultApproverId: zfd.text(z.string().optional()),
-  lowerBoundAmount: zfd.numeric(z.number().min(0).default(0)),
-  upperBoundAmount: zfd.numeric(z.number().min(0).nullable()).optional(),
-  escalationDays: zfd.numeric(z.number().min(0).optional())
+  lowerBoundAmount: zfd.numeric(z.number().gt(0).default(0)).optional(),
+  enabled: zfd.checkbox()
 });
 
 export const approvalFiltersValidator = z.object({

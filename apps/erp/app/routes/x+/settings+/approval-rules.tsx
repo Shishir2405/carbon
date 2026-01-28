@@ -51,11 +51,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : []
   }));
 
-  const poRules =
-    enrichedRules.filter((r) => r.documentType === "purchaseOrder") || [];
+  const poRules = enrichedRules
+    .filter((r) => r.documentType === "purchaseOrder")
+    .sort((a, b) => (a.lowerBoundAmount ?? 0) - (b.lowerBoundAmount ?? 0));
 
-  const qdRules =
-    enrichedRules.filter((r) => r.documentType === "qualityDocument") || [];
+  const qdRules = enrichedRules.filter(
+    (r) => r.documentType === "qualityDocument"
+  );
 
   return {
     poRules,

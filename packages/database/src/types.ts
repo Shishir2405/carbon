@@ -1694,7 +1694,6 @@ export type Database = {
       }
       approvalRequest: {
         Row: {
-          approverGroupIds: string[] | null
           approverId: string | null
           companyId: string
           createdAt: string
@@ -1712,7 +1711,6 @@ export type Database = {
           updatedBy: string | null
         }
         Insert: {
-          approverGroupIds?: string[] | null
           approverId?: string | null
           companyId: string
           createdAt?: string
@@ -1730,7 +1728,6 @@ export type Database = {
           updatedBy?: string | null
         }
         Update: {
-          approverGroupIds?: string[] | null
           approverId?: string | null
           companyId?: string
           createdAt?: string
@@ -1965,10 +1962,8 @@ export type Database = {
           escalationDays: number | null
           id: string
           lowerBoundAmount: number
-          name: string
           updatedAt: string | null
           updatedBy: string | null
-          upperBoundAmount: number | null
         }
         Insert: {
           approverGroupIds?: string[] | null
@@ -1981,10 +1976,8 @@ export type Database = {
           escalationDays?: number | null
           id?: string
           lowerBoundAmount?: number
-          name: string
           updatedAt?: string | null
           updatedBy?: string | null
-          upperBoundAmount?: number | null
         }
         Update: {
           approverGroupIds?: string[] | null
@@ -1997,10 +1990,8 @@ export type Database = {
           escalationDays?: number | null
           id?: string
           lowerBoundAmount?: number
-          name?: string
           updatedAt?: string | null
           updatedBy?: string | null
-          upperBoundAmount?: number | null
         }
         Relationships: [
           {
@@ -41374,17 +41365,11 @@ export type Database = {
       }
       approvalRequests: {
         Row: {
-          approverAvatarUrl: string | null
-          approverGroupIds: string[] | null
-          approverGroupNames: string[] | null
           approverId: string | null
-          approverName: string | null
           companyId: string | null
           createdAt: string | null
           decisionAt: string | null
           decisionBy: string | null
-          decisionByAvatarUrl: string | null
-          decisionByName: string | null
           decisionNotes: string | null
           documentDescription: string | null
           documentId: string | null
@@ -41395,8 +41380,6 @@ export type Database = {
           id: string | null
           requestedAt: string | null
           requestedBy: string | null
-          requestedByAvatarUrl: string | null
-          requestedByName: string | null
           status: Database["public"]["Enums"]["approvalStatus"] | null
         }
         Relationships: [
@@ -45980,14 +45963,14 @@ export type Database = {
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["supplierLocationId"]
+            columns: ["id"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["id"]
+            columns: ["supplierLocationId"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
@@ -47360,14 +47343,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -50051,14 +50034,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -50594,14 +50577,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]

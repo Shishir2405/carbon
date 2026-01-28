@@ -3940,9 +3940,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRequests.requestedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRequests.approverGroupIds",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRequests.approverId",
           },
           {
@@ -3965,27 +3962,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.approvalRequests.documentDescription",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.requestedByName",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.requestedByAvatarUrl",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.approverName",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.approverAvatarUrl",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.decisionByName",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.decisionByAvatarUrl",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequests.approverGroupNames",
           },
           {
             $ref: "#/parameters/select",
@@ -38839,9 +38815,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRequest.approverGroupIds",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRequest.approverId",
           },
           {
@@ -38946,9 +38919,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRequest.approverGroupIds",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRequest.approverId",
           },
           {
@@ -39005,9 +38975,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRequest.approverGroupIds",
           },
           {
             $ref: "#/parameters/rowFilter.approvalRequest.approverId",
@@ -60361,9 +60328,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRule.id",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRule.name",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRule.documentType",
           },
           {
@@ -60377,9 +60341,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRule.upperBoundAmount",
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
@@ -60462,9 +60423,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRule.id",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRule.name",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRule.documentType",
           },
           {
@@ -60478,9 +60436,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRule.upperBoundAmount",
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
@@ -60517,9 +60472,6 @@ export default {
             $ref: "#/parameters/rowFilter.approvalRule.id",
           },
           {
-            $ref: "#/parameters/rowFilter.approvalRule.name",
-          },
-          {
             $ref: "#/parameters/rowFilter.approvalRule.documentType",
           },
           {
@@ -60533,9 +60485,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
-          },
-          {
-            $ref: "#/parameters/rowFilter.approvalRule.upperBoundAmount",
           },
           {
             $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
@@ -67181,13 +67130,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        approverGroupIds: {
-          format: "text[]",
-          items: {
-            type: "string",
-          },
-          type: "array",
-        },
         approverId: {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
@@ -67225,37 +67167,6 @@ export default {
         documentDescription: {
           format: "text",
           type: "string",
-        },
-        requestedByName: {
-          format: "text",
-          type: "string",
-        },
-        requestedByAvatarUrl: {
-          format: "text",
-          type: "string",
-        },
-        approverName: {
-          format: "text",
-          type: "string",
-        },
-        approverAvatarUrl: {
-          format: "text",
-          type: "string",
-        },
-        decisionByName: {
-          format: "text",
-          type: "string",
-        },
-        decisionByAvatarUrl: {
-          format: "text",
-          type: "string",
-        },
-        approverGroupNames: {
-          format: "text[]",
-          items: {
-            type: "string",
-          },
-          type: "array",
         },
       },
       type: "object",
@@ -83578,13 +83489,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        approverGroupIds: {
-          format: "text[]",
-          items: {
-            type: "string",
-          },
-          type: "array",
-        },
         approverId: {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
@@ -94251,7 +94155,6 @@ export default {
     approvalRule: {
       required: [
         "id",
-        "name",
         "documentType",
         "enabled",
         "lowerBoundAmount",
@@ -94261,12 +94164,8 @@ export default {
       ],
       properties: {
         id: {
-          default: "public.id('aprl'::text)",
+          default: "public.id('approval'::text)",
           description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "text",
-          type: "string",
-        },
-        name: {
           format: "text",
           type: "string",
         },
@@ -94295,10 +94194,6 @@ export default {
         },
         lowerBoundAmount: {
           default: 0,
-          format: "numeric",
-          type: "number",
-        },
-        upperBoundAmount: {
           format: "numeric",
           type: "number",
         },
@@ -96638,12 +96533,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.approvalRequests.approverGroupIds": {
-      name: "approverGroupIds",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.approvalRequests.approverId": {
       name: "approverId",
       required: false,
@@ -96688,48 +96577,6 @@ export default {
     },
     "rowFilter.approvalRequests.documentDescription": {
       name: "documentDescription",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.requestedByName": {
-      name: "requestedByName",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.requestedByAvatarUrl": {
-      name: "requestedByAvatarUrl",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.approverName": {
-      name: "approverName",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.approverAvatarUrl": {
-      name: "approverAvatarUrl",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.decisionByName": {
-      name: "decisionByName",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.decisionByAvatarUrl": {
-      name: "decisionByAvatarUrl",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRequests.approverGroupNames": {
-      name: "approverGroupNames",
       required: false,
       in: "query",
       type: "string",
@@ -115057,12 +114904,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.approvalRequest.approverGroupIds": {
-      name: "approverGroupIds",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.approvalRequest.approverId": {
       name: "approverId",
       required: false,
@@ -127060,12 +126901,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.approvalRule.name": {
-      name: "name",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.approvalRule.documentType": {
       name: "documentType",
       required: false,
@@ -127092,12 +126927,6 @@ export default {
     },
     "rowFilter.approvalRule.lowerBoundAmount": {
       name: "lowerBoundAmount",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.approvalRule.upperBoundAmount": {
-      name: "upperBoundAmount",
       required: false,
       in: "query",
       type: "string",

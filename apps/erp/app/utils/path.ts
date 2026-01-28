@@ -372,7 +372,10 @@ export const path = {
     approvalRules: `${x}/settings/approval-rules`,
     approvalRule: (id: string) =>
       generatePath(`${x}/settings/approval-rules/${id}`),
-    newApprovalRule: () => `${x}/settings/approval-rules/new`,
+    newApprovalRule: (documentType?: string) =>
+      documentType
+        ? `${x}/settings/approval-rules/new?type=${documentType}`
+        : `${x}/settings/approval-rules/new`,
     deleteApprovalRule: (id: string) =>
       generatePath(`${x}/settings/approval-rules/${id}/delete`),
     abilities: `${x}/resources/abilities`,

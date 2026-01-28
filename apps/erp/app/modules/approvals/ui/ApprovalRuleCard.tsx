@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Heading,
   HStack,
   IconButton,
   useDisclosure
@@ -18,19 +19,19 @@ import { memo, useCallback } from "react";
 import { LuEllipsisVertical, LuPencil, LuTrash } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
+import { useCurrencyFormatter, usePermissions, useUrlParams } from "~/hooks";
 import {
-  useCurrencyFormatter,
-  usePermissions,
-  useUrlParams,
-  useUser
-} from "~/hooks";
-import type { ApprovalRule } from "~/modules/approvals";
+  ApprovalDocumentType,
+  type ApprovalRule,
+  approvalDocumentTypeLabel,
+  approvalDocumentTypesWithAmounts
+} from "~/modules/approvals";
 import { path } from "~/utils/path";
 import ApprovalRuleDetails from "./ApprovalRuleDetails";
 
 type ApprovalRuleCardProps = {
   rule: ApprovalRule & { approverGroupNames?: string[] };
-  documentType: "purchaseOrder" | "qualityDocument";
+  documentType: ApprovalDocumentType;
 };
 
 const ApprovalRuleCard = memo(
@@ -38,14 +39,14 @@ const ApprovalRuleCard = memo(
     const [params] = useUrlParams();
     const navigate = useNavigate();
     const permissions = usePermissions();
-    const user = useUser();
-    const currencyFormatter = useCurrencyFormatter();
+    const currencyFormatter = useCurrencyFormatter({
+      notation: "compact", // short/compact form
+      compactDisplay: "short" // "short" → 1.2M, "long" → 1.2 million
+    });
     const deleteDisclosure = useDisclosure();
 
-    const canEdit =
-      permissions.can("update", "settings") && rule.createdBy === user?.id;
-    const canDelete =
-      permissions.can("update", "settings") && rule.createdBy === user?.id;
+    const canEdit = permissions.can("update", "settings");
+    const canDelete = permissions.can("update", "settings");
 
     const handleEdit = useCallback(() => {
       if (!rule.id) return;
@@ -68,23 +69,21 @@ const ApprovalRuleCard = memo(
           <Accordion type="multiple" className="w-full">
             <AccordionItem value={rule.id} className="border-none">
               <div className="relative">
-                <AccordionTrigger className="px-6 py-4 hover:no-underline w-full">
-                  <HStack spacing={4} className="flex-1">
+                <AccordionTrigger className="px-6 py-8 hover:no-underline w-full">
+                  <HStack spacing={4} className="flex-1 justify-between pr-12">
+                    <Heading size="h4" as="h3">
+                      {approvalDocumentTypeLabel[documentType]}
+                      {approvalDocumentTypesWithAmounts.includes(
+                        documentType
+                      ) &&
+                        ` over ${currencyFormatter.format(rule.lowerBoundAmount ?? 0)}`}
+                    </Heading>
                     <Badge
                       variant={rule.enabled ? "green" : "gray"}
                       className="text-xs font-medium"
                     >
                       {rule.enabled ? "Enabled" : "Disabled"}
                     </Badge>
-                    <span className="font-medium text-sm">{rule.name}</span>
-                    {documentType === "purchaseOrder" && (
-                      <span className="text-xs text-muted-foreground">
-                        {currencyFormatter.format(rule.lowerBoundAmount ?? 0)}
-                        {rule.upperBoundAmount
-                          ? ` - ${currencyFormatter.format(rule.upperBoundAmount)}`
-                          : "+"}
-                      </span>
-                    )}
                   </HStack>
                 </AccordionTrigger>
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10">

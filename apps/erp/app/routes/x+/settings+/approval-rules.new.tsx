@@ -9,37 +9,31 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useNavigate } from "react-router";
-import { approvalRuleValidator, upsertApprovalRule } from "~/modules/approvals";
-import ApprovalRuleDrawer from "~/modules/approvals/ui/ApprovalRuleDrawer";
+import {
+  type ApprovalDocumentType,
+  approvalRuleValidator,
+  upsertApprovalRule
+} from "~/modules/approvals";
+import ApprovalRuleForm from "~/modules/approvals/ui/ApprovalRuleForm";
+
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  await requirePermissions(request, {
     view: "settings",
     role: "employee"
   });
 
-  const groupsResult = await client
-    .from("group")
-    .select("id, name")
-    .eq("companyId", companyId)
-    .eq("isCustomerOrgGroup", false)
-    .eq("isSupplierOrgGroup", false);
-
-  if (groupsResult.error) {
-    throw redirect(
-      path.to.approvalRules,
-      await flash(
-        request,
-        error(groupsResult.error, "Failed to load approver groups")
-      )
-    );
-  }
+  const url = new URL(request.url);
+  const typeParam = url.searchParams.get("type");
+  const documentType: ApprovalDocumentType | null =
+    typeParam === "purchaseOrder" || typeParam === "qualityDocument"
+      ? typeParam
+      : null;
 
   return {
     rule: null,
-    documentType: null,
-    groups: groupsResult.data ?? []
+    documentType: documentType as ApprovalDocumentType | null
   };
 }
 
@@ -63,14 +57,11 @@ export async function action({ request }: ActionFunctionArgs) {
   const result = await upsertApprovalRule(serviceRole, {
     createdBy: userId,
     companyId,
-    name: validation.data.name,
     documentType: validation.data.documentType,
     enabled: validation.data.enabled,
     approverGroupIds: validation.data.approverGroupIds || [],
     defaultApproverId: validation.data.defaultApproverId,
-    lowerBoundAmount: validation.data.lowerBoundAmount ?? 0,
-    upperBoundAmount: validation.data.upperBoundAmount ?? null,
-    escalationDays: validation.data.escalationDays
+    lowerBoundAmount: validation.data.lowerBoundAmount ?? 0
   });
 
   if (result.error) {
@@ -93,15 +84,14 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function NewApprovalRuleRoute() {
-  const { rule, documentType, groups } = useLoaderData<typeof loader>();
+  const { rule, documentType } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const onClose = () => navigate(path.to.approvalRules);
 
   return (
-    <ApprovalRuleDrawer
+    <ApprovalRuleForm
       rule={rule}
       documentType={documentType}
-      groups={groups}
       onClose={onClose}
     />
   );
