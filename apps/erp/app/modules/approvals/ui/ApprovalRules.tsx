@@ -10,7 +10,7 @@ import {
   VStack
 } from "@carbon/react";
 import { memo } from "react";
-import { LuInbox, LuPlus } from "react-icons/lu";
+import { LuPlus } from "react-icons/lu";
 import { Link } from "react-router";
 import { Empty } from "~/components";
 import { usePermissions } from "~/hooks";
@@ -34,13 +34,7 @@ const ApprovalRules = memo(({ poRules, qdRules }: ApprovalRulesProps) => {
     <ScrollArea className="h-full w-full">
       <div className="py-12 px-4 max-w-[60rem] mx-auto">
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <Heading size="h2">Approval Rules</Heading>
-            {/* TODO: View Requests button - remove soon */}
-            <Button variant="secondary" leftIcon={<LuInbox />} asChild>
-              <Link to={path.to.approvalRequests}>View Requests</Link>
-            </Button>
-          </div>
+          <Heading size="h2">Approval Rules</Heading>
         </div>
 
         <Card className="mb-6">

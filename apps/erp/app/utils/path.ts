@@ -362,13 +362,6 @@ export const path = {
     },
     authenticatedRoot: x,
     acknowledge: `${x}/acknowledge`,
-    approvalRequests: `${x}/settings/approvals/requests`,
-    approvalDecision: (id: string) =>
-      generatePath(`${x}/settings/approvals/requests/${id}`),
-    approvalDecisionWithType: (id: string, decision: "approve" | "reject") =>
-      generatePath(
-        `${x}/settings/approvals/requests/${id}?decision=${decision}`
-      ),
     approvalRules: `${x}/settings/approval-rules`,
     approvalRule: (id: string) =>
       generatePath(`${x}/settings/approval-rules/${id}`),
