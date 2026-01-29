@@ -7,13 +7,15 @@ import {
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import type { Database } from "@carbon/database";
+import { validationError, validator } from "@carbon/form";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import {
   getQualityDocument,
-  getQualityDocumentVersions
+  getQualityDocumentVersions,
+  qualityDocumentApprovalValidator
 } from "~/modules/quality";
 import QualityDocumentEditor from "~/modules/quality/ui/Documents/QualityDocumentEditor";
 import QualityDocumentExplorer from "~/modules/quality/ui/Documents/QualityDocumentExplorer";
@@ -110,24 +112,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { id } = params;
   if (!id) throw new Error("Could not find id");
 
-  const formData = await request.formData();
-  const approvalRequestId = formData.get("approvalRequestId") as string;
-  const decision = formData.get("decision") as "Approved" | "Rejected";
-  const notes = formData.get("notes") as string | null;
+  const validation = await validator(qualityDocumentApprovalValidator).validate(
+    await request.formData()
+  );
 
-  if (!approvalRequestId || !decision) {
-    throw redirect(
-      path.to.qualityDocument(id),
-      await flash(request, error(null, "Invalid approval decision data"))
-    );
+  if (validation.error) {
+    return validationError(validation.error);
   }
 
-  if (!["Approved", "Rejected"].includes(decision)) {
-    throw redirect(
-      path.to.qualityDocument(id),
-      await flash(request, error(null, "Invalid decision"))
-    );
-  }
+  const { approvalRequestId, decision, notes } = validation.data;
 
   const serviceRole = getCarbonServiceRole();
 

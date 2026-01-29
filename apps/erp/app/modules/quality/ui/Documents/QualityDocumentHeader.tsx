@@ -20,7 +20,7 @@ import {
   VStack
 } from "@carbon/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   LuCheckCheck,
   LuChevronDown,
@@ -37,8 +37,10 @@ import { Await, useFetcher, useNavigate, useParams } from "react-router";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
+import type { ApprovalDecision } from "~/modules/shared/types";
 import { path } from "~/utils/path";
 import type { QualityDocument } from "../../types";
+import QualityDocumentApprovalModal from "./QualityDocumentApprovalModal";
 import QualityDocumentForm from "./QualityDocumentForm";
 import QualityDocumentStatus from "./QualityDocumentStatus";
 
@@ -66,6 +68,8 @@ const QualityDocumentHeader = () => {
     error?: string;
     success?: boolean;
   }>();
+  const [approvalDecision, setApprovalDecision] =
+    useState<ApprovalDecision | null>(null);
 
   const status = routeData?.document?.status ?? null;
   const isDraft = status === "Draft";
@@ -78,7 +82,6 @@ const QualityDocumentHeader = () => {
   const isApprovalRequired = routeData?.isApprovalRequired ?? false;
 
   const statusIdle = statusFetcher.state === "idle";
-  const approvalIdle = approvalFetcher.state === "idle";
   const submitLoading =
     !statusIdle &&
     statusFetcher.formData?.get("field") === "status" &&
@@ -183,52 +186,22 @@ const QualityDocumentHeader = () => {
         )}
         {canActivate && hasApprovalRequest && (
           <>
-            <approvalFetcher.Form
-              method="post"
-              action={path.to.qualityDocument(id)}
+            <Button
+              leftIcon={<LuCheckCheck />}
+              variant="primary"
+              isDisabled={!canApprove}
+              onClick={() => setApprovalDecision("Approved")}
             >
-              <input
-                type="hidden"
-                name="approvalRequestId"
-                value={approvalRequestId ?? ""}
-              />
-              <input type="hidden" name="decision" value="Approved" />
-              <Button
-                type="submit"
-                leftIcon={<LuCheckCheck />}
-                variant="primary"
-                isLoading={
-                  !approvalIdle &&
-                  approvalFetcher.formData?.get("decision") === "Approved"
-                }
-                isDisabled={!canApprove || !approvalIdle}
-              >
-                Approve
-              </Button>
-            </approvalFetcher.Form>
-            <approvalFetcher.Form
-              method="post"
-              action={path.to.qualityDocument(id)}
+              Approve
+            </Button>
+            <Button
+              leftIcon={<LuX />}
+              variant="destructive"
+              isDisabled={!canApprove}
+              onClick={() => setApprovalDecision("Rejected")}
             >
-              <input
-                type="hidden"
-                name="approvalRequestId"
-                value={approvalRequestId ?? ""}
-              />
-              <input type="hidden" name="decision" value="Rejected" />
-              <Button
-                type="submit"
-                leftIcon={<LuX />}
-                variant="destructive"
-                isLoading={
-                  !approvalIdle &&
-                  approvalFetcher.formData?.get("decision") === "Rejected"
-                }
-                isDisabled={!canApprove || !approvalIdle}
-              >
-                Reject
-              </Button>
-            </approvalFetcher.Form>
+              Reject
+            </Button>
           </>
         )}
         <Suspense fallback={null}>
@@ -326,6 +299,15 @@ const QualityDocumentHeader = () => {
           onSubmit={() => {
             deleteDisclosure.onClose();
           }}
+        />
+      )}
+      {approvalDecision && approvalRequestId && (
+        <QualityDocumentApprovalModal
+          qualityDocument={routeData?.document}
+          approvalRequestId={approvalRequestId}
+          decision={approvalDecision}
+          fetcher={approvalFetcher}
+          onClose={() => setApprovalDecision(null)}
         />
       )}
     </div>
