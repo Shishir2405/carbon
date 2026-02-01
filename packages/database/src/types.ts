@@ -8419,7 +8419,7 @@ export type Database = {
           itemPostingGroupId: string | null
           standardCost: number
           tags: string[] | null
-          unitCost: number
+          unitCost: number | null
           updatedAt: string | null
           updatedBy: string | null
         }
@@ -8434,7 +8434,7 @@ export type Database = {
           itemPostingGroupId?: string | null
           standardCost?: number
           tags?: string[] | null
-          unitCost?: number
+          unitCost?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -8449,7 +8449,7 @@ export type Database = {
           itemPostingGroupId?: string | null
           standardCost?: number
           tags?: string[] | null
-          unitCost?: number
+          unitCost?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
         }

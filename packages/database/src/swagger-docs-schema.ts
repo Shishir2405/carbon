@@ -94174,7 +94174,6 @@ export default {
         "itemId",
         "costingMethod",
         "standardCost",
-        "unitCost",
         "costIsAdjusted",
         "companyId",
         "createdBy",
