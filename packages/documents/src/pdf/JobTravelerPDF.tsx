@@ -103,6 +103,7 @@ type JobHeaderProps = {
   job: Database["public"]["Views"]["jobs"]["Row"];
   customer: Database["public"]["Tables"]["customer"]["Row"] | null;
   item: Database["public"]["Tables"]["item"]["Row"];
+  jobOperations: JobOperationWithSteps[];
   batchNumber?: string;
   bomId?: string;
   thumbnail?: string | null;
@@ -117,7 +118,8 @@ const JobHeader = ({
   item,
   job,
   methodRevision,
-  thumbnail
+  thumbnail,
+  jobOperations
 }: JobHeaderProps) => {
   const getTargetInfo = () => {
     if (job.salesOrderId && job.salesOrderLineId) {
@@ -173,7 +175,8 @@ const JobHeader = ({
         <View style={jobHeaderStyles.infoRow}>
           <Text style={jobHeaderStyles.label}>Quantity:</Text>
           <Text style={jobHeaderStyles.value}>
-            {job.quantity} {job.unitOfMeasureCode}
+            {jobOperations?.[0]?.targetQuantity ?? job.quantity}{" "}
+            {job.unitOfMeasureCode}
           </Text>
         </View>
 
@@ -279,6 +282,7 @@ export const JobTravelerPageContent = ({
           bomId={bomId}
           thumbnail={thumbnail}
           methodRevision={methodRevision}
+          jobOperations={jobOperations}
         />
       </View>
 
