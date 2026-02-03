@@ -1,7 +1,10 @@
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize, {
+import type rehypeSanitize from "rehype-sanitize";
+import type {
+  Options as RehypeSanitizeOptions
+} from "rehype-sanitize";
+import {
   defaultSchema,
-  type Options as RehypeSanitizeOptions
 } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import type { PluggableList, Plugin } from "unified";

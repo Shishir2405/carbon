@@ -12,8 +12,10 @@ import {
   HStack,
   VStack
 } from "@carbon/react";
+import type {
+  ActionFunctionArgs,
+} from "react-router";
 import {
-  type ActionFunctionArgs,
   Link,
   redirect,
   useLoaderData

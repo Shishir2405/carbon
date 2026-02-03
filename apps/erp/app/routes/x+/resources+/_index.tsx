@@ -28,8 +28,10 @@ import {
   Thead,
   Tr
 } from "@carbon/react";
+import type {
+  ChartConfig,
+} from "@carbon/react/Chart";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
@@ -49,10 +51,12 @@ import {
   LuTriangleAlert,
   LuWrench
 } from "react-icons/lu";
+import type {
+  LoaderFunctionArgs,
+} from "react-router";
 import {
   Await,
   Link,
-  type LoaderFunctionArgs,
   useFetcher,
   useLoaderData
 } from "react-router";
@@ -60,9 +64,11 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Empty, Hyperlink } from "~/components";
 import { useWorkCenters } from "~/components/Form/WorkCenters";
 import { useCurrencyFormatter } from "~/hooks/useCurrencyFormatter";
+import type {
+  maintenanceSource
+} from "~/modules/resources/resources.models";
 import {
   MaintenanceKPIs,
-  maintenanceSource
 } from "~/modules/resources/resources.models";
 import MaintenanceSource from "~/modules/resources/ui/Maintenance/MaintenanceSource";
 import MaintenanceStatus from "~/modules/resources/ui/Maintenance/MaintenanceStatus";

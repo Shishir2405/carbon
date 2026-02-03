@@ -9,8 +9,10 @@ import {
   ConversationScrollButton
 } from "../Conversation";
 import { Markdown } from "../Markdown/Markdown";
+import type {
+  SupportedToolName,
+} from "../ToolCallIndicator";
 import {
-  type SupportedToolName,
   ToolCallIndicator
 } from "../ToolCallIndicator";
 import { WebSearchSources } from "../WebSearch";

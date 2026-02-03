@@ -17,8 +17,10 @@ import Assignee, { useOptimisticAssignment } from "~/components/Assignee";
 import { InputControlled, Tags } from "~/components/Form";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useTags } from "~/hooks/useTags";
+import type {
+  Training,
+} from "~/modules/resources";
 import {
-  type Training,
   trainingFrequency,
   trainingStatus,
   trainingType

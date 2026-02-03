@@ -4,10 +4,12 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { NotificationEvent } from "@carbon/notifications";
 import { tasks } from "@trigger.dev/sdk";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+} from "react-router";
 import {
-  type ActionFunctionArgs,
   data,
-  type LoaderFunctionArgs,
   useLoaderData,
   useNavigate
 } from "react-router";

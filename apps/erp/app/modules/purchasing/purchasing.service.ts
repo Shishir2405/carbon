@@ -1,11 +1,12 @@
-import { type Database, fetchAllFromTable, type Json } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
+import { fetchAllFromTable } from "@carbon/database";
 import { getPurchaseOrderStatus } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import {
-  FunctionRegion,
-  type PostgrestSingleResponse,
-  type SupabaseClient
+import type {
+  PostgrestSingleResponse,
+  SupabaseClient
 } from "@supabase/supabase-js";
+import { FunctionRegion } from "@supabase/supabase-js";
 import type { z } from "zod";
 import { getEmployeeJob } from "~/modules/people";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -14,25 +15,25 @@ import { sanitize } from "~/utils/supabase";
 import { getCurrencyByCode } from "../accounting/accounting.service";
 import type { PurchaseInvoice } from "../invoicing/types";
 import { upsertExternalLink } from "../shared/shared.service";
-import {
-  type purchaseOrderDeliveryValidator,
-  type purchaseOrderLineValidator,
-  type purchaseOrderPaymentValidator,
-  type purchaseOrderStatusType,
-  type purchaseOrderValidator,
+import type {
+  purchaseOrderDeliveryValidator,
+  purchaseOrderLineValidator,
+  purchaseOrderPaymentValidator,
+  purchaseOrderStatusType,
+  purchaseOrderValidator,
   purchasingRfqStatusType,
-  type selectedLinesValidator,
-  type supplierAccountingValidator,
-  type supplierContactValidator,
-  type supplierPaymentValidator,
-  type supplierProcessValidator,
-  type supplierQuoteLineValidator,
-  type supplierQuoteStatusType,
-  type supplierQuoteValidator,
-  type supplierShippingValidator,
-  type supplierStatusValidator,
-  type supplierTypeValidator,
-  type supplierValidator
+  selectedLinesValidator,
+  supplierAccountingValidator,
+  supplierContactValidator,
+  supplierPaymentValidator,
+  supplierProcessValidator,
+  supplierQuoteLineValidator,
+  supplierQuoteStatusType,
+  supplierQuoteValidator,
+  supplierShippingValidator,
+  supplierStatusValidator,
+  supplierTypeValidator,
+  supplierValidator
 } from "./purchasing.models";
 import type { PurchaseOrder, PurchasingRFQ, SupplierQuote } from "./types";
 
@@ -581,14 +582,14 @@ export async function getSupplierQuoteByInteractionId(
     .single();
 }
 
-export async function getSupplierQuoteByExternalId(
+export async function getSupplierQuoteByExternalLinkId(
   client: SupabaseClient<Database>,
-  externalId: string
+  externalLinkId: string
 ) {
   return client
     .from("supplierQuote")
     .select("*")
-    .eq("externalLinkId", externalId)
+    .eq("externalLinkId", externalLinkId)
     .single();
 }
 

@@ -4,7 +4,7 @@ import { JobTravelerPDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { flattenTree, generateBomIds } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
-import { type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import {
   getJob,
   getJobMakeMethodById,

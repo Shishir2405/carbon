@@ -17,8 +17,10 @@ import { Edition } from "@carbon/utils";
 import { useLocale } from "@react-aria/i18n";
 import { useMemo } from "react";
 import { LuGraduationCap, LuMoveLeft, LuPhoneCall } from "react-icons/lu";
+import type {
+  ActionFunctionArgs,
+} from "react-router";
 import {
-  type ActionFunctionArgs,
   Form,
   redirect,
   useFetcher,

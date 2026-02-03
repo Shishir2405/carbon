@@ -1,8 +1,10 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { VStack } from "@carbon/react";
+import type {
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "react-router";
 import {
-  type LoaderFunctionArgs,
-  type MetaFunction,
   Outlet
 } from "react-router";
 

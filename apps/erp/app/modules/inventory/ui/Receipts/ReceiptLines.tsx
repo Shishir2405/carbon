@@ -65,11 +65,13 @@ import { useShelves } from "~/components/Form/Shelf";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
 import { useRouteData, useUser } from "~/hooks";
+import type {
+  BatchProperty,
+  ItemTracking,
+  Receipt,
+  ReceiptLine,
+} from "~/modules/inventory";
 import {
-  type BatchProperty,
-  type ItemTracking,
-  type Receipt,
-  type ReceiptLine,
   ShelfForm,
   splitValidator
 } from "~/modules/inventory";

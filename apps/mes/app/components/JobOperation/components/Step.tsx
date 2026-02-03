@@ -10,6 +10,9 @@ import {
   Submit,
   ValidatedForm
 } from "@carbon/form";
+import type {
+  JSONContent,
+} from "@carbon/react";
 import {
   Button,
   Checkbox,
@@ -17,7 +20,6 @@ import {
   generateHTML,
   HStack,
   IconButton,
-  type JSONContent,
   Modal,
   ModalBody,
   ModalContent,

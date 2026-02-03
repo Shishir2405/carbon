@@ -26,7 +26,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
-import { PostgrestResponse } from "@supabase/supabase-js";
+import type { PostgrestResponse } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";

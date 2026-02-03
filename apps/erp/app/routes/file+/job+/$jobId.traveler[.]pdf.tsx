@@ -10,7 +10,7 @@ import {
   renderToStream,
   StyleSheet
 } from "@react-pdf/renderer";
-import { type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import {
   getJob,
   getJobMethodTree,
