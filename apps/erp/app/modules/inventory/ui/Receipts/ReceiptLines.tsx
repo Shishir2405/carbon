@@ -69,12 +69,9 @@ import type {
   BatchProperty,
   ItemTracking,
   Receipt,
-  ReceiptLine,
+  ReceiptLine
 } from "~/modules/inventory";
-import {
-  ShelfForm,
-  splitValidator
-} from "~/modules/inventory";
+import { ShelfForm, splitValidator } from "~/modules/inventory";
 import { getDocumentType } from "~/modules/shared/shared.service";
 import type { action as receiptLinesUpdateAction } from "~/routes/x+/receipt+/lines.update";
 import { useItems } from "~/stores";

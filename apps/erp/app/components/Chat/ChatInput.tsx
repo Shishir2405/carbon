@@ -8,9 +8,7 @@ import { cn } from "@carbon/react";
 import { forwardRef, useRef } from "react";
 import { CommandMenu } from "./CommandMenu";
 import { useChatStore } from "./lib/store";
-import type {
-  PromptInputMessage,
-} from "./PromptInput";
+import type { PromptInputMessage } from "./PromptInput";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -23,7 +21,7 @@ import {
   PromptInputTools
 } from "./PromptInput";
 import type { RecordButtonRef } from "./RecordButton";
-import { RecordButton, } from "./RecordButton";
+import { RecordButton } from "./RecordButton";
 import { SuggestedActionsButton } from "./SuggestedActions";
 import { SuggestedPrompts } from "./SuggestedPrompts";
 import { WebSearchButton } from "./WebSearch";

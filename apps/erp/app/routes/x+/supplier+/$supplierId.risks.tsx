@@ -1,5 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import type { LoaderFunctionArgs, } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { data, useParams } from "react-router";
 import SupplierRiskRegister from "~/modules/purchasing/ui/Supplier/SupplierRiskRegister";
 

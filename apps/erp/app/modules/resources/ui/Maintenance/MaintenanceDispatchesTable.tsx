@@ -326,7 +326,7 @@ const MaintenanceDispatchesTable = memo(
           }
         }
       ];
-    }, [workCenters]);
+    }, [workCenters, failureModes.find, failureModes?.map, people.map]);
 
     const renderContextMenu = useCallback(
       (row: MaintenanceDispatch) => {

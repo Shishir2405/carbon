@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { getLocalTimeZone, startOfWeek, today } from "@internationalized/date";
 import type { LoaderFunctionArgs } from "react-router";
-import { data, } from "react-router";
+import { data } from "react-router";
 import {
   getItemDemand,
   getItemQuantities,

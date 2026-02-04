@@ -1,6 +1,4 @@
-import type {
-  Editor,
-} from "@tiptap/core";
+import type { Editor } from "@tiptap/core";
 import {
   Mark,
   markInputRule,

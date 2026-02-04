@@ -1,7 +1,7 @@
 import { getCarbonServiceRole } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { TrackedEntityAttributes } from "@carbon/utils";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 
 export async function action({ request, context }: ActionFunctionArgs) {

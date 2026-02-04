@@ -1,5 +1,5 @@
 import type { Node } from "@tiptap/pm/model";
-import { Fragment, } from "@tiptap/pm/model";
+import { Fragment } from "@tiptap/pm/model";
 import type { EditorInstance } from "../components";
 
 export function isValidUrl(url: string) {

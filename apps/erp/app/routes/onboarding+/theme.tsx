@@ -14,7 +14,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useMode } from "@carbon/remix";
-import type { Theme, } from "@carbon/utils";
+import type { Theme } from "@carbon/utils";
 import { themes } from "@carbon/utils";
 import { useEffect, useRef, useState } from "react";
 import { BiMoon, BiSun } from "react-icons/bi";
@@ -29,7 +29,7 @@ import {
   useSubmit
 } from "react-router";
 import { useOnboarding } from "~/hooks";
-import type { Theme as ThemeValue, } from "~/modules/settings";
+import type { Theme as ThemeValue } from "~/modules/settings";
 import { themeValidator } from "~/modules/settings";
 import type { action as modeAction } from "~/root";
 import { getTheme, setTheme } from "~/services/theme.server";

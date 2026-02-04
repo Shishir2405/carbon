@@ -1,7 +1,7 @@
 "use client";
 
 import type { Company } from "@carbon/auth";
-import { CONTROLLED_ENVIRONMENT, } from "@carbon/auth";
+import { CONTROLLED_ENVIRONMENT } from "@carbon/auth";
 import {
   Avatar,
   cn,
@@ -33,7 +33,7 @@ import {
   useSidebar
 } from "@carbon/react";
 import { ItarDisclosure, useMode } from "@carbon/remix";
-import type { ComponentProps, } from "react";
+import type { ComponentProps } from "react";
 import { useRef } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import {

@@ -8,7 +8,7 @@ import type {
 import type { RefObject } from "react";
 import tippy, { type Instance, type Props } from "tippy.js";
 import type { MentionListRef } from "../components/mention-list";
-import { MentionList, } from "../components/mention-list";
+import { MentionList } from "../components/mention-list";
 
 export interface MentionSuggestion {
   id: string;

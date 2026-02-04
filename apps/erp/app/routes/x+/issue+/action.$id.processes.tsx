@@ -1,5 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { z } from "zod";
 import { updateIssueActionProcesses } from "~/modules/quality/quality.service";

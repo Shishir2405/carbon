@@ -10,9 +10,7 @@ import {
   Submit,
   ValidatedForm
 } from "@carbon/form";
-import type {
-  JSONContent,
-} from "@carbon/react";
+import type { JSONContent } from "@carbon/react";
 import {
   Button,
   Checkbox,

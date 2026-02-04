@@ -12,7 +12,7 @@ import type { userAdminTask } from "@carbon/jobs/trigger/user-admin";
 import { updateSubscriptionQuantityForCompany } from "@carbon/stripe/stripe.server";
 import { Edition } from "@carbon/utils";
 import { tasks } from "@trigger.dev/sdk";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { revokeInviteValidator } from "~/modules/users";
 

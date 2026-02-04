@@ -2,7 +2,7 @@ import { notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { LoaderFunctionArgs, } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { getKanban } from "~/modules/inventory";
 import { getActiveJobOperationByJobId } from "~/modules/production";

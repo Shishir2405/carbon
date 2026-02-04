@@ -7,8 +7,7 @@ import {
   ResizablePanelGroup,
   useDebounce
 } from "@carbon/react";
-import type { LoaderFunctionArgs } from "react-router";
-import type { Location, } from "react-router";
+import type { LoaderFunctionArgs, Location } from "react-router";
 import { useLoaderData } from "react-router";
 import type { GanttEvent } from "~/components/Gantt";
 import { Gantt } from "~/components/Gantt";

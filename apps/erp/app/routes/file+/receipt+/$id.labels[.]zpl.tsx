@@ -2,7 +2,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { generateProductLabelZPL } from "@carbon/documents/zpl";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import { labelSizes } from "@carbon/utils";
-import type { LoaderFunctionArgs, } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { getReceiptTracking } from "~/modules/inventory/inventory.service";
 import { getCompanySettings } from "~/modules/settings/settings.service";

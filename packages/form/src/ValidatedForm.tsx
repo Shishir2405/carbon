@@ -1,13 +1,7 @@
 import { useIsomorphicLayoutEffect } from "@carbon/react";
-import type { ComponentProps, FormEvent, RefObject } from "react";
 import type React from "react";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from "react";
+import type { ComponentProps, FormEvent, RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   FetcherWithComponents,
   FormEncType,

@@ -2,7 +2,7 @@ import { Provider as ChatProvider } from "@ai-sdk-tools/store";
 import { cn } from "@carbon/react";
 import { getLocalTimeZone } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
-import type { ComponentProps, } from "react";
+import type { ComponentProps } from "react";
 import { useMemo } from "react";
 import { Link } from "react-router";
 import { ChatInterface } from "~/components/Chat";

@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { NotificationEvent } from "@carbon/notifications";
 import { tasks } from "@trigger.dev/sdk";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { assign } from "~/modules/shared/shared.server";
 

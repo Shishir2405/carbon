@@ -6,7 +6,7 @@ import {
   flash,
   updateCompanySession
 } from "@carbon/auth/session.server";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { getCompanies } from "~/modules/settings";
 import { path, requestReferrer } from "~/utils/path";

@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs, } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { modules } from "~/config";
 import { path } from "~/utils/path";

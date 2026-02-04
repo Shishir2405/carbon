@@ -166,7 +166,10 @@ export class PurchaseOrderSyncer extends BaseEntitySyncer<
     const supplierIds = orderRows.map((o) => o.supplierId);
     const supplierExternalIds = new Map<string, string | null>();
     if (supplierIds.length > 0) {
-      const mappingService = createMappingService(this.database, this.companyId);
+      const mappingService = createMappingService(
+        this.database,
+        this.companyId
+      );
       for (const supplierId of supplierIds) {
         const externalId = await mappingService.getExternalId(
           "supplier",

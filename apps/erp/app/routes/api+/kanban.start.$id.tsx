@@ -4,7 +4,7 @@ import type { Database } from "@carbon/database";
 import { Loading } from "@carbon/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Suspense } from "react";
-import type { LoaderFunctionArgs, } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import { Await, useLoaderData } from "react-router";
 import { Redirect } from "~/components/Redirect";
 import { getKanban } from "~/modules/inventory";

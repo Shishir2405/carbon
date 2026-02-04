@@ -11,7 +11,7 @@ import type { notifyTask } from "@carbon/jobs/trigger/notify";
 import { NotificationEvent } from "@carbon/notifications";
 import { getLocalTimeZone, now } from "@internationalized/date";
 import { tasks } from "@trigger.dev/sdk";
-import type { ActionFunctionArgs, } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { maintenanceDispatchValidator } from "~/services/models";
 import { endProductionEventsByWorkCenter } from "~/services/operations.service";

@@ -1,12 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { VStack } from "@carbon/react";
-import type {
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "react-router";
-import {
-  Outlet
-} from "react-router";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { Outlet } from "react-router";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | People" }];

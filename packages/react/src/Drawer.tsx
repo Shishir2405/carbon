@@ -2,7 +2,7 @@
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import type { VariantProps } from "class-variance-authority";
-import { cva, } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import type {
   ComponentPropsWithoutRef,
   ElementRef,

@@ -8,7 +8,7 @@ import {
   useState
 } from "react";
 import type { ButtonProps } from "./Button";
-import { Button, } from "./Button";
+import { Button } from "./Button";
 import { cn } from "./utils/cn";
 
 type Position = { x: number; y: number };

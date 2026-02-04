@@ -1,10 +1,7 @@
 import { useCarbon } from "@carbon/auth";
-import type {
-  JSONContent,
-} from "@carbon/react";
+import type { JSONContent } from "@carbon/react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -31,7 +28,7 @@ import { Editor } from "@carbon/react/Editor";
 import { convertKbToString } from "@carbon/utils";
 import type { FileObject } from "@supabase/storage-js";
 import { nanoid } from "nanoid";
-import type { ChangeEvent, } from "react";
+import type { ChangeEvent } from "react";
 import { Suspense, useCallback, useState } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Await, useRevalidator } from "react-router";

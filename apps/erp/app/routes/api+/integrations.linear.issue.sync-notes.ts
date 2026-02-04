@@ -1,13 +1,11 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import type {
-  TiptapDocument,
-} from "@carbon/ee/linear";
+import type { TiptapDocument } from "@carbon/ee/linear";
 import {
   getLinearClient,
   getLinearIssueFromExternalId,
   tiptapToMarkdown
 } from "@carbon/ee/linear";
-import type { ActionFunction, } from "react-router";
+import type { ActionFunction } from "react-router";
 import { data } from "react-router";
 
 const linear = getLinearClient();

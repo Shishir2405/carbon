@@ -1,7 +1,5 @@
 import { useCarbon } from "@carbon/auth";
-import type {
-  JSONContent,
-} from "@carbon/react";
+import type { JSONContent } from "@carbon/react";
 import {
   Card,
   CardContent,

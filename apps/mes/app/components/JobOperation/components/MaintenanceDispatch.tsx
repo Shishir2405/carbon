@@ -123,7 +123,7 @@ export function MaintenanceDispatch({
       toast.success("Maintenance dispatch created");
       onClose();
     }
-  }, [fetcher.state, fetcher.data]);
+  }, [fetcher.state, fetcher.data, onClose]);
 
   const onUploadImage = async (file: File) => {
     const fileType = file.name.split(".").pop();
