@@ -1,4 +1,5 @@
 import { openai } from "@ai-sdk/openai";
+import { getCarbonServiceRole } from "@carbon/auth";
 import type { Database } from "@carbon/database";
 import {
   getMaterialDescription,
@@ -54,7 +55,7 @@ async function createPaperlessMapping(
   externalId: string,
   companyId: string
 ): Promise<void> {
-  await carbon
+  await getCarbonServiceRole()
     .from("externalIntegrationMapping")
     .delete()
     .eq("entityType", entityType)

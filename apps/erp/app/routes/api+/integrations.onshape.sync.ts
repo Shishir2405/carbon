@@ -63,7 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const itemId = record.data?.itemId as string;
 
     // Upsert the OnShape mapping in externalIntegrationMapping
-    await client
+    await getCarbonServiceRole()
       .from("externalIntegrationMapping")
       .delete()
       .eq("entityType", "item")
@@ -83,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
       companyId
     });
   } catch (error) {
-    console.error("Failed to sync onshape data");
+    console.error("Failed to sync onshape data", error);
     return data(
       { success: false, message: "Invalid rows data" },
       { status: 400 }
